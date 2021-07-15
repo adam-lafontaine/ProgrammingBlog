@@ -54,5 +54,5 @@ export class DataResult<T>
 
 export interface IPost
 {
-    body: string;
+    content: Array<string>;
 }
