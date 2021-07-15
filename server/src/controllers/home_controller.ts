@@ -1,4 +1,4 @@
-import { IRequest, IResponse, DataResult } from "../types"
+import { IRequest, IResponse, DataResult } from "../server_types"
 import { echo_id, get_object_properties, update_something } from "../services/home_service"
 import { post } from "../services/post_service";
 

@@ -1,4 +1,4 @@
-import { IPost } from "../types"
+import { IPost } from "../server_types"
 
 const post: IPost = {
 

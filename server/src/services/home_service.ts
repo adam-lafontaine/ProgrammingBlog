@@ -1,4 +1,4 @@
-import { DataResult } from "../types"
+import { DataResult } from "../server_types"
 
 export function echo_id(id: number): DataResult<any>
 {

@@ -1,5 +1,5 @@
 {
-  "name": "programmingblog",
+  "name": "programming-blog-server",
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",
