@@ -19,6 +19,9 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": 0,
         "@typescript-eslint/no-inferrable-types": 0,
         "@typescript-eslint/explicit-module-boundary-types": 1,
-        "@typescript-eslint/no-unused-vars": 1
+        "@typescript-eslint/no-unused-vars": 1,
+        "@typescript-eslint/prefer-namespace-keyword": 0,
+        "@typescript-eslint/no-namespace": 1,
+        "prefer-const": 1,
     }
 };

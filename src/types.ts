@@ -51,3 +51,8 @@ export class DataResult<T>
     message: string = "";
     data: T = null;
 }
+
+export interface IPost
+{
+    body: string;
+}

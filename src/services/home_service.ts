@@ -2,7 +2,7 @@ import { DataResult } from "../types"
 
 export function echo_id(id: number): DataResult<any>
 {
-    const result = new DataResult<any>();
+    let result = new DataResult<any>();
 
     if(id < 10)
     {

@@ -1,16 +1,17 @@
 import { IRequest, IResponse, DataResult } from "../types"
 import { echo_id, get_object_properties, update_something } from "../services/home_service"
+import { post } from "../services/post_service";
 
 
-export class HomeController
+export module hc
 {
-    public home(req: IRequest, res: IResponse): void
+    export function home(req: IRequest, res: IResponse): void
     {
         res.send("Home page");
     }
 
 
-    public try_echo(req: IRequest, res: IResponse): void
+    export function try_echo(req: IRequest, res: IResponse): void
     {
         if(!req.params.id)
         {
@@ -36,7 +37,7 @@ export class HomeController
     }
 
 
-    public request_props(req: IRequest, res: IResponse): void
+    export function request_props(req: IRequest, res: IResponse): void
     {
         const payload = get_object_properties(req);
 
@@ -44,7 +45,7 @@ export class HomeController
     }
 
 
-    public update_data(req: IRequest, res: IResponse): void
+    export function update_data(req: IRequest, res: IResponse): void
     {
         const data = req.body;
         const payload = update_something(data);
@@ -53,6 +54,10 @@ export class HomeController
     }
 
 
+    export function get_post(req: IRequest, res: IResponse): void
+    {
+        res.send(post.get_post());
+    }
 
 }
 
