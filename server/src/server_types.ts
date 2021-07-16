@@ -43,6 +43,7 @@ export interface IRequest
 export interface IResponse
 {
     send: (payload: any) => void;
+    sendFile: (filePath: string) => void;
 }
 
 export class DataResult<T>
