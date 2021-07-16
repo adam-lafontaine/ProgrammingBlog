@@ -1,4 +1,4 @@
-export interface IRequestParms
+export interface IRequestParams
 {
     id: string;
     body: any;
@@ -6,7 +6,7 @@ export interface IRequestParms
 
 export interface IRequest
 {
-    params: IRequestParms;
+    params: IRequestParams;
     body: any;
 
     httpVersionMajor: number;
@@ -44,16 +44,4 @@ export interface IResponse
 {
     send: (payload: any) => void;
     sendFile: (filePath: string) => void;
-}
-
-export class DataResult<T>
-{
-    success: boolean = false;
-    message: string = "";
-    data: T = null;
-}
-
-export interface IPost
-{
-    content: Array<string>;
 }

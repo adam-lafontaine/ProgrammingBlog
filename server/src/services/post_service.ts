@@ -1,4 +1,4 @@
-import { DataResult, IPost } from "../server_types"
+import { DataResult, IPost } from "../types/client.types";
 import testpost from "../posts/testpost";
 
 export module post

@@ -1,7 +1,8 @@
-import { IRequest, IResponse, DataResult } from "../server_types"
-import { echo_id, get_object_properties, update_something } from "../services/home_service"
+import { IRequest, IResponse } from "../types/server.types";
+import { DataResult } from "../types/client.types";
+import { echo_id, get_object_properties, update_something } from "../services/home_service";
 import { post } from "../services/post_service";
-import path from "path"
+import path from "path";
 
 const client_path = path.join(__dirname, "../client");
 
