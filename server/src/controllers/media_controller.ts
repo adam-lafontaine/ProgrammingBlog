@@ -2,7 +2,7 @@ import { IRequest, IResponse } from "../types/server.types";
 import { DataResult } from "../types/client.types";
 import path from "path"
 
-const media_path = path.join(__dirname, "../../media");
+const media_path = "/home/adam/repos/ProgrammingBlog/media";
 const error_image = path.join(media_path, "x.jpg");
 
 export module mc

@@ -39,7 +39,7 @@ const actions: Tree<State, any> = {
             }
 
             set_status(status = "checking response data");
-            if(!has_object_properties(response.data.data, empty_post))
+            if(response.data.success && !has_object_properties(response.data.data, empty_post))
             {
                 report_error();
                 return;

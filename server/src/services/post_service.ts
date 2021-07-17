@@ -2,11 +2,10 @@ import {
     DataResult, 
     IPost,IContentItem, ContentType
 } from "../types/client.types";
-import testpost from "../../posts/testpost";
 import fs from "fs"
 import path from "path"
 
-const post_path = path.join(__dirname, "../../posts");
+const post_path = "/home/adam/repos/ProgrammingBlog/posts";
 
 
 const enum Flag
@@ -23,12 +22,14 @@ export module post
     export function get_post(): DataResult<IPost>
     {
         let result = new DataResult<IPost>();
-        let status = "";
+        let status = "/home/adam/repos/ProgrammingBlog/server/dist/posts";
 
         try
         {
             status = "reading file";
-            const data = fs.readFileSync(path.join(post_path, "blogposttest.txt"), "utf8");
+            const file_path = path.join(post_path, "blogposttest.txt");
+            status = file_path;
+            const data = fs.readFileSync(file_path, "utf8");
 
             status = "building post";
             const post = parse_post(data);

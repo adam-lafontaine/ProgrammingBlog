@@ -23,5 +23,6 @@ module.exports = {
         "@typescript-eslint/prefer-namespace-keyword": 'off',
         "@typescript-eslint/no-namespace": 'warn',
         "prefer-const": 'warn',
+        "no-empty": 'off'
     }
 };
