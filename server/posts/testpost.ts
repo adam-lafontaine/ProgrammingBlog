@@ -1,4 +1,4 @@
-import { ContentType, IPost } from "../types/client.types"
+import { ContentType, IPost } from "../src/types/client.types"
 
 const post: IPost = {
     title: "Test Post",

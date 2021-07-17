@@ -23,7 +23,6 @@ const port = 8081; // default port to listen
 app.get("/", hc.home);
 
 // api routes
-app.get("/api", hc.home);
 app.get("/api/props", hc.request_props);
 
 app.get("/api/post", hc.get_post);

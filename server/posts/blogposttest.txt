@@ -1,0 +1,5 @@
+<text>This is the first paragraph of text
+<image>http://localhost:8081/api/image/2
+<text>This is the second paragraph of text
+<title>Post from a file
+<tags>Math,Chemistry,Physics
