@@ -28,6 +28,8 @@ module.exports = {
     'eol-last': 'off',
     'spaced-comment': 'off',
     'comma-dangle': 'off',
+    'no-multiple-empty-lines': 'warn',
+    
 
   }
 }

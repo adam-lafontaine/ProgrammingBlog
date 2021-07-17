@@ -17,6 +17,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { Action, Getter, namespace } from 'vuex-class'
 import { TestAction, TestGet } from '../store/modules/test/test.types'
+
 const TestModule = namespace("test_module")
 @Component({ components: {} })
 export default class Test extends Vue
