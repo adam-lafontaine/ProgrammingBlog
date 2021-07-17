@@ -29,7 +29,10 @@ module.exports = {
     'spaced-comment': 'off',
     'comma-dangle': 'off',
     'no-multiple-empty-lines': 'warn',
-    
+    "@typescript-eslint/prefer-namespace-keyword": 'off',
+    "@typescript-eslint/no-namespace": 'warn',
+    "@typescript-eslint/ban-types": 'warn',
+    "no-prototype-builtins": 'warn',
 
   }
 }

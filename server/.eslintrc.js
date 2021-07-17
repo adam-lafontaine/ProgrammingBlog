@@ -16,12 +16,12 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
-        "@typescript-eslint/no-explicit-any": 0,
-        "@typescript-eslint/no-inferrable-types": 0,
-        "@typescript-eslint/explicit-module-boundary-types": 1,
-        "@typescript-eslint/no-unused-vars": 1,
-        "@typescript-eslint/prefer-namespace-keyword": 0,
-        "@typescript-eslint/no-namespace": 1,
-        "prefer-const": 1,
+        "@typescript-eslint/no-explicit-any": 'off',
+        "@typescript-eslint/no-inferrable-types": 'off',
+        "@typescript-eslint/explicit-module-boundary-types": 'warn',
+        "@typescript-eslint/no-unused-vars": 'warn',
+        "@typescript-eslint/prefer-namespace-keyword": 'off',
+        "@typescript-eslint/no-namespace": 'warn',
+        "prefer-const": 'warn',
     }
 };

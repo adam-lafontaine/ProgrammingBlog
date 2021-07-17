@@ -9,7 +9,7 @@ import {
 
 const ENTRY_ROUTE = "http://localhost:8081/api/post/"
 
-const actions: Tree<State, State> = {
+const actions: Tree<State, any> = {
 
     async [Action.LOAD_TEST_DATA]({ commit, state }): Promise<any>
     {

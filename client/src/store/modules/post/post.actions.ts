@@ -1,18 +1,17 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import { ActionTree as Tree } from 'vuex'
 import {    
     PostAction as Action,
     PostMutation as Mutation,
     IPostState as State,
-    DataResult, 
+    DataResult,
     IPost,
     Make
-
 } from './post.types'
 
 const ENTRY_ROUTE = "http://localhost:8081/api"
 
-const actions: Tree<State, State> = {
+const actions: Tree<State, any> = {
 
     async [Action.FETCH_SELECTED_POST]({ commit, state }): Promise<any>
     {
@@ -22,7 +21,7 @@ const actions: Tree<State, State> = {
 
         const report_error = () => 
         { 
-            console.error(`unexpected response`);
+            console.error(status);
             commit(Mutation.SET_SELECTED_POST, empty_post); 
         };
 
@@ -68,6 +67,8 @@ const actions: Tree<State, State> = {
 
 function has_object_properties(val: any, obj: object): boolean
 {
+    console.log(val);
+
     if(val === null || typeof val !== 'object')
     {
         return false;
