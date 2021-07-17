@@ -19,6 +19,7 @@ const actions: Tree<State, any> = {
         const empty_post = Make.post();
         let status = "";
 
+        const set_status = (s: string) => { status = `FETCH_SELECTED_POST ${s}`; };
         const report_error = () => 
         { 
             console.error(status);
@@ -27,7 +28,7 @@ const actions: Tree<State, any> = {
 
         try
         {
-            status = "fetching blog post";
+            set_status("fetching blog post");
             const response = await axios.get(url);            
             
             status = "checking response type";
@@ -37,7 +38,7 @@ const actions: Tree<State, any> = {
                 return;
             }
 
-            status = "checking response data";
+            set_status(status = "checking response data");
             if(!has_object_properties(response.data.data, empty_post))
             {
                 report_error();
@@ -46,7 +47,7 @@ const actions: Tree<State, any> = {
             
             const result = response.data as DataResult<IPost>;
 
-            status = result.message;
+            set_status(result.message);
             if(!result.success)
             {
                 report_error();
@@ -74,10 +75,11 @@ function has_object_properties(val: any, obj: object): boolean
         return false;
     }
 
-    for(let prop in Object.keys(obj))
+    for(let prop of Object.keys(obj))
     {
         if(!val.hasOwnProperty(prop))
         {
+            console.log(prop)
             return false;
         }
     }
