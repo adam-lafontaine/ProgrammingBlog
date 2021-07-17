@@ -6,6 +6,7 @@ export function getDefaultState(): State
         post_list: [],
         selected_post: null,
 
+        error: null,
     }
 
     return s
