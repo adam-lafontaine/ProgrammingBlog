@@ -1,15 +1,20 @@
 <style lang="scss"></style>
 
 <template>
-    <div class="text-center my-3">
+    <div>
         <b-button
             @click="load_post"
             >
             Load
         </b-button>
         <br>
+        <b-jumbotron
+            :header="post_title"
+            >
+
+        </b-jumbotron>
         <content-component
-            :content="loaded_content"
+            :content="content_items"
             />
     </div>
 
@@ -35,12 +40,13 @@ export default class Posts extends Vue
     @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
     @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
 
-    private loaded_content: Array<IContentItem> = [];
+    private post_title: string = "";
+    private content_items: Array<IContentItem> = [];
 
     
     private load_post(): void
     {
-        this.loaded_content = [];
+        this.content_items = [];
 
         this.ac_fetch_selected_post()
         .then(this.process_selected_post);
@@ -49,10 +55,12 @@ export default class Posts extends Vue
 
     private process_selected_post(): void
     {
+        this.post_title = this.st_selected_post.title;
+
         const content = this.st_selected_post.content;
         if(content.length === 0)
         {
-            this.loaded_content = [{ 
+            this.content_items = [{ 
                 content_type: ContentType.Text,
                 content: "post not found" 
                 }];
@@ -60,7 +68,7 @@ export default class Posts extends Vue
             return;
         }
         
-        this.loaded_content = this.st_selected_post.content;
+        this.content_items = content;
     }
 }
 </script>

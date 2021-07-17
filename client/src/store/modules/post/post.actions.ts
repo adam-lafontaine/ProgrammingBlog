@@ -38,13 +38,6 @@ const actions: Tree<State, any> = {
                 return;
             }
 
-            set_status(status = "checking response data");
-            if(response.data.success && !has_object_properties(response.data.data, empty_post))
-            {
-                report_error();
-                return;
-            }
-            
             const result = response.data as DataResult<IPost>;
 
             set_status(result.message);
@@ -53,6 +46,13 @@ const actions: Tree<State, any> = {
                 report_error();
                 return;
             }
+
+            set_status(status = "checking response data");
+            if(response.data.success && !has_object_properties(response.data.data, empty_post))
+            {
+                report_error();
+                return;
+            }            
 
             commit(Mutation.SET_SELECTED_POST, result.data);
         }
