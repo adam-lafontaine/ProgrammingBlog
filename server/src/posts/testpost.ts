@@ -5,7 +5,7 @@ const post: IPost = {
     tags: ["testing", "physics"],
     content: [
         { content_type: ContentType.Text, content: `First paragraph`},
-        { content_type: ContentType.Image, content: `http://localhost:8081/api/image/`},
+        { content_type: ContentType.Image, content: `http://localhost:8081/api/image/1`},
         { content_type: ContentType.Text, content: `Second paragraph`}
     ]
 

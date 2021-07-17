@@ -8,8 +8,8 @@
             Load
         </b-button>
         <br>
-        <content-component-base
-            :content="placeholder"
+        <content-component
+            :content="loaded_content"
             />
     </div>
 
@@ -23,23 +23,25 @@ import {
     IContentItem,
     IPost, ContentType
 } from '../store/modules/post/post.types'
-import ContentComponentBase from '../components/posts/ContentComponentBase.vue'
+import ContentComponent from '../components/posts/ContentComponent.vue'
 
 const PostModule = namespace("post_module");
 
 @Component({ components: {
-    ContentComponentBase
+    ContentComponent
 } })
 export default class Posts extends Vue
 {
     @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
     @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
 
-    private placeholder: string = "";
+    private loaded_content: Array<IContentItem> = [];
 
     
     private load_post(): void
     {
+        this.loaded_content = [];
+
         this.ac_fetch_selected_post()
         .then(this.process_selected_post);
     }
@@ -50,42 +52,15 @@ export default class Posts extends Vue
         const content = this.st_selected_post.content;
         if(content.length === 0)
         {
+            this.loaded_content = [{ 
+                content_type: ContentType.Text,
+                content: "post not found" 
+                }];
+
             return;
         }
-
-        this.placeholder = content[0].content;
-
-        let content_str = "";
-        content.forEach(x => { content_str = content_str.concat(this.build_content(x)); });
-
         
-    }
-
-
-    private build_content(item: IContentItem): string
-    {
-        switch(item.content_type)
-        {
-            case ContentType.Text:
-                return this.build_content_paragraph(item.content);
-
-            case ContentType.Image:
-                return this.build_content_image(item.content);
-        }
-
-        return "";
-    }
-
-
-    private build_content_paragraph(s: string): string
-    {
-        return `<p>${s}</p>`;
-    }
-
-
-    private build_content_image(s: string): string
-    {
-        return `<img center src=${s}></img><br>`;
+        this.loaded_content = this.st_selected_post.content;
     }
 }
 </script>
