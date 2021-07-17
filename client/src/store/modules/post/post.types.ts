@@ -32,23 +32,14 @@ export class DataResult<T>
 }
 
 
-export interface IPostState {
-    post_list: Array<string>;
-    selected_post: IPost;
-
-    error: string;
-}
-
-
-export const enum ContentItemType {
+export const enum ContentType {
     Text = 0,
     Image,
     Code,
 }
 
-
 export interface IContentItem {
-    type: ContentItemType;
+    content_type: ContentType;
     content: string;
 }
 
@@ -57,6 +48,14 @@ export interface IPost {
     title: string;
     tags: Array<string>;
     content: Array<IContentItem>;
+}
+
+
+export interface IPostState {
+    post_list: Array<string>;
+    selected_post: IPost;
+
+    error: string;
 }
 
 

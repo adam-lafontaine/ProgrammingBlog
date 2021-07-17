@@ -68,8 +68,6 @@ const actions: Tree<State, any> = {
 
 function has_object_properties(val: any, obj: object): boolean
 {
-    console.log(val);
-
     if(val === null || typeof val !== 'object')
     {
         return false;

@@ -33,6 +33,9 @@ module.exports = {
     "@typescript-eslint/no-namespace": 'warn',
     "@typescript-eslint/ban-types": 'warn',
     "no-prototype-builtins": 'warn',
+    "@typescript-eslint/no-inferrable-types": 'off',
+    "object-curly-newline": 'off',
+    "padded-blocks": 'off',
 
   }
 }

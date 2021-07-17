@@ -5,14 +5,14 @@ export class DataResult<T>
     data: T = null;
 }
 
-export const enum ContentItemType {
+export const enum ContentType {
     Text = 0,
     Image,
     Code,
 }
 
 export interface IContentItem {
-    type: ContentItemType;
+    content_type: ContentType;
     content: string;
 }
 
