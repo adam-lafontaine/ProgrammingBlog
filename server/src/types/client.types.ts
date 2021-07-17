@@ -18,6 +18,7 @@ export interface IContentItem {
 
 export interface IPost {
     title: string;
+    subtitle: string;
     tags: Array<string>;
     content: Array<IContentItem>;
 }

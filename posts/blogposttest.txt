@@ -3,4 +3,5 @@
 <text>This is the second paragraph of text
 <code>int x = 2;
 <title>Post from a file
+<subtitle>A little blurb about the post
 <tags>Math,Chemistry,Physics

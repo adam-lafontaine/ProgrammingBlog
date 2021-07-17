@@ -11,6 +11,7 @@ const post_path = "/home/adam/repos/ProgrammingBlog/posts";
 const enum Flag
 {
     Title = "<title>",
+    Subtitle = "<subtitle>",
     Tags = "<tags>",
     Text = "<text>",
     Image = "<image>",
@@ -53,6 +54,7 @@ export module post
 function parse_post(data: string): IPost
 {
     let title = "";
+    let subtitle = "";
     let tags: Array<string> = [];
     let content: Array<IContentItem> = [];
 
@@ -61,6 +63,10 @@ function parse_post(data: string): IPost
         if(line.startsWith(Flag.Title))
         {
             title = line.substr(Flag.Title.length);
+        }
+        else if(line.startsWith(Flag.Subtitle))
+        {
+            subtitle = line.substr(Flag.Subtitle.length);
         }
         else if(line.startsWith(Flag.Tags))
         {
@@ -82,6 +88,7 @@ function parse_post(data: string): IPost
 
     return {
         title: title,
+        subtitle: subtitle,
         tags: tags,
         content: content
     };

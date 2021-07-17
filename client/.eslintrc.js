@@ -36,6 +36,7 @@ module.exports = {
     "@typescript-eslint/no-inferrable-types": 'off',
     "object-curly-newline": 'off',
     "padded-blocks": 'off',
+    "no-inner-declarations": 'off'
 
   }
 }

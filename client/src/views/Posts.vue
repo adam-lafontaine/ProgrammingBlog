@@ -10,9 +10,18 @@
         <br>
         <b-jumbotron
             :header="post_title"
+            :lead="post_subtitle"
             >
 
         </b-jumbotron>
+        <div align="right">
+            <b-badge v-for="tag in post_tags" :key="tag"
+                variant="dark"
+                style="margin-right:4px;"
+                >
+                {{tag}}
+            </b-badge>
+        </div>
         <content-component
             :content="content_items"
             />
@@ -41,6 +50,8 @@ export default class Posts extends Vue
     @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
 
     private post_title: string = "";
+    private post_subtitle: string = "";
+    private post_tags: Array<string> = [];
     private content_items: Array<IContentItem> = [];
 
     
@@ -54,8 +65,10 @@ export default class Posts extends Vue
 
 
     private process_selected_post(): void
-    {
+    { 
         this.post_title = this.st_selected_post.title;
+        this.post_subtitle = this.st_selected_post.subtitle;
+        this.post_tags = this.st_selected_post.tags;
 
         const content = this.st_selected_post.content;
         if(content.length === 0)
