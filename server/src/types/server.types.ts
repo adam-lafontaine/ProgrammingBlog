@@ -45,3 +45,11 @@ export interface IResponse
     send: (payload: any) => void;
     sendFile: (filePath: string) => void;
 }
+
+// post_manifest.json
+export interface PostManifestItem
+{
+    filename: string;
+    title: string;
+    tags: Array<string>;
+}

@@ -8,18 +8,34 @@ import path from "path"
 const post_path = "/home/adam/repos/ProgrammingBlog/posts";
 
 
-const enum Flag
-{
-    Title = "<title>",
-    Subtitle = "<subtitle>",
-    Tags = "<tags>",
-    Text = "<text>",
-    Image = "<image>",
-    Code = "<code>"
-}
-
 export module post
 {
+    export function get_by_title(title: string): DataResult<IPost>
+    {
+        let result = new DataResult<IPost>();
+        let status = "";
+
+        try
+        {
+            status = "reading file";
+            const data = read_post_file("blogposttest.txt");
+
+            status = "building post";
+            const post = parse_post(data);
+
+            result.data = post;
+            result.success = true;
+            result.message = "Success";
+        }
+        catch(error: unknown)
+        {
+            result.success = false;
+            result.message = `Error: ${status}`;
+        }
+
+        return result;
+    }
+
     export function get_post(): DataResult<IPost>
     {
         let result = new DataResult<IPost>();
@@ -28,8 +44,7 @@ export module post
         try
         {
             status = "reading file";
-            const file_path = path.join(post_path, "blogposttest.txt");
-            const data = fs.readFileSync(file_path, "utf8");
+            const data = read_post_file("blogposttest.txt");
 
             status = "building post";
             const post = parse_post(data);
@@ -48,6 +63,26 @@ export module post
     }
 
 
+}
+
+
+function read_post_file(filename: string): string
+{
+    const file_path = path.join(post_path, filename);
+    const data = fs.readFileSync(file_path, "utf8");
+
+    return data;
+}
+
+
+const enum Flag
+{
+    Title = "<title>",
+    Subtitle = "<subtitle>",
+    Tags = "<tags>",
+    Text = "<text>",
+    Image = "<image>",
+    Code = "<code>"
 }
 
 

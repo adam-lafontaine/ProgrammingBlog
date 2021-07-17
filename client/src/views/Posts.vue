@@ -12,7 +12,6 @@
             :header="post_title"
             :lead="post_subtitle"
             >
-
         </b-jumbotron>
         <div align="right">
             <b-badge v-for="tag in post_tags" :key="tag"
@@ -53,7 +52,6 @@ export default class Posts extends Vue
     private post_subtitle: string = "";
     private post_tags: Array<string> = [];
     private content_items: Array<IContentItem> = [];
-
     
     private load_post(): void
     {

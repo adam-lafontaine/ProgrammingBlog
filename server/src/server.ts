@@ -23,17 +23,11 @@ const port = 8081; // default port to listen
 app.get("/", hc.home);
 
 // api routes
-app.get("/api/props", hc.request_props);
 
 app.get("/api/post", hc.get_post);
 
-app.get("/api/:id", hc.try_echo);
 
 app.get("/api/image/:id", mc.send_image);
-
-
-
-app.post("/update", hc.update_data);
 
 
 // start the Express server
