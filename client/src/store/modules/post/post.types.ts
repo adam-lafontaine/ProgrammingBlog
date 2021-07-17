@@ -6,6 +6,7 @@ export const enum PostAction {
 
 
 export const enum PostGet {
+    GET_POST_LIST = "getPostList",
     GET_SELECTED_POST = "getSelectedPost",
 
     GET_ERROR = "getError"
@@ -13,6 +14,7 @@ export const enum PostGet {
 
 
 export const enum PostMutation {
+    SET_POST_LIST = "setPostList",
     SET_SELECTED_POST = "setSelectedPost",
 
     SET_ERROR = "setError"

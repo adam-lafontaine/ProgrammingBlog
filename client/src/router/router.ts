@@ -10,6 +10,7 @@ const routes: Array<RouteConfig> = [
     name: 'Home',
     component: Home
   },
+
   {
     path: '/about',
     name: 'About',
@@ -18,6 +19,18 @@ const routes: Array<RouteConfig> = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
+
+  {
+    path: '',
+    name: '',
+    component: () => import('')
+  },
+
+
+
+
+
+
   {
     path: '/test',
     name: 'Test',

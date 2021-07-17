@@ -1,12 +1,16 @@
-import { IPostState as State } from './post.types'
+import { 
+    IPostState as State,
+    Make,
+
+} from './post.types'
 
 export function getDefaultState(): State
 {
     const s: State = {
         post_list: [],
-        selected_post: null,
+        selected_post: Make.post(),
 
-        error: null,
+        error: "",
     }
 
     return s
