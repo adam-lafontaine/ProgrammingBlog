@@ -1,7 +1,8 @@
 import { 
     DataResult, 
     IPost,IContentItem, ContentType
-} from "../types/client.types";
+} from "../types/client.types"
+import { IPostManifestItem } from "../types/server.types"
 import fs from "fs"
 import path from "path"
 
@@ -17,8 +18,20 @@ export module post
 
         try
         {
+            status = "reading manifest";
+            const post_data = read_post_manifest();
+
+            status = "finding post title";
+            const item = post_data.find(x => x.title === title);
+            if(item == null)
+            {
+                result.success = false;
+                result.message = `Post '${title}' not found`;
+                return result;
+            }
+
             status = "reading file";
-            const data = read_post_file("blogposttest.txt");
+            const data = read_post_file(item.filename);
 
             status = "building post";
             const post = parse_post(data);
@@ -63,6 +76,17 @@ export module post
     }
 
 
+}
+
+
+function read_post_manifest(): Array<IPostManifestItem>
+{
+    const file_path = path.join(post_path, "post_manifest.json");
+    const data = fs.readFileSync(file_path, "utf8");
+
+    const json = JSON.parse(data);
+
+    return json.posts as Array<IPostManifestItem>;
 }
 
 

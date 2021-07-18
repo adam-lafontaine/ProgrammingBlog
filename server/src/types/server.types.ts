@@ -47,7 +47,7 @@ export interface IResponse
 }
 
 // post_manifest.json
-export interface PostManifestItem
+export interface IPostManifestItem
 {
     filename: string;
     title: string;
