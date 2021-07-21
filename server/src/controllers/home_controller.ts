@@ -15,6 +15,7 @@ export module hc
     }
 
 
+    // testing
     export function try_echo(req: IRequest, res: IResponse): void
     {
         if(!req.params.id)
@@ -55,12 +56,6 @@ export module hc
         const payload = update_something(data);
 
         res.send(payload);
-    }
-
-
-    export function get_post(req: IRequest, res: IResponse): void
-    {
-        res.send(post.get_by_title("Post from a file"));
     }
 
 }

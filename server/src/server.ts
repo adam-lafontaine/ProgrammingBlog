@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors" // https://expressjs.com/en/resources/middleware/cors.html
-import path from "path"
 import { hc } from "./controllers/home_controller";
+import { pc } from "./controllers/post_controller";
 import { mc } from "./controllers/media_controller"
 
 
@@ -24,7 +24,7 @@ app.get("/", hc.home);
 
 // api routes
 
-app.get("/api/post", hc.get_post);
+app.get("/api/post", pc.send_post);
 
 
 app.get("/api/image/:id", mc.send_image);

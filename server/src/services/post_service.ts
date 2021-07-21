@@ -67,16 +67,16 @@ function to_post_info(filename: string): IPostInfo
 {
     let begin = filename.indexOf("[") + 1;
     let end = filename.indexOf("]", begin);
-    let timestamp = filename.substring(begin, end);
+    const timestamp = filename.substring(begin, end);
 
     begin = filename.indexOf("[", end) + 1;
     end = filename.indexOf("]", begin);
-    let title = filename.substring(begin, end);
+    const title = filename.substring(begin, end);
 
     begin = filename.indexOf("[", end) + 1;
     end = filename.indexOf("]", begin);
-    let tag_csv = filename.substring(begin, end);
-    let tags = tag_csv.split(",");
+    const tag_csv = filename.substring(begin, end);
+    const tags = tag_csv.split(",");
 
     return {
         filename: filename,

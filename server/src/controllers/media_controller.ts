@@ -1,9 +1,5 @@
-import { IRequest, IResponse } from "../types/server.types";
-import { DataResult } from "../types/client.types";
-import path from "path"
-
-const media_path = "/home/adam/repos/ProgrammingBlog/media";
-const error_image = path.join(media_path, "x.jpg");
+import { IRequest, IResponse } from "../types/server.types"
+import { media } from "../services/media_service"
 
 export module mc
 {
@@ -11,17 +7,13 @@ export module mc
     {
         if(!req.params.id)
         {
-            res.sendFile(error_image);
+            res.sendFile("error.jpg");
             return;
         }
 
-        const image_path = get_image_path(req.params.id);
+        const image_path = media.get_image_path(req.params.id);
         res.sendFile(image_path);
     }
 }
 
 
-function get_image_path(id: string): string
-{
-    return path.join(media_path, "corvette.jpg");
-}
