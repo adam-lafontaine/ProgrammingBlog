@@ -1,9 +1,0 @@
-{
-    "posts": [
-        {
-            "filename": "blogposttest.txt",
-            "title": "Post from a file",
-            "tags": [ "Math", "Physics", "Chemistry" ]
-        }
-    ]
-}

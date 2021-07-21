@@ -60,7 +60,7 @@ export module hc
 
     export function get_post(req: IRequest, res: IResponse): void
     {
-        res.send(post.get_post());
+        res.send(post.get_by_title("Post from a file"));
     }
 
 }

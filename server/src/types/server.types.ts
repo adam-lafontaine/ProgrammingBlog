@@ -46,10 +46,11 @@ export interface IResponse
     sendFile: (filePath: string) => void;
 }
 
-// post_manifest.json
-export interface IPostManifestItem
+export interface IPostInfo
 {
-    filename: string;
+    filename: string; // "[timestamp][title][tags]"
+    timestamp: string;
     title: string;
     tags: Array<string>;
+
 }

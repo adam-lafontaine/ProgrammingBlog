@@ -2,7 +2,7 @@ import {
     DataResult, 
     IPost,IContentItem, ContentType
 } from "../types/client.types"
-import { IPostManifestItem } from "../types/server.types"
+import { IPostInfo } from "../types/server.types"
 import fs from "fs"
 import path from "path"
 
@@ -18,8 +18,8 @@ export module post
 
         try
         {
-            status = "reading manifest";
-            const post_data = read_post_manifest();
+            status = "locating posts";
+            const post_data = get_post_info();
 
             status = "finding post title";
             const item = post_data.find(x => x.title === title);
@@ -48,45 +48,42 @@ export module post
 
         return result;
     }
-
-    export function get_post(): DataResult<IPost>
-    {
-        let result = new DataResult<IPost>();
-        let status = "";
-
-        try
-        {
-            status = "reading file";
-            const data = read_post_file("blogposttest.txt");
-
-            status = "building post";
-            const post = parse_post(data);
-
-            result.data = post;
-            result.success = true;
-            result.message = "Success";
-        }
-        catch(error: unknown)
-        {
-            result.success = false;
-            result.message = `Error: ${status}`;
-        }
-
-        return result;
-    }
-
-
 }
 
 
-function read_post_manifest(): Array<IPostManifestItem>
+function get_post_info(): Array<IPostInfo>
 {
-    const file_path = path.join(post_path, "post_manifest.json");
-    const data = fs.readFileSync(file_path, "utf8");
+    const files = fs.readdirSync(post_path);
 
-    const json = JSON.parse(data);
+    // "[timestamp][title][tags]"
+    // TODO: validate with regex
+    const is_valid = (s: string) => { return true; };
 
-    return json.posts as Array<IPostManifestItem>;
+    return files.filter(x => is_valid(x)).map(x => to_post_info(x));
+}
+
+
+function to_post_info(filename: string): IPostInfo
+{
+    let begin = filename.indexOf("[") + 1;
+    let end = filename.indexOf("]", begin);
+    let timestamp = filename.substring(begin, end);
+
+    begin = filename.indexOf("[", end) + 1;
+    end = filename.indexOf("]", begin);
+    let title = filename.substring(begin, end);
+
+    begin = filename.indexOf("[", end) + 1;
+    end = filename.indexOf("]", begin);
+    let tag_csv = filename.substring(begin, end);
+    let tags = tag_csv.split(",");
+
+    return {
+        filename: filename,
+        timestamp: timestamp,
+        title : title,
+        tags: tags
+    };
 }
 
 
