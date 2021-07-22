@@ -1,8 +1,32 @@
 <style lang="scss"></style>
 
 <template>
-<post-component/>
-
+<div>
+    <b-jumbotron
+        :header="post_title"
+        :lead="post_subtitle"
+        >
+    </b-jumbotron>
+    <div align="right">
+        <b-badge v-for="tag in post_tags" :key="tag"
+            variant="dark"
+            style="margin-right:4px;"
+            >
+            {{tag}}
+        </b-badge>
+    </div>
+    <div v-for="item in content" :key="item.content"
+        style="margin-top:30px;"
+        >
+        <p v-if="item.content_type === text_type">
+            {{item.content}}
+        </p>
+        <b-img-lazy v-if="item.content_type === image_type"
+            :src="item.content"
+            blank-color="black" >
+        </b-img-lazy>
+    </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -12,25 +36,23 @@ import {
     PostAction, PostGet,
     IContentItem,
     IPost, ContentType
-} from '../store/modules/post/post.types'
-import PostComponent from '../components/posts/PostComponent.vue'
+} from '../../store/modules/post/post.types'
 
 const PostModule = namespace("post_module");
 
-@Component({ components: {
-    PostComponent
-} })
-export default class Posts extends Vue
+@Component({ components: {} })
+export default class PostComponent extends Vue
 {
-    @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
     @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
+    @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
 
     private post_title: string = "";
     private post_subtitle: string = "";
     private post_tags: Array<string> = [];
     private content_items: Array<IContentItem> = [];
     
-    private load_post(): void
+
+    private mounted(): void
     {
         this.content_items = [];
 
@@ -58,5 +80,7 @@ export default class Posts extends Vue
         
         this.content_items = content;
     }
+
 }
+
 </script>

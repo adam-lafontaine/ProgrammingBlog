@@ -3,6 +3,7 @@ import {
     IPost,IContentItem, ContentType
 } from "../types/client.types"
 import { IPostFileInfo } from "../types/server.types"
+import { IPostInfo } from "../types/client.types"
 import fs from "fs"
 import path from "path"
 
@@ -98,7 +99,7 @@ export module post
 
             result.success = true;
             result.message = "Success";
-            result.data = all_posts.sort(desc); // nope
+            result.data = all_posts.sort(desc).map(x => to_post_info(x));
         }
         catch(error: unknown)
         {
@@ -143,6 +144,16 @@ function to_post_file_info(filename: string): IPostFileInfo
         timestamp: timestamp,
         title : title,
         tags: tags
+    };
+}
+
+
+function to_post_info(file_info: IPostFileInfo): IPostInfo
+{
+    return {
+        id: file_info.timestamp,
+        title: file_info.title,
+        tags: file_info.tags
     };
 }
 

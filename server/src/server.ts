@@ -24,6 +24,7 @@ app.get("/", hc.home);
 
 // api routes
 
+app.get("/api/post/list", pc.send_post_list);
 app.get("/api/post/:id", pc.send_post);
 
 

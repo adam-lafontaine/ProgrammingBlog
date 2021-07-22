@@ -24,3 +24,8 @@ export interface IPost {
     content: Array<IContentItem>;
 }
 
+export interface IPostInfo {
+    id: string;
+    title: string;
+    tags: Array<string>;    
+}

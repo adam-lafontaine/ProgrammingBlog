@@ -54,7 +54,7 @@ export interface IPost {
 
 
 export interface IPostInfo {
-    timestamp: string;
+    id: string;
     title: string;
     tags: Array<string>;    
 }
