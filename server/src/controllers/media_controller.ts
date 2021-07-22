@@ -7,12 +7,17 @@ export module mc
     {
         if(!req.params.id)
         {
-            res.sendFile("error.jpg");
+            res.send("error");
             return;
         }
 
-        const image_path = media.get_image_path(req.params.id);
-        res.sendFile(image_path);
+        const result = media.get_image_path(req.params.id);
+        if(!result.success)
+        {
+            res.send(result.message);
+        }
+
+        res.sendFile(result.data);
     }
 }
 

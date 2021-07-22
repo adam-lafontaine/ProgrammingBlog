@@ -7,6 +7,7 @@ import fs from "fs"
 import path from "path"
 
 const post_path = "/home/adam/repos/ProgrammingBlog/posts";
+const image_url = "http://localhost:8081/api/image";
 
 
 export module post
@@ -159,7 +160,7 @@ function add_text_content(s: string, content: Array<IContentItem>): void
 
 function add_image_content(s: string, content: Array<IContentItem>): void
 {
-    content.push({ content_type: ContentType.Image, content: s });
+    content.push({ content_type: ContentType.Image, content: `${image_url}/${s}` });
 }
 
 

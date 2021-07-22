@@ -1,3 +1,4 @@
+import { DataResult } from "../types/client.types"
 import path from "path"
 import fs from "fs"
 
@@ -6,49 +7,48 @@ const image_ext = ".jpg";
 
 export module media
 {
-    export function get_image_path(id: string): string
+    export function get_image_path(id: string): DataResult<string>
     {
-        //1626830000
-        // TODO: validate with regex
+        let result = new DataResult<string>();
+        let status = "";
+
+        status = "validating image id";
         const timestamp = /^\d{10}$/;
         if(!id.match(timestamp))
         {
-            return "invalid-id.jpg";
+            result.success = false;
+            result.message = "invalid image id";
+            return result;
         }
-
-        let status = "";
-        let image_path = "";
 
         try
         {
-            status = "getting image";
-            image_path = get_file_path(id);
+            status = "searching images";
+            const files = fs.readdirSync(media_path).filter(x => path.extname(x) === image_ext);
+            if(files.length === 0)
+            {
+                result.success = false;
+                result.message = "No images found";
+            }
 
-            console.log(image_path)
+            status = "searching for image";
+            const file = files.find(x => x.startsWith(id));
+            if(file == null)
+            {
+                result.success = false;
+                result.message = `Image id ${id} not found`;
+            }
+
+            result.success = true;
+            result.message = "Success";
+            result.data = path.join(media_path, file);
         }
         catch(error: unknown)
         {
-            image_path = `error-${status.replace(/\s/g, "")}.jpg`;
+            result.success = false;
+            result.message = `Error: ${status}`;
         }
 
-        return image_path;
+        return result;
     }
-}
-
-
-function get_file_path(timestamp: string): string
-{
-    const files = fs.readdirSync(media_path).filter(x => path.extname(x) === image_ext);
-    if(files.length === 0)
-    {
-        return "no-image-files.jpg";
-    }
-
-    const file = files.find(x => x.startsWith(timestamp));
-    if(file == null)
-    {
-        return "file-not-found.jpg";
-    }
-
-    return path.join(media_path, file);
 }
