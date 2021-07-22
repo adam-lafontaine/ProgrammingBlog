@@ -22,4 +22,10 @@ export module pc
 
         res.send(post.get_by_title("Post from a file"));
     }
+
+
+    export function send_post_list(req: IRequest, res: IResponse): void
+    {
+        res.send(post.get_list());
+    }
 }

@@ -17,8 +17,10 @@ export interface IContentItem {
 }
 
 export interface IPost {
+    id: string;
     title: string;
     subtitle: string;
     tags: Array<string>;
     content: Array<IContentItem>;
 }
+

@@ -45,10 +45,18 @@ export interface IContentItem {
 
 
 export interface IPost {
+    id: string;
     title: string;
     subtitle: string;
     tags: Array<string>;
     content: Array<IContentItem>;
+}
+
+
+export interface IPostInfo {
+    timestamp: string;
+    title: string;
+    tags: Array<string>;    
 }
 
 
@@ -65,6 +73,7 @@ export module Make
     export function post(): IPost
     {
         return {
+            id: "",
             title: "",
             subtitle: "",
             tags: [],

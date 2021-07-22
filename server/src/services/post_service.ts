@@ -2,7 +2,7 @@ import {
     DataResult, 
     IPost,IContentItem, ContentType
 } from "../types/client.types"
-import { IPostInfo } from "../types/server.types"
+import { IPostFileInfo } from "../types/server.types"
 import fs from "fs"
 import path from "path"
 
@@ -32,10 +32,7 @@ export module post
             }
 
             status = "reading file";
-            const data = read_post_file(item.filename);
-
-            status = "building post";
-            const post = parse_post(data);
+            const post = read_post_file(item.filename);
 
             result.data = post;
             result.success = true;
@@ -71,10 +68,7 @@ export module post
             }
 
             status = "reading file";
-            const data = read_post_file(item.filename);
-
-            status = "building post";
-            const post = parse_post(data);
+            const post = read_post_file(item.filename);
 
             result.data = post;
             result.success = true;
@@ -88,10 +82,36 @@ export module post
 
         return result;
     }
+
+
+    export function get_list(): DataResult<Array<IPostInfo>>
+    {
+        let result = new DataResult<Array<IPostInfo>>();
+        let status = "";
+
+        let desc = (a: IPostFileInfo, b: IPostFileInfo) => { return a.timestamp < b.timestamp ? 1 : -1; };
+
+        try
+        {
+            status = "getting post info";
+            const all_posts = get_post_info();
+
+            result.success = true;
+            result.message = "Success";
+            result.data = all_posts.sort(desc); // nope
+        }
+        catch(error: unknown)
+        {
+            result.success = false;
+            result.message = `Error: ${status}`;
+        }
+
+        return result;
+    }
 }
 
 
-function get_post_info(): Array<IPostInfo>
+function get_post_info(): Array<IPostFileInfo>
 {
     const files = fs.readdirSync(post_path);
 
@@ -99,11 +119,11 @@ function get_post_info(): Array<IPostInfo>
     // TODO: validate with regex
     const is_valid = (s: string) => { return true; };
 
-    return files.filter(x => is_valid(x)).map(x => to_post_info(x));
+    return files.filter(x => is_valid(x)).map(x => to_post_file_info(x));
 }
 
 
-function to_post_info(filename: string): IPostInfo
+function to_post_file_info(filename: string): IPostFileInfo
 {
     let begin = filename.indexOf("[") + 1;
     let end = filename.indexOf("]", begin);
@@ -127,46 +147,30 @@ function to_post_info(filename: string): IPostInfo
 }
 
 
-function read_post_file(filename: string): string
-{
-    const file_path = path.join(post_path, filename);
-    const data = fs.readFileSync(file_path, "utf8");
-
-    return data;
-}
-
-
 const enum Flag
 {
-    Title = "<title>",
     Subtitle = "<subtitle>",
-    Tags = "<tags>",
     Text = "<text>",
     Image = "<image>",
     Code = "<code>"
 }
 
 
-function parse_post(data: string): IPost
+function read_post_file(filename: string): IPost
 {
-    let title = "";
+    const info = to_post_file_info(filename);
+    
     let subtitle = "";
-    let tags: Array<string> = [];
     let content: Array<IContentItem> = [];
+
+    const file_path = path.join(post_path, filename);
+    const data = fs.readFileSync(file_path, "utf8");
 
     for(const line of data.split("\n"))
     {
-        if(line.startsWith(Flag.Title))
-        {
-            title = line.substr(Flag.Title.length);
-        }
-        else if(line.startsWith(Flag.Subtitle))
+        if(line.startsWith(Flag.Subtitle))
         {
             subtitle = line.substr(Flag.Subtitle.length);
-        }
-        else if(line.startsWith(Flag.Tags))
-        {
-            tags = line.substr(Flag.Tags.length).split(",");
         }
         else if(line.startsWith(Flag.Text))
         {
@@ -183,9 +187,10 @@ function parse_post(data: string): IPost
     }
 
     return {
-        title: title,
+        id: info.timestamp,
+        title: info.title,
         subtitle: subtitle,
-        tags: tags,
+        tags: info.tags,
         content: content
     };
 }
@@ -206,4 +211,10 @@ function add_image_content(s: string, content: Array<IContentItem>): void
 function add_code_content(s: string, content: Array<IContentItem>): void
 {
     content.push({ content_type: ContentType.Code, content: s });
+}
+
+
+function to_kebab(s: string): string
+{
+    return s.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 }

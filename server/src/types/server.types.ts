@@ -46,11 +46,10 @@ export interface IResponse
     sendFile: (filePath: string) => void;
 }
 
-export interface IPostInfo
+export interface IPostFileInfo
 {
     filename: string; // "[timestamp][title][tags]"
     timestamp: string;
     title: string;
     tags: Array<string>;
-
 }

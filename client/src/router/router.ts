@@ -33,6 +33,12 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/Posts.vue")
   },
 
+  {
+    path: '/posts/:title_kebab',
+    name: 'Posts',
+    component: () => import("../views/Posts.vue")
+  },
+
 
 
 
