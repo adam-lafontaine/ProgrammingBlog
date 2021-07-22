@@ -32,7 +32,7 @@ export module media
             }
 
             status = "searching for image";
-            const file = files.find(x => x.startsWith(id));
+            const file = files.find(x => get_image_id(x) === id);
             if(file == null)
             {
                 result.success = false;
@@ -51,4 +51,12 @@ export module media
 
         return result;
     }
+}
+
+
+function get_image_id(filename: string): string
+{
+    let begin = filename.indexOf("[") + 1;
+    let end = filename.indexOf("]", begin);
+    return filename.substring(begin, end);
 }
