@@ -15,7 +15,7 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_SELECTED_POST]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + "/post";
+        const url = ENTRY_ROUTE + "/post/1626830344";
         const empty_post = Make.post();
         let status = "";
 
@@ -47,7 +47,7 @@ const actions: Tree<State, any> = {
                 return;
             }
 
-            set_status(status = "checking response data");
+            set_status("checking response data");
             if(response.data.success && !has_object_properties(response.data.data, empty_post))
             {
                 report_error();

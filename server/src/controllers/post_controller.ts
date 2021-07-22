@@ -8,6 +8,18 @@ export module pc
 {
     export function send_post(req: IRequest, res: IResponse): void
     {
+        if(!req.params.id)
+        {
+            const result: DataResult<any> = {
+                success: false,
+                message: "No post id provided",
+                data: {}
+            };
+
+            res.send(result);
+            return;
+        }
+
         res.send(post.get_by_title("Post from a file"));
     }
 }

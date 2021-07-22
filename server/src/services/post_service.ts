@@ -12,6 +12,45 @@ const image_url = "http://localhost:8081/api/image";
 
 export module post
 {
+    export function get_by_id(id: string): DataResult<IPost>
+    {
+        let result = new DataResult<IPost>();
+        let status = "";
+
+        try
+        {
+            status = "locating posts";
+            const post_data = get_post_info();
+
+            status = "finding post id";
+            const item = post_data.find(x => x.timestamp === id);
+            if(item == null)
+            {
+                result.success = false;
+                result.message = `Post id '${id}' not found`;
+                return result;
+            }
+
+            status = "reading file";
+            const data = read_post_file(item.filename);
+
+            status = "building post";
+            const post = parse_post(data);
+
+            result.data = post;
+            result.success = true;
+            result.message = "Success";
+        }
+        catch(error: unknown)
+        {
+            result.success = false;
+            result.message = `Error: ${status}`;
+        }
+
+        return result;
+    }
+
+
     export function get_by_title(title: string): DataResult<IPost>
     {
         let result = new DataResult<IPost>();
