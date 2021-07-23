@@ -45,6 +45,7 @@ const PostModule = namespace("post_module");
 export default class PostComponent extends Vue
 {
     @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
+    @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
     @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
@@ -62,18 +63,18 @@ export default class PostComponent extends Vue
     {
         this.content_items = [];
 
-        const kebab = this.$route.params.title_kebab;
+        const loaded_from_url = this.st_post_list.length === 0;
 
-        console.log(kebab)
-
-        const selected_item = this.st_post_list.find(x => x.route === kebab);
-        if(selected_item == null)
+        if(loaded_from_url)
         {
-            return;
-        }        
-
-        this.ac_fetch_selected_post(selected_item.id)
-        .then(this.process_selected_post);
+            this.ac_fetch_post_list()
+            .then(this.load_post);
+        }
+        else
+        {
+            this.load_post();
+        }
+        
     }
 
 
@@ -95,6 +96,18 @@ export default class PostComponent extends Vue
         }
         
         this.content_items = content;
+    }
+
+
+    private load_post(): void
+    {
+        const kebab = this.$route.params.title_kebab;
+        const selected_item = this.st_post_list.find(x => x.route === kebab);
+
+        console.log(kebab)
+
+        this.ac_fetch_selected_post(selected_item.id)
+        .then(this.process_selected_post);
     }
 
 }
