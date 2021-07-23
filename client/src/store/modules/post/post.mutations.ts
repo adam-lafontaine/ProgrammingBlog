@@ -2,14 +2,14 @@ import { MutationTree as Tree } from 'vuex'
 import {
     PostMutation as Mutation,
     IPostState as State,
-    IPost
+    IPost, IPostInfo
 
 } from './post.types'
 import { getDefaultState } from './post.state'
 
 const mutations: Tree<State> = {
 
-    [Mutation.SET_POST_LIST](state: State, list: Array<string>): void
+    [Mutation.SET_POST_LIST](state: State, list: Array<IPostInfo>): void
     {
         state.post_list = list;
     },

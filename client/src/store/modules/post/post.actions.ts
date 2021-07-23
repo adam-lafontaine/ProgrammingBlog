@@ -5,7 +5,7 @@ import {
     PostMutation as Mutation,
     IPostState as State,
     DataResult,
-    IPost,
+    IPost, IPostInfo,
     Make
 } from './post.types'
 
@@ -13,7 +13,57 @@ const ENTRY_ROUTE = "http://localhost:8081/api"
 
 const actions: Tree<State, any> = {
 
-    async [Action.FETCH_SELECTED_POST]({ commit, state }): Promise<any>
+    async [Action.FETCH_POST_LIST]({ commit, state }): Promise<any>
+    {
+        const url = ENTRY_ROUTE + "/post/list";
+        let status = "";
+
+        const set_status = (s: string) => { status = `FETCH_POST_LIST ${s}`; };
+        const report_error = () => 
+        { 
+            console.error(status);
+            commit(Mutation.SET_POST_LIST, []);
+        };
+
+        try
+        {
+            set_status("fetching post list");
+            const response = await axios.get(url);
+
+            status = "checking response type";
+            if(!is_DataResult(response.data))
+            {
+                report_error();
+                return;
+            }
+
+            const result = response.data as DataResult<IPostInfo>;
+
+            set_status(result.message);
+            if(!result.success)
+            {
+                report_error();
+                return;
+            }
+
+            if(!Array.isArray(response.data.data))
+            {
+                report_error();
+                return;
+            }
+
+            commit(Mutation.SET_POST_LIST, result.data);
+        }
+        catch(error: unknown)
+        {
+            console.error(error);
+            commit(Mutation.SET_POST_LIST, []);
+        }
+
+    },
+
+
+    async [Action.FETCH_SELECTED_POST]({ commit, state }, post_id: string): Promise<any>
     {
         const url = ENTRY_ROUTE + "/post/1626830344";
         const empty_post = Make.post();
@@ -29,7 +79,7 @@ const actions: Tree<State, any> = {
         try
         {
             set_status("fetching blog post");
-            const response = await axios.get(url);            
+            const response = await axios.get(url);
             
             status = "checking response type";
             if(!is_DataResult(response.data))
@@ -48,11 +98,11 @@ const actions: Tree<State, any> = {
             }
 
             set_status("checking response data");
-            if(response.data.success && !has_object_properties(response.data.data, empty_post))
+            if(!has_object_properties(response.data.data, empty_post))
             {
                 report_error();
                 return;
-            }            
+            }     
 
             commit(Mutation.SET_SELECTED_POST, result.data);
         }

@@ -1,6 +1,7 @@
 //======= FUNCTION ENUMS ======================
 
 export const enum PostAction {
+    FETCH_POST_LIST = "fetchPostList",
     FETCH_SELECTED_POST = "fetchSelectedPost",
 }
 
@@ -61,7 +62,7 @@ export interface IPostInfo {
 
 
 export interface IPostState {
-    post_list: Array<string>;
+    post_list: Array<IPostInfo>;
     selected_post: IPost;
 
     error: string;

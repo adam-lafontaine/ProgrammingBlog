@@ -15,7 +15,7 @@
             {{tag}}
         </b-badge>
     </div>
-    <div v-for="item in content" :key="item.content"
+    <div v-for="item in content_items" :key="item.content"
         style="margin-top:30px;"
         >
         <p v-if="item.content_type === text_type">
@@ -32,6 +32,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { Action, Getter, namespace } from 'vuex-class'
+import VueRouter from 'vue-router';
 import { 
     PostAction, PostGet,
     IContentItem,
@@ -46,6 +47,10 @@ export default class PostComponent extends Vue
     @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
     @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
 
+    private readonly text_type: number = ContentType.Text;
+    private readonly image_type: number = ContentType.Image;
+    private readonly code_type: number = ContentType.Code;
+
     private post_title: string = "";
     private post_subtitle: string = "";
     private post_tags: Array<string> = [];
@@ -55,6 +60,10 @@ export default class PostComponent extends Vue
     private mounted(): void
     {
         this.content_items = [];
+
+        const kebab = this.$route.params.title_kebab;
+
+        console.log(kebab)
 
         this.ac_fetch_selected_post()
         .then(this.process_selected_post);

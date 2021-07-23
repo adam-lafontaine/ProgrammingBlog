@@ -1,7 +1,7 @@
 <style lang="scss"></style>
 
 <template>
-<post-component/>
+<post-list-component/>
 
 </template>
 
@@ -14,11 +14,13 @@ import {
     IPost, ContentType
 } from '../store/modules/post/post.types'
 import PostComponent from '../components/posts/PostComponent.vue'
+import PostListComponent from '../components/posts/PostListComponent.vue'
 
 const PostModule = namespace("post_module");
 
 @Component({ components: {
-    PostComponent
+    PostComponent,
+    PostListComponent
 } })
 export default class Posts extends Vue
 {
