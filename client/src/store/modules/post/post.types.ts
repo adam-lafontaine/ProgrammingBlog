@@ -57,7 +57,8 @@ export interface IPost {
 export interface IPostInfo {
     id: string;
     title: string;
-    tags: Array<string>;    
+    tags: Array<string>;
+    route: string; 
 }
 
 

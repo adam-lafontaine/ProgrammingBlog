@@ -65,7 +65,7 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_SELECTED_POST]({ commit, state }, post_id: string): Promise<any>
     {
-        const url = ENTRY_ROUTE + "/post/1626830344";
+        const url = ENTRY_ROUTE + `/post/${post_id}`;
         const empty_post = Make.post();
         let status = "";
 

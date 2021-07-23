@@ -20,7 +20,7 @@ export module pc
             return;
         }
 
-        res.send(post.get_by_title("Post from a file"));
+        res.send(post.get_by_id(req.params.id));
     }
 
 

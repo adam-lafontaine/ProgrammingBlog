@@ -153,7 +153,8 @@ function to_post_info(file_info: IPostFileInfo): IPostInfo
     return {
         id: file_info.timestamp,
         title: file_info.title,
-        tags: file_info.tags
+        tags: file_info.tags,
+        route: to_kebab(file_info.title)
     };
 }
 

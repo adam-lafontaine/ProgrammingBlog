@@ -36,7 +36,7 @@ import VueRouter from 'vue-router';
 import { 
     PostAction, PostGet,
     IContentItem,
-    IPost, ContentType
+    IPost, ContentType, IPostInfo
 } from '../../store/modules/post/post.types'
 
 const PostModule = namespace("post_module");
@@ -46,6 +46,7 @@ export default class PostComponent extends Vue
 {
     @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
     @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
+    @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
     private readonly text_type: number = ContentType.Text;
     private readonly image_type: number = ContentType.Image;
@@ -65,7 +66,13 @@ export default class PostComponent extends Vue
 
         console.log(kebab)
 
-        this.ac_fetch_selected_post()
+        const selected_item = this.st_post_list.find(x => x.route === kebab);
+        if(selected_item == null)
+        {
+            return;
+        }        
+
+        this.ac_fetch_selected_post(selected_item.id)
         .then(this.process_selected_post);
     }
 
