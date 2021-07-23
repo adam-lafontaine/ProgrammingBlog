@@ -16,7 +16,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 
     'no-trailing-spaces': 'warn',
-    'semi': 'warn',
+    'semi': 'off',
     'quotes': 'off',
     'object-curly-spacing': 'warn',
     'brace-style': 'off',
@@ -29,14 +29,17 @@ module.exports = {
     'spaced-comment': 'off',
     'comma-dangle': 'off',
     'no-multiple-empty-lines': 'warn',
-    "@typescript-eslint/prefer-namespace-keyword": 'off',
-    "@typescript-eslint/no-namespace": 'warn',
-    "@typescript-eslint/ban-types": 'warn',
-    "no-prototype-builtins": 'warn',
-    "@typescript-eslint/no-inferrable-types": 'off',
     "object-curly-newline": 'off',
     "padded-blocks": 'off',
-    "no-inner-declarations": 'off'
+    "no-inner-declarations": 'off',
+    "no-prototype-builtins": 'warn',
+    'no-multiple-empty-lines': 'off',
+    "@typescript-eslint/prefer-namespace-keyword": 'off',
+    "@typescript-eslint/no-namespace": 'warn',
+    "@typescript-eslint/ban-types": 'warn',    
+    "@typescript-eslint/no-inferrable-types": 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+    
 
   }
 }

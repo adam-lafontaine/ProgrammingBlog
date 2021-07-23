@@ -32,8 +32,8 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { Action, Getter, namespace } from 'vuex-class'
-import VueRouter from 'vue-router';
-import { 
+import VueRouter from 'vue-router'
+import {
     PostAction, PostGet,
     IContentItem,
     IPost, ContentType, IPostInfo
@@ -104,10 +104,15 @@ export default class PostComponent extends Vue
         const kebab = this.$route.params.title_kebab;
         const selected_item = this.st_post_list.find(x => x.route === kebab);
 
-        console.log(kebab)
-
-        this.ac_fetch_selected_post(selected_item.id)
-        .then(this.process_selected_post);
+        if(selected_item == null)
+        {
+            // post not found
+        }
+        else
+        {
+            this.ac_fetch_selected_post(selected_item.id)
+            .then(this.process_selected_post);
+        }
     }
 
 }
