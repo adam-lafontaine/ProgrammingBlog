@@ -15,17 +15,11 @@
             {{tag}}
         </b-badge>
     </div>
-    <div v-for="item in content_items" :key="item.content"
-        style="margin-top:30px;"
-        >
-        <p v-if="item.content_type === text_type">
-            {{item.content}}
-        </p>
-        <b-img-lazy v-if="item.content_type === image_type"
-            :src="item.content"
-            blank-color="black" >
-        </b-img-lazy>
-    </div>
+
+    <div
+        :id="CONTENT_ID"
+        ></div>
+
 </div>
 </template>
 
@@ -35,8 +29,7 @@ import { Action, Getter, namespace } from 'vuex-class'
 import VueRouter from 'vue-router'
 import {
     PostAction, PostGet,
-    IContentItem,
-    IPost, ContentType, IPostInfo
+    IPost, IPostInfo
 } from '../../store/modules/post/post.types'
 
 const PostModule = namespace("post_module");
@@ -49,19 +42,17 @@ export default class PostComponent extends Vue
     @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
-    private readonly text_type: number = ContentType.Text;
-    private readonly image_type: number = ContentType.Image;
-    private readonly code_type: number = ContentType.Code;
+    private readonly CONTENT_ID = "ABCDXYZ";
 
     private post_title: string = "";
     private post_subtitle: string = "";
     private post_tags: Array<string> = [];
-    private content_items: Array<IContentItem> = [];
+    private content_html: string = "";
     
 
     private mounted(): void
     {
-        this.content_items = [];
+        this.content_html = "";
 
         const loaded_from_url = this.st_post_list.length === 0;
 
@@ -84,18 +75,16 @@ export default class PostComponent extends Vue
         this.post_subtitle = this.st_selected_post.subtitle;
         this.post_tags = this.st_selected_post.tags;
 
-        const content = this.st_selected_post.content;
+        const content = this.st_selected_post.content_html;
         if(content.length === 0)
         {
-            this.content_items = [{ 
-                content_type: ContentType.Text,
-                content: "post not found" 
-                }];
+            this.content_html = "<p>Post content not found</p>";
 
             return;
         }
         
-        this.content_items = content;
+        this.content_html = content;
+        document.getElementById(this.CONTENT_ID).innerHTML = content;
     }
 
 

@@ -33,24 +33,12 @@ export class DataResult<T>
 }
 
 
-export const enum ContentType {
-    Text = 0,
-    Image,
-    Code,
-}
-
-export interface IContentItem {
-    content_type: ContentType;
-    content: string;
-}
-
-
 export interface IPost {
     id: string;
     title: string;
     subtitle: string;
     tags: Array<string>;
-    content: Array<IContentItem>;
+    content_html: string;
 }
 
 
@@ -79,7 +67,7 @@ export module Make
             title: "",
             subtitle: "",
             tags: [],
-            content: []
+            content_html: ""
         };
     }
 }

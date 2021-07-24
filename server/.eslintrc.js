@@ -22,6 +22,7 @@ module.exports = {
         "@typescript-eslint/no-unused-vars": 'warn',
         "@typescript-eslint/prefer-namespace-keyword": 'off',
         "@typescript-eslint/no-namespace": 'warn',
+        '@typescript-eslint/no-empty-function': 'warn',
         "prefer-const": 'warn',
         "no-empty": 'off',
         "no-inner-declarations": 'off'

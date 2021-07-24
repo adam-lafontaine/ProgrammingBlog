@@ -13,11 +13,11 @@ export module media
         let status = "";
 
         status = "validating image id";
-        const timestamp = /^\d{10}$/;
+        const timestamp = /^\d{13}$/;
         if(!id.match(timestamp))
         {
             result.success = false;
-            result.message = "invalid image id";
+            result.message = `invalid image id ${id}`;
             return result;
         }
 
@@ -29,6 +29,7 @@ export module media
             {
                 result.success = false;
                 result.message = "No images found";
+                return result;
             }
 
             status = "searching for image";
@@ -37,6 +38,7 @@ export module media
             {
                 result.success = false;
                 result.message = `Image id ${id} not found`;
+                return result;
             }
 
             result.success = true;

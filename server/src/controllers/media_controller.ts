@@ -14,7 +14,9 @@ export module mc
         const result = media.get_image_path(req.params.id);
         if(!result.success)
         {
+            console.log(result.message)
             res.send(result.message);
+            return;
         }
 
         res.sendFile(result.data);

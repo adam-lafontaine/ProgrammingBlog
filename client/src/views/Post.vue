@@ -10,8 +10,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { Action, Getter, namespace } from 'vuex-class'
 import { 
     PostAction, PostGet,
-    IContentItem,
-    IPost, ContentType
+    IPost,
 } from '../store/modules/post/post.types'
 import PostComponent from '../components/posts/PostComponent.vue'
 

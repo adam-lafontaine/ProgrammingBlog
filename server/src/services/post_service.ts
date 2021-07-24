@@ -1,11 +1,12 @@
 import { 
     DataResult, 
-    IPost,IContentItem, ContentType
+    IPost,
 } from "../types/client.types"
 import { IPostFileInfo } from "../types/server.types"
 import { IPostInfo } from "../types/client.types"
 import fs from "fs"
 import path from "path"
+import marked from "marked"
 
 const post_path = "/home/adam/repos/ProgrammingBlog/posts";
 const image_url = "http://localhost:8081/api/image";
@@ -148,6 +149,12 @@ function to_post_file_info(filename: string): IPostFileInfo
 }
 
 
+function to_filename(post: IPost): string
+{
+    return `[${Date.now()}][${post.title}][${post.tags.join()}]`;
+}
+
+
 function to_post_info(file_info: IPostFileInfo): IPostInfo
 {
     return {
@@ -159,71 +166,35 @@ function to_post_info(file_info: IPostFileInfo): IPostInfo
 }
 
 
-const enum Flag
-{
-    Subtitle = "<subtitle>",
-    Text = "<text>",
-    Image = "<image>",
-    Code = "<code>"
-}
-
-
 function read_post_file(filename: string): IPost
 {
     const info = to_post_file_info(filename);
-    
-    let subtitle = "";
-    let content: Array<IContentItem> = [];
 
     const file_path = path.join(post_path, filename);
     const data = fs.readFileSync(file_path, "utf8");
 
-    for(const line of data.split("\n"))
-    {
-        if(line.startsWith(Flag.Subtitle))
-        {
-            subtitle = line.substr(Flag.Subtitle.length);
-        }
-        else if(line.startsWith(Flag.Text))
-        {
-            add_text_content(line.substr(Flag.Text.length), content);
-        }
-        else if(line.startsWith(Flag.Image))
-        {
-            add_image_content(line.substr(Flag.Image.length), content);
-        }
-        else if(line.startsWith(Flag.Code))
-        {
-            add_code_content(line.substr(Flag.Code.length), content);
-        }        
-    }
+    const title_flag = "#";
+    const subtitle_flag = "##";
+
+    let begin = data.indexOf(title_flag) + title_flag.length + 1;
+    let end = data.indexOf("\n", begin);
+    const title = data.substring(begin, end);
+
+    begin = data.indexOf(subtitle_flag) + subtitle_flag.length + 1;
+    end = data.indexOf("\n", begin);
+    const subtitle = data.substring(begin, end);
 
     return {
         id: info.timestamp,
-        title: info.title,
+        title: title,
         subtitle: subtitle,
         tags: info.tags,
-        content: content
+        content_html: marked(data.substr(end + 1))
     };
 }
 
 
-function add_text_content(s: string, content: Array<IContentItem>): void
-{
-    content.push({ content_type: ContentType.Text, content: s});
-}
 
-
-function add_image_content(s: string, content: Array<IContentItem>): void
-{
-    content.push({ content_type: ContentType.Image, content: `${image_url}/${s}` });
-}
-
-
-function add_code_content(s: string, content: Array<IContentItem>): void
-{
-    content.push({ content_type: ContentType.Code, content: s });
-}
 
 
 function to_kebab(s: string): string
