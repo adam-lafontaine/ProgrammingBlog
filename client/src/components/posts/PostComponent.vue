@@ -1,4 +1,6 @@
-<style lang="scss"></style>
+<style lang="scss">
+
+</style>
 
 <template>
 <div>
@@ -32,6 +34,10 @@ import {
     IPost, IPostInfo
 } from '../../store/modules/post/post.types'
 
+import hljs from 'highlight.js/lib/core';
+import cpp from 'highlight.js/lib/languages/cpp';
+import 'highlight.js/styles/atom-one-dark.css';
+
 const PostModule = namespace("post_module");
 
 @Component({ components: {} })
@@ -52,6 +58,8 @@ export default class PostComponent extends Vue
 
     private mounted(): void
     {
+        hljs.registerLanguage('cpp', cpp);
+
         this.content_html = "";
 
         const loaded_from_url = this.st_post_list.length === 0;
@@ -85,6 +93,8 @@ export default class PostComponent extends Vue
         
         this.content_html = content;
         document.getElementById(this.CONTENT_ID).innerHTML = content;
+
+        hljs.highlightAll();
     }
 
 
