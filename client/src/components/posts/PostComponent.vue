@@ -18,9 +18,7 @@
         </b-badge>
     </div>
 
-    <div
-        :id="CONTENT_ID"
-        ></div>
+    <div :id="CONTENT_ID" />
 
 </div>
 </template>
@@ -87,12 +85,13 @@ export default class PostComponent extends Vue
         if(content.length === 0)
         {
             this.content_html = "<p>Post content not found</p>";
-
-            return;
         }
+        else
+        {
+            this.content_html = content;
+        }        
         
-        this.content_html = content;
-        document.getElementById(this.CONTENT_ID).innerHTML = content;
+        document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
 
         hljs.highlightAll();
     }
