@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors" // https://expressjs.com/en/resources/middleware/cors.html
 import { hc } from "./controllers/home_controller";
 import { pc } from "./controllers/post_controller";
-import { mc } from "./controllers/media_controller"
 
 
 // const cors_options = { origin: ["http://localhost:8080"]};
@@ -26,9 +25,6 @@ app.get("/", hc.home);
 
 app.get("/api/post/list", pc.send_post_list);
 app.get("/api/post/:id", pc.send_post);
-
-
-app.get("/api/image/:id", mc.send_image);
 
 
 // start the Express server

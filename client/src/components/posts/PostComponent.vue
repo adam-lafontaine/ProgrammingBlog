@@ -1,24 +1,47 @@
-<style lang="scss">
+<style lang="css">
+
+.main-content {
+    font-size: 17px;
+    font-family:'Open Sans', sans-serif;
+}
+
+.post-date {
+    color: #9EABB3;
+    font-size: 1.0rem;
+}
 
 </style>
 
 <template>
 <div>
-    <b-jumbotron
+    <b-jumbotron fluid container-fluid="lg"
         :header="post_title"
         :lead="post_subtitle"
         >
     </b-jumbotron>
-    <div align="right">
-        <b-badge v-for="tag in post_tags" :key="tag"
-            variant="dark"
-            style="margin-right:4px;"
-            >
-            {{tag}}
-        </b-badge>
-    </div>
+    
 
-    <div :id="CONTENT_ID" />
+    <b-container fluid="lg">
+
+        <div style="margin:-70px 0px 40px 0px;">
+            <b-row no-gutters>
+                <b-col cols="auto" class="mr-auto post-date">
+                    {{post_date}}
+                </b-col>
+                <b-col cols="auto">
+                    <b-badge v-for="tag in post_tags" :key="tag"
+                        variant="dark"
+                        style="margin-left:4px;"
+                        >
+                        {{tag}}
+                    </b-badge>
+                </b-col>
+            </b-row>
+                        
+        </div>
+
+        <div :id="CONTENT_ID" class="main-content" />
+    </b-container>
 
 </div>
 </template>
@@ -46,11 +69,12 @@ export default class PostComponent extends Vue
     @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
-    private readonly CONTENT_ID = "ABCDXYZ";
+    private readonly CONTENT_ID = "MAIN_CONTENT";
 
     private post_title: string = "";
     private post_subtitle: string = "";
     private post_tags: Array<string> = [];
+    private post_date: string = "";
     private content_html: string = "";
     
 
@@ -89,6 +113,7 @@ export default class PostComponent extends Vue
         else
         {
             this.content_html = content;
+            this.post_date = this.to_date_string(this.st_selected_post.id);
         }        
         
         document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
@@ -111,6 +136,21 @@ export default class PostComponent extends Vue
             this.ac_fetch_selected_post(selected_item.id)
             .then(this.process_selected_post);
         }
+    }
+
+
+    private to_date_string(post_id: string): string
+    {
+        const pattern = /^\d{13}$/;
+        
+        if(!post_id.match(pattern))
+        {
+            return "";
+        }
+
+        const options: any = { year: 'numeric', month: 'long', day: 'numeric' };
+
+        return new Date(parseInt(post_id)).toLocaleDateString('en-US', options);
     }
 
 }
