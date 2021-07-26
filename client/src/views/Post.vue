@@ -1,4 +1,4 @@
-<style lang="scss"></style>
+<style></style>
 
 <template>
 <post-component/>

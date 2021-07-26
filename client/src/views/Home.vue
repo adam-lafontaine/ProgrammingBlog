@@ -1,27 +1,22 @@
 <style>
-
-.home {  
-  text-align: center;
-  color: #2c3e50;
-}
-
 </style>
 
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+<home-component/>
+
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
+import HomeComponent from '../components/HomeComponent.vue'
 
 @Component({
   components: {
-    HelloWorld
+    HomeComponent
   }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue 
+{
+  
+}
 </script>

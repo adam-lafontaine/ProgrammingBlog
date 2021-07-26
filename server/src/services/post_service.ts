@@ -149,12 +149,6 @@ function to_post_file_info(filename: string): IPostFileInfo
 }
 
 
-function to_filename(post: IPost): string
-{
-    return `[${Date.now()}][${post.title}][${post.tags.join()}]`;
-}
-
-
 function to_post_info(file_info: IPostFileInfo): IPostInfo
 {
     return {

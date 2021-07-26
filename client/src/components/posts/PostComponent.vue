@@ -18,8 +18,7 @@
         :header="post_title"
         :lead="post_subtitle"
         >
-    </b-jumbotron>
-    
+    </b-jumbotron>    
 
     <b-container fluid="lg">
 
@@ -55,18 +54,14 @@ import {
     IPost, IPostInfo
 } from '../../store/modules/post/post.types'
 
-import hljs from 'highlight.js/lib/core';
-import cpp from 'highlight.js/lib/languages/cpp';
-import 'highlight.js/styles/atom-one-dark.css';
-
 const PostModule = namespace("post_module");
 
 @Component({ components: {} })
 export default class PostComponent extends Vue
 {
-    @PostModule.Action(PostAction.FETCH_SELECTED_POST) private ac_fetch_selected_post: any;
+    @PostModule.Action(PostAction.FETCH_SELECTED_POST) ac_fetch_selected_post: any;
     @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
-    @PostModule.Getter(PostGet.GET_SELECTED_POST) private st_selected_post: IPost;
+    @PostModule.Getter(PostGet.GET_SELECTED_POST) st_selected_post: IPost;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
     private readonly CONTENT_ID = "MAIN_CONTENT";
@@ -80,8 +75,6 @@ export default class PostComponent extends Vue
 
     private mounted(): void
     {
-        hljs.registerLanguage('cpp', cpp);
-
         this.content_html = "";
 
         const loaded_from_url = this.st_post_list.length === 0;
@@ -117,8 +110,6 @@ export default class PostComponent extends Vue
         }        
         
         document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
-
-        hljs.highlightAll();
     }
 
 
