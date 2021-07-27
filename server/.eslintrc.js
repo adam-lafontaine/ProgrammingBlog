@@ -25,6 +25,7 @@ module.exports = {
         '@typescript-eslint/no-empty-function': 'warn',
         "prefer-const": 'warn',
         "no-empty": 'off',
-        "no-inner-declarations": 'off'
+        "no-inner-declarations": 'off',
+        "no-prototype-builtins": 'off',
     }
 };

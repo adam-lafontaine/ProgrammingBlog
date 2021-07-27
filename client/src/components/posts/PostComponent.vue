@@ -78,9 +78,7 @@ export default class PostComponent extends Vue
     
 
     private mounted(): void
-    {
-        
-       
+    {      
         this.content_html = "";        
 
         const loaded_from_url = this.st_post_list.length === 0;

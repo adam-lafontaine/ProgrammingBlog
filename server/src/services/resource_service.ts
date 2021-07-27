@@ -3,7 +3,6 @@ import {
     IVideoResource,
 } from "../types/client.types"
 import fs from "fs"
-import path from "path"
 
 const root_path = "/home/adam/repos/ProgrammingBlog";
 const video_file_path = root_path + "/content/resources/youtube_videos.json";
@@ -24,9 +23,11 @@ export module resource
             const obj = JSON.parse(json_str);
 
             status = "validating json";
-            if(!obj.hasOwnPropery("videos") || !Array.isArray(obj.videos))
+            if(!obj.hasOwnProperty("videos") || !Array.isArray(obj.videos))
             {
-
+                result.success = false;
+                result.message = "invalid video file";
+                return result;
             }
 
             status = "getting video data";
@@ -37,6 +38,7 @@ export module resource
         }
         catch(error: unknown)
         {
+            console.log(error)
             result.success = false;
             result.message = `Error: ${status}`;
         }

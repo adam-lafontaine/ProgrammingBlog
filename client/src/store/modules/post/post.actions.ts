@@ -6,7 +6,8 @@ import {
     IPostState as State,
     DataResult,
     IPost, IPostInfo,
-    Make
+    Make,
+    IVideoResource
 } from './post.types'
 
 const ENTRY_ROUTE = "http://localhost:8081/api"
@@ -113,6 +114,63 @@ const actions: Tree<State, any> = {
         }
     },
 
+
+    async [Action.FETCH_VIDEO_RESOURCES]({ commit, state }): Promise<any>
+    {
+        const url = ENTRY_ROUTE + `/resources/videos`;
+        const empty = Make.video_resource();
+        let status = "";
+
+        const set_status = (s: string) => { status = `FETCH_VIDEO_RESOURCES ${s}`; };
+        const report_error = () => 
+        { 
+            console.error(status);
+            commit(Mutation.SET_VIDEO_RESOURCES, []);
+        };
+
+        try
+        {
+            set_status("fetching resources");
+            const response = await axios.get(url);
+            
+            set_status("checking response type");
+            if(!is_DataResult(response.data))
+            {
+                report_error();
+                return;
+            }
+
+            const result = response.data as DataResult<Array<IVideoResource>>;
+
+            set_status(result.message);
+            if(!result.success)
+            {
+                report_error();
+                return;
+            }
+
+            set_status("checking response data");
+            if(!Array.isArray(response.data.data))
+            {
+                report_error();
+                return;
+            }
+
+            if(!array_has_object_properties(result.data, empty))
+            {
+                report_error();
+                return;
+            }     
+
+            commit(Mutation.SET_VIDEO_RESOURCES, result.data);
+        }
+        catch(error: unknown)
+        {
+            console.error(error);
+            commit(Mutation.SET_VIDEO_RESOURCES, []);
+        }
+    }
+
 }
 
 
@@ -123,16 +181,15 @@ function has_object_properties(val: any, obj: object): boolean
         return false;
     }
 
-    for(let prop of Object.keys(obj))
-    {
-        if(!val.hasOwnProperty(prop))
-        {
-            console.log(prop)
-            return false;
-        }
-    }
+    const keys = Object.keys(obj);
 
-    return true;
+    return keys.every(x => val.hasOwnProperty(x));
+}
+
+
+function array_has_object_properties(arr: Array<any>, obj: object): boolean
+{
+    return arr.every(x => has_object_properties(x, obj));
 }
 
 

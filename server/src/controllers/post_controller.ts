@@ -1,7 +1,6 @@
 import { IRequest, IResponse } from "../types/server.types";
 import { DataResult } from "../types/client.types";
 import { post } from "../services/post_service";
-import path from "path";
 
 
 export module pc

@@ -2,7 +2,7 @@ import { MutationTree as Tree } from 'vuex'
 import {
     PostMutation as Mutation,
     IPostState as State,
-    IPost, IPostInfo
+    IPost, IPostInfo, IVideoResource
 
 } from './post.types'
 import { getDefaultState } from './post.state'
@@ -18,6 +18,12 @@ const mutations: Tree<State> = {
     [Mutation.SET_SELECTED_POST](state: State, post: IPost): void
     {
         state.selected_post = post;
+    },
+
+
+    [Mutation.SET_VIDEO_RESOURCES](state: State, resources: Array<IVideoResource>): void
+    {
+        state.video_resources = resources;
     },
 
 
