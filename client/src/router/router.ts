@@ -29,6 +29,12 @@ const routes: Array<RouteConfig> = [
     name: 'Posts',
     component: () => import("../views/Post.vue")
   },
+
+  {
+    path: '/resources',
+    name: 'Resources',
+    component: () => import("../views/Resources.vue")
+  },
   
 ]
 

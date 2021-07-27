@@ -8,7 +8,7 @@ import fs from "fs"
 import path from "path"
 import marked from "marked"
 
-const post_path = "/home/adam/repos/ProgrammingBlog/posts";
+const post_path = "/home/adam/repos/ProgrammingBlog/content/posts";
 const image_url = "http://localhost:8081/api/image";
 
 

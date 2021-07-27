@@ -53,6 +53,10 @@ import {
     PostAction, PostGet,
     IPost, IPostInfo
 } from '../../store/modules/post/post.types'
+import hljs from 'highlight.js/lib/core';
+import cpp from 'highlight.js/lib/languages/cpp';
+import 'highlight.js/styles/atom-one-dark.css';
+hljs.registerLanguage('cpp', cpp);
 
 const PostModule = namespace("post_module");
 
@@ -75,7 +79,9 @@ export default class PostComponent extends Vue
 
     private mounted(): void
     {
-        this.content_html = "";
+        
+       
+        this.content_html = "";        
 
         const loaded_from_url = this.st_post_list.length === 0;
 
@@ -110,6 +116,8 @@ export default class PostComponent extends Vue
         }        
         
         document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
+        hljs.highlightAll();
+         
     }
 
 
