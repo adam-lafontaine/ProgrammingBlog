@@ -48,8 +48,9 @@ export interface IResponse
 
 export interface IPostFileInfo
 {
-    filename: string; // "[timestamp][title][tags]"
+    filename: string; // "[timestamp][title][tags].md"
     timestamp: string;
     title: string;
     tags: Array<string>;
 }
+

@@ -21,3 +21,9 @@ export interface IPostInfo {
     tags: Array<string>;
     route: string;
 }
+
+
+export interface IVideoResource {
+    youtube_id: string;
+    description: string;
+}

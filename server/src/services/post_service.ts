@@ -1,15 +1,14 @@
 import { 
     DataResult, 
-    IPost,
+    IPost, IPostInfo
 } from "../types/client.types"
 import { IPostFileInfo } from "../types/server.types"
-import { IPostInfo } from "../types/client.types"
 import fs from "fs"
 import path from "path"
 import marked from "marked"
 
-const post_path = "/home/adam/repos/ProgrammingBlog/content/posts";
-const image_url = "http://localhost:8081/api/image";
+const root_path = "/home/adam/repos/ProgrammingBlog";
+const post_path = root_path + "/content/posts";
 
 
 export module post
