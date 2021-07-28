@@ -4,14 +4,25 @@
 <div>
     <h1>Resources Component</h1>
 
-    <div v-for="item in video_links" :key="item.youtube_id">
-        <b-embed
-            type="iframe"
-            aspect="16by9"
-            :src="item.url"
-            allowfullscreen
-        ></b-embed>
-    </div>
+    <b-list-group>
+        <b-list-group-item v-for="item in video_links" :key="item.id">
+
+            <b-row>
+                <b-col cols="12">
+                    <span>{{item.description}}</span>
+                </b-col>
+                <b-col cols="12" sm="9" md="6" lg="4" xl="3">
+                    <b-embed
+                        type="iframe"
+                        aspect="16by9"
+                        :src="item.url"
+                        allowfullscreen
+                    ></b-embed>
+                </b-col>
+            </b-row>
+
+        </b-list-group-item>
+    </b-list-group>
 </div>
 </template>
 
@@ -27,6 +38,7 @@ const PostModule = namespace("post_module");
 
 interface IVideoReference
 {
+    id: string;
     url: string;
     description: string;
 }
@@ -57,6 +69,7 @@ export default class ResourcesComponent extends Vue
     private to_youtube_reference(resource: IVideoResource): IVideoReference
     {
         return {
+            id: resource.youtube_id,
             url: `https://www.youtube.com/embed/${resource.youtube_id}`,
             description: resource.description
         };
