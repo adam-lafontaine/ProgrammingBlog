@@ -1,9 +1,24 @@
-<style lang="scss"></style>
+<style lang="css" scoped>
+
+.post-header {
+    background-color: rgb(233, 236, 239);
+    color:rgb(33, 37, 41);
+}
+
+
+
+.post-header .post-date {
+    color: #9EABB3;
+}
+
+</style>
 
 <template>
 <b-container>
+    <h1>Posts</h1>
     <b-list-group>
         <b-list-group-item v-for="item in list_items" :key="item.id"
+            class="post-header"
             append
             :to="item.route"
             >
@@ -11,7 +26,21 @@
                 <h5 class="mb-1">{{item.title}}</h5>
             </div>
 
-            <small>{{item.date}}</small>
+            <b-row no-gutters>
+                <b-col cols="auto" class="mr-auto">
+                    <small class="post-date">{{item.date}}</small>
+                </b-col>
+                <b-col cols="auto">
+                    <b-badge v-for="tag in item.tags" :key="tag"
+                        variant="dark"
+                        style="margin-left:4px;"
+                        >
+                        {{tag}}
+                    </b-badge>
+                </b-col>
+            </b-row>
+
+            
 
         </b-list-group-item>
     </b-list-group>
@@ -34,6 +63,7 @@ interface IPostListItem {
     id: string;
     title: string;
     date: string;
+    tags: Array<string>;
     route: string;
 }
 
@@ -70,6 +100,7 @@ export default class PostListComponent extends Vue
         return {
             id: post_info.id,
             title: post_info.title,
+            tags: post_info.tags,
             route: post_info.route,
             date: DateUtil.to_date_string(post_info.id)
         };

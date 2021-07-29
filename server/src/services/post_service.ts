@@ -90,7 +90,7 @@ export module post
         let result = new DataResult<Array<IPostInfo>>();
         let status = "";
 
-        let desc = (a: IPostFileInfo, b: IPostFileInfo) => { return a.timestamp < b.timestamp ? 1 : -1; };
+        const desc = (a: IPostFileInfo, b: IPostFileInfo) => { return a.timestamp < b.timestamp ? 1 : -1; };
 
         try
         {

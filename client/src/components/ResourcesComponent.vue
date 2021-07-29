@@ -1,15 +1,14 @@
 <style></style>
 
 <template>
-<div>
+<b-container>
+    <h1>Resources - Videos</h1>
     <b-list-group>
         <b-list-group-item v-for="item in video_links" :key="item.id">
 
-            <b-row>
-                <b-col cols="12">
-                    <span>{{item.description}}</span>
-                </b-col>
-                <b-col cols="12" sm="9" md="6" lg="4" xl="3">
+            <b-row no-gutters>
+                
+                <b-col cols="12" sm="9" md="6" lg="4" xl="3" class="mr-auto">
                     <b-embed
                         type="iframe"
                         aspect="16by9"
@@ -17,11 +16,14 @@
                         allowfullscreen
                     ></b-embed>
                 </b-col>
+                <b-col cols="auto">
+                    <span>{{item.description}}</span>
+                </b-col>
             </b-row>
 
         </b-list-group-item>
     </b-list-group>
-</div>
+</b-container>
 </template>
 
 <script lang="ts">
