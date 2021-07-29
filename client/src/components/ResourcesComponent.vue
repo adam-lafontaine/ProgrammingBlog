@@ -2,8 +2,6 @@
 
 <template>
 <div>
-    <h1>Resources Component</h1>
-
     <b-list-group>
         <b-list-group-item v-for="item in video_links" :key="item.id">
 

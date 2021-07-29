@@ -1,4 +1,4 @@
-<style lang="css">
+<style lang="css" scoped>
 
 .main-content {
     font-size: 17px;
@@ -53,6 +53,8 @@ import {
     PostAction, PostGet,
     IPost, IPostInfo
 } from '../../store/modules/post/post.types'
+import { DateUtil } from "../../util/date_util"
+
 import hljs from 'highlight.js/lib/core';
 import cpp from 'highlight.js/lib/languages/cpp';
 import 'highlight.js/styles/atom-one-dark.css';
@@ -110,7 +112,7 @@ export default class PostComponent extends Vue
         else
         {
             this.content_html = content;
-            this.post_date = this.to_date_string(this.st_selected_post.id);
+            this.post_date = DateUtil.to_date_string(this.st_selected_post.id);
         }        
         
         document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
@@ -133,21 +135,6 @@ export default class PostComponent extends Vue
             this.ac_fetch_selected_post(selected_item.id)
             .then(this.process_selected_post);
         }
-    }
-
-
-    private to_date_string(post_id: string): string
-    {
-        const pattern = /^\d{13}$/;
-        
-        if(!post_id.match(pattern))
-        {
-            return "";
-        }
-
-        const options: any = { year: 'numeric', month: 'long', day: 'numeric' };
-
-        return new Date(parseInt(post_id)).toLocaleDateString('en-US', options);
     }
 
 }

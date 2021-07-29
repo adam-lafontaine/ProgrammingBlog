@@ -93,4 +93,15 @@ export module Make
             description: ""
         };
     }
+
+
+    export function post_info(): IPostInfo
+    {
+        return {
+            id: "",
+            title: "",
+            tags: [],
+            route: ""
+        }
+    }
 }
