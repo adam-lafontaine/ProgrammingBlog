@@ -38,7 +38,6 @@ export module resource
         }
         catch(error: unknown)
         {
-            console.log(error)
             result.success = false;
             result.message = `Error: ${status}`;
         }

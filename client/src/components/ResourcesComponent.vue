@@ -2,7 +2,7 @@
 
 <template>
 <b-container>
-    <h1>Resources - Videos</h1>
+    <h1 class="mt-3">Resources - Videos</h1>
     <b-list-group>
         <b-list-group-item v-for="item in video_links" :key="item.id">
 

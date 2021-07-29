@@ -112,12 +112,11 @@ export default class PostComponent extends Vue
         else
         {
             this.content_html = content;
-            this.post_date = DateUtil.to_date_string(this.st_selected_post.id);
+            this.post_date = DateUtil.to_date_string(this.st_selected_post.id);            
         }        
         
         document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
-        hljs.highlightAll();
-         
+        hljs.highlightAll();         
     }
 
 

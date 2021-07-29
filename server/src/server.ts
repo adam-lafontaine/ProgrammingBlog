@@ -20,9 +20,10 @@ const port = 8081; // default port to listen
 //app.use(express.static(client_path));
 
 // serve client
-app.get("/", hc.home);
+app.get("/", hc.send_client);
 
 // api routes
+app.get("/api/home", hc.send_content);
 
 app.get("/api/post/list", pc.send_post_list);
 app.get("/api/post/:id", pc.send_post);

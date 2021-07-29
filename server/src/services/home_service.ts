@@ -1,60 +1,40 @@
-import { DataResult } from "../types/client.types"
+import { DataResult, IHomepageContent } from "../types/client.types"
+import fs from "fs"
 
-export function echo_id(id: number): DataResult<any>
+const root_path = "/home/adam/repos/ProgrammingBlog";
+const home_content_path = root_path + "/content/pages/home.json";
+
+export module home
 {
-    let result = new DataResult<any>();
-
-    if(id < 10)
+    export function get_content(): DataResult<IHomepageContent>
     {
-        result.message = "Id should be at least 10";
-    }
-    else
-    {
-        result.success = true;
-        result.message = "Success";
-        result.data = `Data for Id = ${id}`;
-    }
+        let result = new DataResult<IHomepageContent>();
+        let status = "";
 
-    return result;
-}
-
-
-export function get_object_properties(obj: any): DataResult<string>
-{
-    const result = new DataResult<string>();
-
-    const types = ["string", "number", "bigint", "boolean"];
-    const get_type = (tp: string) => { return types.includes(tp) ? tp : "any"; };
-
-    try
-    {
-        let data: string = "";
-        for(const [key, value] of Object.entries(obj))
+        try
         {
-            data += `${key}: ${get_type(typeof(value))};`;
+            status = "reading file";
+            const json_str = fs.readFileSync(home_content_path, 'utf8');
+
+            status = "parsing json";
+            const obj = JSON.parse(json_str);
+
+            status = "getting content data";
+            result.data = 
+            {
+                title: obj.title,
+                text: obj.text
+            };
+
+            result.success = true;
+            result.message = "Success";
+        }
+        catch(error: unknown)
+        {
+            result.success = false;
+            result.message = `Error: ${status}`;
         }
 
-        result.success = true;
-        result.message = "Success";
-        result.data = data;
+        return result;
     }
-    catch(error: unknown)
-    {
-        result.success = false;
-        result.message = "Error"
-    }
-
-    return result;
-}
-
-
-export function  update_something(obj: any): DataResult<any>
-{
-    const result = new DataResult<any>();
-
-    result.success = true;
-    result.message = "Success";
-    result.data = 42;
-
-    return  result;
 }

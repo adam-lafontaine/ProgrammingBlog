@@ -21,7 +21,7 @@ export module post
         try
         {
             status = "locating posts";
-            const post_data = get_post_info();
+            const post_data = get_post_file_info();
 
             status = "finding post id";
             const item = post_data.find(x => x.timestamp === id);
@@ -57,7 +57,7 @@ export module post
         try
         {
             status = "locating posts";
-            const post_data = get_post_info();
+            const post_data = get_post_file_info();
 
             status = "finding post title";
             const item = post_data.find(x => x.title === title);
@@ -85,7 +85,7 @@ export module post
     }
 
 
-    export function get_list(): DataResult<Array<IPostInfo>>
+    export function get_info_list(): DataResult<Array<IPostInfo>>
     {
         let result = new DataResult<Array<IPostInfo>>();
         let status = "";
@@ -95,7 +95,7 @@ export module post
         try
         {
             status = "getting post info";
-            const all_posts = get_post_info();
+            const all_posts = get_post_file_info();
 
             result.success = true;
             result.message = "Success";
@@ -112,7 +112,7 @@ export module post
 }
 
 
-function get_post_info(): Array<IPostFileInfo>
+function get_post_file_info(): Array<IPostFileInfo>
 {
     const files = fs.readdirSync(post_path);
 

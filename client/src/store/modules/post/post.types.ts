@@ -1,6 +1,8 @@
 //======= FUNCTION ENUMS ======================
 
 export const enum PostAction {
+    FETCH_HOMEPAGE_CONTENT = "fetchHomepageContent",
+
     FETCH_POST_LIST = "fetchPostList",
     FETCH_SELECTED_POST = "fetchSelectedPost",
 
@@ -9,6 +11,8 @@ export const enum PostAction {
 
 
 export const enum PostGet {
+    GET_HOMEPAGE_CONTENT = "getHomepageContent",
+
     GET_POST_LIST = "getPostList",
     GET_SELECTED_POST = "getSelectedPost",
 
@@ -19,6 +23,8 @@ export const enum PostGet {
 
 
 export const enum PostMutation {
+    SET_HOMEPAGE_CONTENT = "setHomepageContent",
+
     SET_POST_LIST = "setPostList",
     SET_SELECTED_POST = "setSelectedPost",
 
@@ -62,7 +68,14 @@ export interface IVideoResource {
 }
 
 
+export interface IHomepageContent {
+    title: string;
+    text: string;
+}
+
+
 export interface IPostState {
+    homepage_content: IHomepageContent;
     post_list: Array<IPostInfo>;
     selected_post: IPost;
 
@@ -70,6 +83,9 @@ export interface IPostState {
 
     error: string;
 }
+
+
+
 
 
 export module Make
@@ -103,5 +119,14 @@ export module Make
             tags: [],
             route: ""
         }
+    }
+
+
+    export function homepage_content(): IHomepageContent
+    {
+        return {
+            title: "",
+            text: ""
+        };
     }
 }

@@ -2,12 +2,17 @@ import { MutationTree as Tree } from 'vuex'
 import {
     PostMutation as Mutation,
     IPostState as State,
-    IPost, IPostInfo, IVideoResource
+    IPost, IPostInfo, IVideoResource, IHomepageContent
 
 } from './post.types'
 import { getDefaultState } from './post.state'
 
 const mutations: Tree<State> = {
+
+    [Mutation.SET_HOMEPAGE_CONTENT](state: State, content: IHomepageContent): void
+    {
+        state.homepage_content = content;
+    },
 
     [Mutation.SET_POST_LIST](state: State, list: Array<IPostInfo>): void
     {

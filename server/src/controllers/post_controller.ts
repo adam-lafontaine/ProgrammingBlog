@@ -25,6 +25,6 @@ export module pc
 
     export function send_post_list(req: IRequest, res: IResponse): void
     {
-        res.send(post.get_list());
+        res.send(post.get_info_list());
     }
 }

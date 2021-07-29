@@ -15,7 +15,7 @@
 
 <template>
 <b-container>
-    <h1>Posts</h1>
+    <h1 class="mt-3">Posts</h1>
     <b-list-group>
         <b-list-group-item v-for="item in list_items" :key="item.id"
             class="post-header"

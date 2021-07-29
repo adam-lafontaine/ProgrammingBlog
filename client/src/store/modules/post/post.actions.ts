@@ -7,12 +7,63 @@ import {
     DataResult,
     IPost, IPostInfo,
     Make,
-    IVideoResource
+    IVideoResource,
+    IHomepageContent
 } from './post.types'
 
 const ENTRY_ROUTE = "http://localhost:8081/api"
 
 const actions: Tree<State, any> = {
+
+    async [Action.FETCH_HOMEPAGE_CONTENT]({ commit, state }): Promise<any>
+    {
+        const url = ENTRY_ROUTE + "/home";
+        let status = "";
+        const empty = Make.homepage_content();
+
+        const set_status = (s: string) => { status = `FETCH_HOMEPAGE_CONTENT ${s}`; };
+        const report_error = () => 
+        { 
+            console.error(status);
+            commit(Mutation.SET_HOMEPAGE_CONTENT, empty);
+        };
+
+        try
+        {
+            set_status("fetching content");
+            const response = await axios.get(url);
+
+            set_status("checking response type");
+            if(!is_DataResult(response.data))
+            {
+                report_error();
+                return;
+            }
+
+            const result = response.data as DataResult<IHomepageContent>;
+
+            set_status(result.message);
+            if(!result.success)
+            {
+                report_error();
+                return;
+            }
+
+            set_status("checking response data");
+            if(!has_object_properties(response.data.data, empty))
+            {
+                report_error();
+                return;
+            }     
+
+            commit(Mutation.SET_HOMEPAGE_CONTENT, result.data);
+        }
+        catch(error: unknown)
+        {
+            console.error(error);
+            commit(Mutation.SET_HOMEPAGE_CONTENT, empty);
+        }
+    },
 
     async [Action.FETCH_POST_LIST]({ commit, state }): Promise<any>
     {
@@ -31,7 +82,7 @@ const actions: Tree<State, any> = {
             set_status("fetching post list");
             const response = await axios.get(url);
 
-            status = "checking response type";
+            set_status("checking response type");
             if(!is_DataResult(response.data))
             {
                 report_error();

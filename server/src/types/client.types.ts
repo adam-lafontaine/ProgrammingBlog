@@ -27,3 +27,9 @@ export interface IVideoResource {
     youtube_id: string;
     description: string;
 }
+
+
+export interface IHomepageContent {
+    title: string;
+    text: string;
+}
