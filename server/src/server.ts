@@ -16,8 +16,11 @@ app.use(express.urlencoded({ extended: true }))
 
 const port = 8081; // default port to listen
 
+const root_path = "/home/adam/repos/ProgrammingBlog";
+const client_path = root_path + "/server/client";
 
-//app.use(express.static(client_path));
+
+app.use(express.static(client_path));
 
 // serve client
 app.get("/", hc.send_client);

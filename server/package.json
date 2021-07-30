@@ -8,7 +8,7 @@
     "copy-assets": "ts-node tools/copyAssets",
     "lint": "eslint ./src/",
     "tsc": "tsc",
-    "build": "npm-run-all clean lint tsc copy-assets",
+    "build": "npm-run-all clean lint tsc",
     "dev:start": "npm-run-all build start",
     "dev": "nodemon --watch src -e ts,ejs --exec npm run dev:start",
     "start": "node .",

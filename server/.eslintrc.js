@@ -23,9 +23,12 @@ module.exports = {
         "@typescript-eslint/prefer-namespace-keyword": 'off',
         "@typescript-eslint/no-namespace": 'warn',
         '@typescript-eslint/no-empty-function': 'warn',
+        '@typescript-eslint/no-this-alias': 'off',
         "prefer-const": 'warn',
         "no-empty": 'off',
         "no-inner-declarations": 'off',
         "no-prototype-builtins": 'off',
+        "no-func-assign": 'off',
+        "no-undef": 'off',
     }
 };

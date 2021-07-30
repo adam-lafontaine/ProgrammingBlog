@@ -5,8 +5,6 @@
     color:rgb(33, 37, 41);
 }
 
-
-
 .post-header .post-date {
     color: #9EABB3;
 }
