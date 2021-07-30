@@ -5,7 +5,6 @@
   "main": "dist/server.js",
   "scripts": {
     "clean": "rimraf dist/*",
-    "copy-assets": "ts-node tools/copyAssets",
     "lint": "eslint ./src/",
     "tsc": "tsc",
     "build": "npm-run-all clean lint tsc",
