@@ -3,6 +3,7 @@ import cors from "cors" // https://expressjs.com/en/resources/middleware/cors.ht
 import { hc } from "./controllers/home_controller"
 import { pc } from "./controllers/post_controller"
 import { rc } from "./controllers/resource_controller"
+import path from "path";
 
 
 // const cors_options = { origin: ["http://localhost:8080"]};
@@ -16,14 +17,13 @@ app.use(express.urlencoded({ extended: true }))
 
 const port = 8081; // default port to listen
 
-const root_path = "/home/adam/repos/ProgrammingBlog";
-const client_path = root_path + "/server/client";
+const client_path = path.join(__dirname, "../client");
 
 
 app.use(express.static(client_path));
 
 // serve client
-app.get("/", hc.send_client);
+//app.get("/", hc.send_client);
 
 // api routes
 app.get("/api/home", hc.send_content);
