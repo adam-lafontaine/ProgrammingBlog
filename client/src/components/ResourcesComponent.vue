@@ -2,7 +2,7 @@
 
 <template>
 <b-container>
-    <h1 class="mt-3">Resources - Videos</h1>
+    <h1 class="code-font mt-3">Resources - Videos</h1>
     <b-list-group>
         <b-list-group-item v-for="item in video_links" :key="item.id">
 
@@ -55,6 +55,18 @@ export default class ResourcesComponent extends Vue
     {
         this.video_links = [];
 
+        /*
+        if(this.st_video_resources.length === 0)
+        {
+            this.ac_fetch_video_resources()
+            .then(this.process_video_resources);
+        }
+        else
+        {
+            this.process_video_resources();
+        }*/
+        
+        // force refresh
         this.ac_fetch_video_resources()
         .then(this.process_video_resources);
     }

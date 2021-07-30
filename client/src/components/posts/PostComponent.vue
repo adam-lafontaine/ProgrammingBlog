@@ -31,6 +31,7 @@
                     <b-badge v-for="tag in post_tags" :key="tag"
                         variant="dark"
                         style="margin-left:4px;"
+                        class="code-font"
                         >
                         {{tag}}
                     </b-badge>

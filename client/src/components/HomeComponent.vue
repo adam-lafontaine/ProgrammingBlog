@@ -1,12 +1,18 @@
-<style></style>
+<style>
+
+</style>
 
 <template>
 <b-container>
-    <h1 class="mt-3">{{page_title}}</h1>
+    <h1 class="code-font mt-3">{{page_title}}</h1>
     <p>{{page_text}}</p>
+    
     <b-row>
         <b-col cols="12" :v-if="has_post" class="mt-3">
             Latest post: <b-link :to="latest_post_route">{{latest_post_title}}</b-link>
+        </b-col>
+        <b-col cols="12" :v-if="has_post" class="mt-3">
+            All posts: <b-link to="/posts">Posts</b-link>
         </b-col>
         <b-col cols="12" class="mt-3">
             Video resources: <b-link to="/resources">videos</b-link>
@@ -30,9 +36,10 @@ const PostModule = namespace("post_module");
 export default class HomeComponent extends Vue
 {
     @PostModule.Action(PostAction.FETCH_HOMEPAGE_CONTENT) ac_fetch_homepage_content: any;
+    @PostModule.Getter(PostGet.GET_HOMEPAGE_CONTENT) st_homepage_content: IHomepageContent;
     @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
-    @PostModule.Getter(PostGet.GET_HOMEPAGE_CONTENT) st_homepage_content: IHomepageContent;
+    
 
     private page_title: string = "";
     private page_text: string = "";
@@ -40,10 +47,18 @@ export default class HomeComponent extends Vue
     private latest_post_title = "";
     private latest_post_route = "";
 
+
     private mounted(): void
     {
-        this.ac_fetch_homepage_content()
-        .then(this.process_homepage_content);
+        if(this.st_homepage_content.title === "")
+        {
+            this.ac_fetch_homepage_content()
+            .then(this.process_homepage_content);
+        }
+        else
+        {
+            this.process_homepage_content();
+        }        
 
         this.ac_fetch_post_list()
         .then(this.process_post_list);

@@ -13,7 +13,7 @@
 
 <template>
 <b-container>
-    <h1 class="mt-3">Posts</h1>
+    <h1 class="code-font mt-3">Posts</h1>
     <b-list-group>
         <b-list-group-item v-for="item in list_items" :key="item.id"
             class="post-header"
@@ -32,6 +32,7 @@
                     <b-badge v-for="tag in item.tags" :key="tag"
                         variant="dark"
                         style="margin-left:4px;"
+                        class="code-font"
                         >
                         {{tag}}
                     </b-badge>

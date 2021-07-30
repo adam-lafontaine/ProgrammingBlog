@@ -5,6 +5,8 @@ import { pc } from "./controllers/post_controller"
 import { rc } from "./controllers/resource_controller"
 import path from "path";
 
+const port = 8081; // default port to listen
+
 
 // const cors_options = { origin: ["http://localhost:8080"]};
 const cors_all = cors();
@@ -15,15 +17,8 @@ app.use(cors_all);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
-const port = 8081; // default port to listen
-
 const client_path = path.join(__dirname, "../client");
-
-
 app.use(express.static(client_path));
-
-// serve client
-//app.get("/", hc.send_client);
 
 // api routes
 app.get("/api/home", hc.send_content);
