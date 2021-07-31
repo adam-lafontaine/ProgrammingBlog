@@ -39,8 +39,6 @@
                 </b-col>
             </b-row>
 
-            
-
         </b-list-group-item>
     </b-list-group>
 </b-container>

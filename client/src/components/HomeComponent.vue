@@ -38,15 +38,13 @@ export default class HomeComponent extends Vue
     @PostModule.Action(PostAction.FETCH_HOMEPAGE_CONTENT) ac_fetch_homepage_content: any;
     @PostModule.Getter(PostGet.GET_HOMEPAGE_CONTENT) st_homepage_content: IHomepageContent;
     @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
-    @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
-    
+    @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;    
 
     private page_title: string = "";
     private page_text: string = "";
 
     private latest_post_title = "";
     private latest_post_route = "";
-
 
     private mounted(): void
     {

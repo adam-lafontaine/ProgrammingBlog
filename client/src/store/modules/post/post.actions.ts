@@ -10,9 +10,10 @@ import {
     IVideoResource,
     IHomepageContent
 } from './post.types'
+import Config from "../../../app_config"
 
 
-const ENTRY_ROUTE = "http://localhost:8081/api"
+const ENTRY_ROUTE = Config.SERVER_URL + "/api"
 
 const actions: Tree<State, any> = {
 

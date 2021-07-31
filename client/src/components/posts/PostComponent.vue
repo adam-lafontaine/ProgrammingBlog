@@ -77,8 +77,7 @@ export default class PostComponent extends Vue
     private post_subtitle: string = "";
     private post_tags: Array<string> = [];
     private post_date: string = "";
-    private content_html: string = "";
-    
+    private content_html: string = "";    
 
     private mounted(): void
     {      

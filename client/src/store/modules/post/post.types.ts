@@ -1,4 +1,3 @@
-//======= FUNCTION ENUMS ======================
 
 export const enum PostAction {
     FETCH_HOMEPAGE_CONTENT = "fetchHomepageContent",
@@ -33,8 +32,6 @@ export const enum PostMutation {
     SET_ERROR = "setError"
 }
 
-
-// ^^^^^^^ FUNCTION ENUMS ^^^^^^^^^^^^^^^^^^^^^^
 
 
 export class DataResult<T>
@@ -76,6 +73,7 @@ export interface IHomepageContent {
 
 export interface IPostState {
     homepage_content: IHomepageContent;
+    
     post_list: Array<IPostInfo>;
     selected_post: IPost;
 
