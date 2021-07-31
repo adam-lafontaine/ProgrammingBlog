@@ -3,9 +3,9 @@ import {
     IVideoResource,
 } from "../types/client.types"
 import fs from "fs"
+import Config from "../server_config"
 
-const root_path = "/home/adam/repos/ProgrammingBlog";
-const video_file_path = root_path + "/content/resources/youtube_videos.json";
+const video_file_path = Config.RESOURCES_PATH + "/youtube_videos.json";
 
 export module resource
 {

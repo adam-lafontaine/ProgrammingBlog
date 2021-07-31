@@ -3,12 +3,12 @@ import {
     IPost, IPostInfo
 } from "../types/client.types"
 import { IPostFileInfo } from "../types/server.types"
-import fs from "fs"
 import path from "path"
+import fs from "fs"
 import marked from "marked"
+import Config from "../server_config"
 
-const root_path = "/home/adam/repos/ProgrammingBlog";
-const post_path = root_path + "/content/posts";
+const post_path = Config.POSTS_PATH;
 
 
 export module post

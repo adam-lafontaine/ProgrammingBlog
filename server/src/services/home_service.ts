@@ -1,8 +1,8 @@
 import { DataResult, IHomepageContent } from "../types/client.types"
 import fs from "fs"
-import path from "path";
+import Config from "../server_config"
 
-const home_content_path = path.join(__dirname, "../../../content/pages/home.json");
+const home_content_path = Config.PAGES_PATH + "/home.json";
 
 export module home
 {

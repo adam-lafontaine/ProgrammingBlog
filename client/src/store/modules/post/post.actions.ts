@@ -10,7 +10,7 @@ import {
     IVideoResource,
     IHomepageContent
 } from './post.types'
-import Config from "../../../app_config"
+import Config from "../../../client_config"
 
 
 const ENTRY_ROUTE = Config.SERVER_URL + "/api"
