@@ -42,6 +42,7 @@
 
         <div :id="CONTENT_ID" class="main-content" />
     </b-container>
+    <div style="height:200px;background-color:rgb(233, 236, 239);"></div>
 
 </div>
 </template>
