@@ -46,7 +46,7 @@ void dispose_image(MonoImage& image)
 }
 
 
-void for_each_pixel(MonoImage& image, std::function<void(u8& p)> const& func)
+void for_each_pixel(MonoImage const& image, std::function<void(u8& p)> const& func)
 {
     for (size_t i = 0; i < image.width * image.height; ++i)
     {
@@ -55,7 +55,7 @@ void for_each_pixel(MonoImage& image, std::function<void(u8& p)> const& func)
 }
 
 
-void for_each_pixel(MonoImage& image, std::function<void(u8& p, u32 x, u32 y)> const& func)
+void for_each_pixel(MonoImage const& image, std::function<void(u8& p, u32 x, u32 y)> const& func)
 {
     for (u32 y = 0; y < image.height; ++y)
     {
