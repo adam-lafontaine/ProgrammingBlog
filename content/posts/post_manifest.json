@@ -1,0 +1,14 @@
+{
+    "posts": [
+        { "id": "1626830344000", "title": "Post from a file", "route": "post-from-a-file", "tags": ["Math", "Chemistry", "Physics"] },
+        { "id": "1626830345000", "title": "Second Post", "route": "second-post", "tags": ["Birds", "Bees", "Math"] },
+        { "id": "1626830346000", "title": "Third Post", "route": "third-post", "tags": ["Chemistry", "Frogs", "Snails"] },
+        { "id": "1627749450585", "title": "What is an Image?", "route": "what-is-an-image", "tags": ["Computer Vision", "C++"] },
+        { "id": "", "title": "", "route": "", "tags": [] },
+        { "id": "", "title": "", "route": "", "tags": [] },
+        { "id": "", "title": "", "route": "", "tags": [] },
+        { "id": "", "title": "", "route": "", "tags": [] },
+        { "id": "", "title": "", "route": "", "tags": [] },
+        { "id": "", "title": "", "route": "", "tags": [] }
+    ]
+}

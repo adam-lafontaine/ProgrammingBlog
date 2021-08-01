@@ -48,9 +48,12 @@ export interface IResponse
 
 export interface IPostFileInfo
 {
-    filename: string; // "[timestamp][title][tags].md"
+    filename: string; // "[timestamp][title].md"
+
+    // properties in posts/post_manifest.json
     timestamp: string;
     title: string;
+    route: string;
     tags: Array<string>;
 }
 
