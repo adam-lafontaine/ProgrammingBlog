@@ -121,6 +121,12 @@ int main()
         if (x % 2 == 0 && y % 2 == 0) { p = 0; }
     };
 
+    // set the pixel to gray if x and y are both odd
+    auto const gray_if_odd = [](u8& p, u32 x, u32 y)
+    {
+        if (x % 2 != 0 && y % 2 != 0) { p = 125; }
+    };
+
     // print to console whether a pixel is what we think it should be
     auto const check_pixel = [](u8 p, u8 expected_value) 
     {
@@ -143,10 +149,21 @@ int main()
     
     // set even x and y pixels to black
     for_each_pixel(image, black_if_even);
+
+    // set odd x and y pixels to gray
+    for_each_pixel(image, gray_if_odd);
+
+    // check for black pixels (both even)
     check_pixel(pixel_value(image, 0, 0), 0);
-    check_pixel(pixel_value(image, 3, 3), 255);
-    check_pixel(pixel_value(image, 15, 8), 255);
     check_pixel(pixel_value(image, 10, 6), 0);
+
+    // check for gray pixels (both odd)
+    check_pixel(pixel_value(image, 5, 7), 125);
+    check_pixel(pixel_value(image, 11, 1), 125);
+
+    // check for white pixels (odd and even)
+    check_pixel(pixel_value(image, 6, 3), 255);
+    check_pixel(pixel_value(image, 15, 8), 255);
 
     write_example_image(image);
 
