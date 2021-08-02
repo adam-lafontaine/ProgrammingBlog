@@ -3,7 +3,6 @@ import cors from "cors" // https://expressjs.com/en/resources/middleware/cors.ht
 import { hc } from "./controllers/home_controller"
 import { pc } from "./controllers/post_controller"
 import { rc } from "./controllers/resource_controller"
-import path from "path";
 import Config from "./server_config"
 
 
@@ -27,7 +26,7 @@ app.get("/api/post/:id", pc.send_post);
 
 app.get("/api/resources/videos", rc.send_video_resources);
 
-app.all("/*", (req, res) => { res.sendFile(Config.INDEX_PATH)});
+app.all("/*", (req, res) => { res.sendFile(Config.INDEX_PATH); });
 
 // start the Express server
 app.listen(Config.SERVER_PORT, () => {
