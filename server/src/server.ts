@@ -20,6 +20,8 @@ app.use(express.urlencoded({ extended: true }))
 const client_path = path.join(__dirname, "../client");
 app.use(express.static(client_path));
 
+
+
 // api routes
 app.get("/api/home", hc.send_content);
 
@@ -27,6 +29,9 @@ app.get("/api/post/list", pc.send_post_list);
 app.get("/api/post/:id", pc.send_post);
 
 app.get("/api/resources/videos", rc.send_video_resources);
+
+const index_path = path.join(client_path, "index.html");
+app.all("/*", (req, res) => { res.sendFile(index_path)});
 
 
 // start the Express server
