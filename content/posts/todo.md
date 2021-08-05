@@ -1,5 +1,6 @@
 Posts
-* rgb images
+* rgb images planar
+* rgb images interleaved
 * read, write, stb
 * begin, end, stl
 * sub image views
