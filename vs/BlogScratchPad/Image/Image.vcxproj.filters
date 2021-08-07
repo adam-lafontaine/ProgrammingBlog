@@ -28,6 +28,9 @@
     <Filter Include="Source Files\util\libimage\stb_wrapper">
       <UniqueIdentifier>{f8eaace2-9d37-4b53-8d61-6be3049124c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\demos">
+      <UniqueIdentifier>{9ee73853-cbec-4ccd-9f1d-ab3ed54397c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
@@ -49,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="..\util\libimage\gray.hpp">
       <Filter>Header Files\util\libimage</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\post001.hpp">
+      <Filter>Header Files\demos</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\transparent_background.hpp">
+      <Filter>Header Files\demos</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
