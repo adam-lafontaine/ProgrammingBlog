@@ -22,7 +22,7 @@ void run()
 	u32 const h_factor = 256 / src.height;
 
 	auto const white = img::to_pixel(255, 255, 255).value;
-	auto const transparent = img::to_pixel(255, 255, 255, 0).value;
+	auto const transparent = img::to_pixel(0, 0, 0, 0).value;
 
 	auto const tr = [&](img::pixel_t& p) 
 	{
