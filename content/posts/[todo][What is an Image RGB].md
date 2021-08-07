@@ -18,9 +18,6 @@ typedef struct
     u8* green_data = nullptr;
     u8* blue_data = nullptr;
 
-    // optional alpha channel
-    // u8* alpha_data = nullptr;
-
 } RGBImagePlanar;
 ```
 
@@ -171,9 +168,6 @@ typedef struct
     u8 red = 0;
     u8 green = 0;
     u8 blue = 0;
-
-    // optional alpha channel
-    // u8 alpha = 0;
 
 } RGBPixel;
 ```
