@@ -125,7 +125,7 @@ function get_post_file_info(): Array<IPostFileInfo>
 
     for(const item of manifest_data)
     {
-        const file = files.find(x => x.includes(item.id));
+        const file = files.find(x => x.includes(item.number));
         if(file == null)
         {
             continue;
