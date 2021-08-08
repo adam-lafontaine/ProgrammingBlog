@@ -9,6 +9,7 @@ import marked from "marked"
 import Config from "../server_config"
 
 const post_path = Config.POSTS_PATH;
+const manifest_path = post_path + "/post_manifest.json";
 
 
 export module post
@@ -33,7 +34,7 @@ export module post
             }
 
             status = "reading file";
-            const post = read_post_file(item.filename);
+            const post = read_post_file(item.filename, post_data);
 
             result.data = post;
             result.success = true;
@@ -69,7 +70,7 @@ export module post
             }
 
             status = "reading file";
-            const post = read_post_file(item.filename);
+            const post = read_post_file(item.filename, post_data);
 
             result.data = post;
             result.success = true;
@@ -116,35 +117,30 @@ function get_post_file_info(): Array<IPostFileInfo>
 {
     const files = fs.readdirSync(post_path);
 
-    // "[timestamp][title][tags]"
-    // TODO: validate with regex
-    const is_valid = (s: string) => { return true; };
+    const json_str = fs.readFileSync(manifest_path, 'utf8');
+    const obj = JSON.parse(json_str);
+    const manifest_data = (obj.posts as Array<any>).filter(x => x.id.length > 0);
 
-    return files.filter(x => is_valid(x)).map(x => to_post_file_info(x));
-}
+    let list: Array<IPostFileInfo> = [];
 
+    for(const item of manifest_data)
+    {
+        const file = files.find(x => x.includes(item.number));
+        if(file == null)
+        {
+            continue;
+        }
 
-function to_post_file_info(filename: string): IPostFileInfo
-{
-    let begin = filename.indexOf("[") + 1;
-    let end = filename.indexOf("]", begin);
-    const timestamp = filename.substring(begin, end);
+        list.push({
+            filename: file,
+            timestamp: item.id,
+            title: item.title,
+            route: item.route,
+            tags: item.tags
+        });
+    }
 
-    begin = filename.indexOf("[", end) + 1;
-    end = filename.indexOf("]", begin);
-    const title = filename.substring(begin, end);
-
-    begin = filename.indexOf("[", end) + 1;
-    end = filename.indexOf("]", begin);
-    const tag_csv = filename.substring(begin, end);
-    const tags = tag_csv.split(",");
-
-    return {
-        filename: filename,
-        timestamp: timestamp,
-        title : title,
-        tags: tags
-    };
+    return list;
 }
 
 
@@ -154,14 +150,14 @@ function to_post_info(file_info: IPostFileInfo): IPostInfo
         id: file_info.timestamp,
         title: file_info.title,
         tags: file_info.tags,
-        route: to_kebab(file_info.title)
+        route: file_info.route
     };
 }
 
 
-function read_post_file(filename: string): IPost
+function read_post_file(filename: string, posts: Array<IPostFileInfo>): IPost
 {
-    const info = to_post_file_info(filename);
+    const info = posts.find(x => x.filename === filename);
 
     const file_path = path.join(post_path, filename);
     const data = fs.readFileSync(file_path, "utf8");
@@ -184,13 +180,4 @@ function read_post_file(filename: string): IPost
         tags: info.tags,
         content_html: marked(data.substr(end + 1))
     };
-}
-
-
-
-
-
-function to_kebab(s: string): string
-{
-    return s.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase();
 }

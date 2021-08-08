@@ -8,6 +8,11 @@
 .code-font {
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 }
+
+.nav-link {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
 </style>
 
 <template>
@@ -21,7 +26,23 @@
           <b-nav-item to="/resources">Resources</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item 
+          href="https://github.com/adam-lafontaine"
+          target="_blank"
+          >
+          <b-icon-github/>          
+        </b-nav-item>
+      </b-navbar-nav>
     </b-navbar>
     <router-view/>
   </div>
 </template>
+
+<script>
+import { Component, Vue, Prop } from 'vue-property-decorator'
+import { BIconGithub, BIconLinkedin } from 'bootstrap-vue'
+
+@Component({ components: { BIconGithub, BIconLinkedin } })
+export default class App extends Vue {}
+</script>

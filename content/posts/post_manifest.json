@@ -1,0 +1,11 @@
+{
+    "posts": [
+        { "number": "[001]", "id": "1628349101037", "title": "What is an Image?", "route": "what-is-an-image", "tags": ["Image Processing", "C++"] },
+        { "number": "[]", "id": "", "title": "What is an image? - RGB edition", "route": "what-is-an-image-rgb", "tags": ["Image Processing", "C++"] },
+        { "number": "[]", "id": "", "title": "", "route": "", "tags": [] },
+        { "number": "[]", "id": "", "title": "", "route": "", "tags": [] },
+        { "number": "[]", "id": "", "title": "", "route": "", "tags": [] },
+        { "number": "[]", "id": "", "title": "", "route": "", "tags": [] },
+        { "number": "[]", "id": "", "title": "", "route": "", "tags": [] }
+    ]
+}

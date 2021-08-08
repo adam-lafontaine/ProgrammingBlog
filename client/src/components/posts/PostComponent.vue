@@ -42,6 +42,7 @@
 
         <div :id="CONTENT_ID" class="main-content" />
     </b-container>
+    <footer :id="FOOTER_ID" style="height:200px;background-color:rgb(233, 236, 239);visibility: hidden;"></footer>
 
 </div>
 </template>
@@ -72,6 +73,7 @@ export default class PostComponent extends Vue
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
     private readonly CONTENT_ID = "POST_MAIN_CONTENT";
+    private readonly FOOTER_ID = "POST_FOOTER";
 
     private post_title: string = "";
     private post_subtitle: string = "";
@@ -116,7 +118,8 @@ export default class PostComponent extends Vue
         }        
         
         document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
-        hljs.highlightAll();         
+        hljs.highlightAll();
+        document.getElementById(this.FOOTER_ID).style.visibility = "visible";
     }
 
 
