@@ -10,16 +10,16 @@ import {
     IVideoResource,
     IHomepageContent
 } from './post.types'
-import Config from "../../../client_config"
+//import Config from "../../../client_config"
 
 
-const ENTRY_ROUTE = Config.SERVER_URL + "/api"
+const ENTRY_ROUTE = "./content";
 
 const actions: Tree<State, any> = {
 
     async [Action.FETCH_HOMEPAGE_CONTENT]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + "/home";
+        const url = ENTRY_ROUTE + "/pages/home.json";
         let status = "";
         const empty = Make.homepage_content();
 
@@ -32,33 +32,20 @@ const actions: Tree<State, any> = {
 
         try
         {
+            
             set_status("fetching content");
-            const response = await axios.get(url);
-
-            set_status("checking response type");
-            if(!is_DataResult(response.data))
-            {
-                report_error();
-                return;
-            }
-
-            const result = response.data as DataResult<IHomepageContent>;
-
-            set_status(result.message);
-            if(!result.success)
-            {
-                report_error();
-                return;
-            }
+            const response = await axios.get(url);            
 
             set_status("checking response data");
-            if(!has_object_properties(response.data.data, empty))
+            if(!has_object_properties(response.data, empty))
             {
                 report_error();
                 return;
-            }     
+            }
 
-            commit(Mutation.SET_HOMEPAGE_CONTENT, result.data);
+            const data = response.data as IHomepageContent;
+
+            commit(Mutation.SET_HOMEPAGE_CONTENT, data);
         }
         catch(error: unknown)
         {
@@ -67,10 +54,12 @@ const actions: Tree<State, any> = {
         }
     },
 
+
     async [Action.FETCH_POST_LIST]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + "/post/list";
+        const url = ENTRY_ROUTE + "/posts/post_manifest.json";
         let status = "";
+        const empty = Make.post_info();
 
         const set_status = (s: string) => { status = `FETCH_POST_LIST ${s}`; };
         const report_error = () => 
@@ -84,29 +73,28 @@ const actions: Tree<State, any> = {
             set_status("fetching post list");
             const response = await axios.get(url);
 
-            set_status("checking response type");
-            if(!is_DataResult(response.data))
+            set_status("checking response data");
+            if(!has_object_properties(response.data, { posts: [] }))
             {
                 report_error();
                 return;
             }
 
-            const result = response.data as DataResult<IPostInfo>;
+            const list = (response.data.posts as Array<any>).filter(x => x.id.length > 0);
+            const valid_data = 
+                Array.isArray(list) &&
+                list.length > 0 &&
+                has_object_properties(list[0], empty);
 
-            set_status(result.message);
-            if(!result.success)
+            if(!valid_data)
             {
                 report_error();
                 return;
             }
 
-            if(!Array.isArray(response.data.data))
-            {
-                report_error();
-                return;
-            }
+            const data = list as Array<IPostInfo>;
 
-            commit(Mutation.SET_POST_LIST, result.data);
+            commit(Mutation.SET_POST_LIST, data);
         }
         catch(error: unknown)
         {
