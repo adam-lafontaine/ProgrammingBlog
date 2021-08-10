@@ -52,10 +52,12 @@ export interface IPost {
 
 
 export interface IPostInfo {
+    number: string;
     id: string;
     title: string;
     tags: Array<string>;
-    route: string; 
+    route: string;
+    filename: string;
 }
 
 
@@ -112,10 +114,12 @@ export module Make
     export function post_info(): IPostInfo
     {
         return {
+            number: "",
             id: "",
             title: "",
             tags: [],
-            route: ""
+            route: "",
+            filename: ""
         }
     }
 

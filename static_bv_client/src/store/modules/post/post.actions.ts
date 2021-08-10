@@ -10,10 +10,10 @@ import {
     IVideoResource,
     IHomepageContent
 } from './post.types'
-//import Config from "../../../client_config"
+import marked from "marked"
 
 
-const ENTRY_ROUTE = "./content";
+const ENTRY_ROUTE = "/content";
 
 const actions: Tree<State, any> = {
 
@@ -84,7 +84,7 @@ const actions: Tree<State, any> = {
             const valid_data = 
                 Array.isArray(list) &&
                 list.length > 0 &&
-                has_object_properties(list[0], empty);
+                array_has_object_properties(list, empty);
 
             if(!valid_data)
             {
@@ -107,7 +107,7 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_SELECTED_POST]({ commit, state }, post_id: string): Promise<any>
     {
-        const url = ENTRY_ROUTE + `/post/${post_id}`;
+        
         const empty_post = Make.post();
         let status = "";
 
@@ -116,37 +116,34 @@ const actions: Tree<State, any> = {
         { 
             console.error(status);
             commit(Mutation.SET_SELECTED_POST, empty_post); 
-        };
+        };        
+        
+        if(state.post_list.length === 0)
+        {
+            set_status("post list not loaded");
+            report_error();
+            return;
+        }
 
         try
         {
+            set_status("finding post listing");
+            const info = state.post_list.find(x => x.id === post_id);
+            if(info == null)
+            {
+                report_error();
+                return;
+            }
+
+            const url = ENTRY_ROUTE + `/posts/${info.filename}`;
+
             set_status("fetching blog post");
             const response = await axios.get(url);
             
-            status = "checking response type";
-            if(!is_DataResult(response.data))
-            {
-                report_error();
-                return;
-            }
+            set_status("building post");
+            const post = build_post(info, response.data);
 
-            const result = response.data as DataResult<IPost>;
-
-            set_status(result.message);
-            if(!result.success)
-            {
-                report_error();
-                return;
-            }
-
-            set_status("checking response data");
-            if(!has_object_properties(response.data.data, empty_post))
-            {
-                report_error();
-                return;
-            }     
-
-            commit(Mutation.SET_SELECTED_POST, result.data);
+            commit(Mutation.SET_SELECTED_POST, post);
         }
         catch (error: unknown)
         {            
@@ -158,7 +155,7 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_VIDEO_RESOURCES]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + `/resources/videos`;
+        const url = ENTRY_ROUTE + `/resources/youtube_videos.json`;
         const empty = Make.video_resource();
         let status = "";
 
@@ -174,36 +171,29 @@ const actions: Tree<State, any> = {
             set_status("fetching resources");
             const response = await axios.get(url);
             
-            set_status("checking response type");
-            if(!is_DataResult(response.data))
-            {
-                report_error();
-                return;
-            }
-
-            const result = response.data as DataResult<Array<IVideoResource>>;
-
-            set_status(result.message);
-            if(!result.success)
-            {
-                report_error();
-                return;
-            }
-
             set_status("checking response data");
-            if(!Array.isArray(response.data.data))
+            if(!has_object_properties(response.data, { videos: [] }))
             {
                 report_error();
                 return;
             }
 
-            if(!array_has_object_properties(result.data, empty))
+            const list = response.data.videos as Array<any>;
+
+            const valid_data = 
+                Array.isArray(list) &&
+                list.length > 0 &&
+                array_has_object_properties(list, empty);
+
+            if(!valid_data)
             {
                 report_error();
                 return;
-            }     
+            }
 
-            commit(Mutation.SET_VIDEO_RESOURCES, result.data);
+            const data = list as Array<IVideoResource>;
+
+            commit(Mutation.SET_VIDEO_RESOURCES, data);
         }
         catch(error: unknown)
         {
@@ -212,6 +202,29 @@ const actions: Tree<State, any> = {
         }
     }
 
+}
+
+
+function build_post(info: IPostInfo, content_md: string): IPost
+{
+    const title_flag = "#";
+    const subtitle_flag = "##";
+
+    let begin = content_md.indexOf(title_flag) + title_flag.length + 1;
+    let end = content_md.indexOf("\n", begin);
+    const title = content_md.substring(begin, end);
+
+    begin = content_md.indexOf(subtitle_flag) + subtitle_flag.length + 1;
+    end = content_md.indexOf("\n", begin);
+    const subtitle = content_md.substring(begin, end);
+
+    return {
+        id: info.id,
+        title: title,
+        subtitle: subtitle,
+        tags: info.tags,
+        content_html: marked(content_md.substr(end + 1))
+    };
 }
 
 
@@ -233,10 +246,5 @@ function array_has_object_properties(arr: Array<any>, obj: object): boolean
     return arr.every(x => has_object_properties(x, obj));
 }
 
-
-function is_DataResult(val: any): boolean
-{
-    return has_object_properties(val, new DataResult<any>());
-}
 
 export default actions
