@@ -152,6 +152,7 @@
     <ClInclude Include="..\util\libimage\libimage.hpp" />
     <ClInclude Include="..\util\win32_leak_check.h" />
     <ClInclude Include="demos\post001.hpp" />
+    <ClInclude Include="demos\post002.hpp" />
     <ClInclude Include="demos\transparent_background.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

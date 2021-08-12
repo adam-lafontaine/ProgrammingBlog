@@ -2,7 +2,7 @@
 #include "../../util/win32_leak_check.h"
 #endif
 
-#include "../demos/transparent_background.hpp"
+#include "../demos/post002.hpp"
 
 
 int main()

@@ -59,5 +59,8 @@
     <ClInclude Include="demos\transparent_background.hpp">
       <Filter>Header Files\demos</Filter>
     </ClInclude>
+    <ClInclude Include="demos\post002.hpp">
+      <Filter>Header Files\demos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
