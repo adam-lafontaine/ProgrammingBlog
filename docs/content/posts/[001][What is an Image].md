@@ -15,7 +15,7 @@ using u8 = uint8_t;    // 8 bit unsigned integer
 using u32 = unsigned;  // 32 bit unsigned integer
 
 
-typedef struct
+typedef struct MonoImage_t
 {
     u32 width = 0;
     u32 height = 0;
@@ -150,7 +150,7 @@ Sample program below.
 using u8 = uint8_t;
 using u32 = unsigned;
 
-typedef struct
+typedef struct MonoImage_t
 {
     u32 width = 0;
     u32 height = 0;
