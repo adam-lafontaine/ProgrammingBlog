@@ -59,8 +59,14 @@
     <ClInclude Include="demos\transparent_background.hpp">
       <Filter>Header Files\demos</Filter>
     </ClInclude>
+    <ClInclude Include="demos\planar.hpp">
+      <Filter>Header Files\demos</Filter>
+    </ClInclude>
     <ClInclude Include="demos\post002.hpp">
       <Filter>Header Files\demos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\rgba.hpp">
+      <Filter>Header Files\util\libimage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

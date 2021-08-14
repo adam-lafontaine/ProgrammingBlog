@@ -76,7 +76,7 @@ namespace libimage
 	{
 		make_image(image_dst, view.width, view.height);
 
-		std::transform(view.begin(), view.end(), image_dst.begin(), [&](auto p) { return p; });
+		std::copy(view.begin(), view.end(), image_dst.begin());
 	}
 
 
