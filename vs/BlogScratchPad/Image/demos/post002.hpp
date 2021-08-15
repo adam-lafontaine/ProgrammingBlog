@@ -14,14 +14,14 @@ using u8 = uint8_t;    // 8 bit unsigned integer
 using u32 = unsigned;  // 32 bit unsigned integer
 
 
-typedef struct
-{
-	u32 width;
-	u32 height;
-
-	u32* data;
-
-} RGBAImage;
+//typedef struct
+//{
+//	u32 width;
+//	u32 height;
+//
+//	u32* data;
+//
+//} RGBAImage;
 
 
 void print(const char* str, u32 val)
@@ -278,13 +278,97 @@ void dispose_image(Image& image)
 }
 
 
+void for_each_pixel(Image const& image, std::function<void(Pixel& p)> const& func)
+{
+	for (size_t i = 0; i < image.width * image.height; ++i)
+	{
+		func(image.data[i]);
+	}
+}
+
+
+void for_each_pixel(Image const& image, std::function<void(Pixel& p, u32 x, u32 y)> const& func)
+{
+	for (u32 y = 0; y < image.height; ++y)
+	{
+		auto row_offset = static_cast<size_t>(y * image.width);
+		auto row_begin = image.data + row_offset;
+
+		for (u32 x = 0; x < image.width; ++x)
+		{
+			func(row_begin[x], x, y);
+		}
+	}
+}
+
+
+Pixel pixel_value(Image const& image, u32 x, u32 y)
+{
+	auto row_offset = static_cast<size_t>(y * image.width);
+	auto row_begin = image.data + row_offset;
+
+	return row_begin[x];
+}
+
+
+void write_and_dispose_image(Image const& rgba, const char* dst_path)
+{
+	img::image_t image;
+	image.data = (img::pixel_t*)rgba.data;
+	image.width = rgba.width;
+	image.height = rgba.height;
+
+	img::write_image(image, dst_path);
+}
+
+
+bool operator == (Pixel const& lhs, Pixel const& rhs)
+{
+	return
+		lhs.red == rhs.red &&
+		lhs.green == rhs.green &&
+		lhs.blue == rhs.blue &&
+		lhs.alpha == rhs.alpha;
+}
+
+
 void run()
 {
-	bitwise_example();
-	rgba_pointer_cast_example();
-	//rgb_pointer_cast_example();
-	//bitwise_set_example();
-	libimage_example();
+	Pixel blue = { 0, 35, 139, 255 };
+	Pixel white = { 255, 255, 255, 255 };
+	Pixel red = { 237, 41, 57, 255 };
+
+	Image image;
+	u32 image_width = 150;
+	u32 image_height = 100;
+	make_image(image, image_width, image_height);
+
+	auto const french_flag = [&](Pixel& p, u32 x, u32 y) 
+	{
+		if (x < image_width / 3)
+		{
+			p = blue;
+		}
+		else if (x < image_width * 2 / 3)
+		{
+			p = white;
+		}
+		else
+		{
+			p = red;
+		}
+	};
+
+	for_each_pixel(image, french_flag);
+
+	u32 blue_count = 0;
+	auto const count = [&](Pixel& p) { blue_count += (p == blue); };
+
+	for_each_pixel(image, count);
+
+	std::cout << "\nblue pixel count = " << blue_count << '\n';
+
+	write_and_dispose_image(image, "out_files/french.bmp");
 
 	std::cout << "\n\n";
 	int x = 0;

@@ -132,6 +132,19 @@ Pixel pixel_value(Image const& image, u32 x, u32 y)
 }
 ```
 
+Compare pixels
+
+```cpp
+bool operator == (Pixel const& lhs, Pixel const& rhs)
+{
+	return
+		lhs.red == rhs.red &&
+		lhs.green == rhs.green &&
+		lhs.blue == rhs.blue &&
+		lhs.alpha == rhs.alpha;
+}
+```
+
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B002%5D/bitwise_example.bmp)
 
 This works but is not very expressive, and may require a lesson in bitwise operations as shown in the comments.

@@ -157,5 +157,5 @@ void run()
 
     write_example_image(image);
 
-    //dispose_image(image);
+    dispose_image(image);
 }
