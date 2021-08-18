@@ -39,7 +39,7 @@ void bitwise_example()
 	// Decimal: 2596069119
 	//     Hex:       9A       BC       DE       FF
 	//  Binary: 10011010 10111100 11011110 11111111
-	//           r = 154  g = 188  b = 222  a = 255
+	//           r = 154  g = 188  b = 222  a = 255 // wrong
 
 	u8 r = color >> 24u;          // 00000000 00000000 00000000 10011010
 	u8 g = (color >> 16u) & 255u; // 00000000 00000000 10011010 10111100 & 00000000 00000000 00000000 11111111
@@ -311,14 +311,28 @@ Pixel pixel_value(Image const& image, u32 x, u32 y)
 }
 
 
-void write_and_dispose_image(Image const& rgba, const char* dst_path)
+void write_enlarged_image(Image const& rgba, const char* dst_path)
 {
-	img::image_t image;
-	image.data = (img::pixel_t*)rgba.data;
-	image.width = rgba.width;
-	image.height = rgba.height;
+	u32 factor = 20;
+	img::image_t big;
+	img::make_image(big, rgba.width * factor, rgba.height * factor);
 
-	img::write_image(image, dst_path);
+	auto const to_pixel = [](Pixel const& p) {};
+
+	for (u32 y = 0; y < big.height; ++y)
+	{
+		auto my = y / factor;
+
+		auto row_begin = big.row_begin(y);
+		for (u32 x = 0; x < big.width; ++x)
+		{
+			auto mx = x / factor;
+			auto const p = pixel_value(rgba, mx, my);
+			row_begin[x] = img::to_pixel(p.red, p.green, p.blue);
+		}
+	}
+
+	img::write_image(big, dst_path);
 }
 
 
@@ -332,43 +346,70 @@ bool operator == (Pixel const& lhs, Pixel const& rhs)
 }
 
 
+void check_pixel(Pixel const& p, Pixel const& ex)
+{
+	auto const msg = p == ex ? "ok" : "not ok";
+	printf_s("pixel: %2X %2X %2X %2X", p.red, p.green, p.blue, p.alpha);
+	printf_s(", expected: %2X %2X %2X %2X", ex.red, ex.green, ex.blue, ex.alpha);
+	printf_s(" - %s\n", msg);
+}
+
+
 void run()
 {
 	Pixel blue = { 0, 35, 139, 255 };
 	Pixel white = { 255, 255, 255, 255 };
 	Pixel red = { 237, 41, 57, 255 };
+	Pixel black = { 0, 0, 0, 255 };
+	Pixel gray = { 125, 125, 125, 255 };
 
 	Image image;
-	u32 image_width = 150;
-	u32 image_height = 100;
+	u32 image_width = 45;
+	u32 image_height = 30;
 	make_image(image, image_width, image_height);
 
 	auto const french_flag = [&](Pixel& p, u32 x, u32 y) 
 	{
-		if (x < image_width / 3)
-		{
-			p = blue;
-		}
-		else if (x < image_width * 2 / 3)
-		{
-			p = white;
-		}
-		else
-		{
-			p = red;
-		}
+		if (x < image_width / 3)          { p = blue; }
+		else if (x < image_width * 2 / 3) { p = white; }
+		else                              { p = red; }
 	};
 
 	for_each_pixel(image, french_flag);
+
+	write_enlarged_image(image, "out_files/french.bmp");
 
 	u32 blue_count = 0;
 	auto const count = [&](Pixel& p) { blue_count += (p == blue); };
 
 	for_each_pixel(image, count);
 
-	std::cout << "\nblue pixel count = " << blue_count << '\n';
+	std::cout << "\nblue pixel count = " << blue_count << '\n';	
 
-	write_and_dispose_image(image, "out_files/french.bmp");
+	auto const pattern = [&](Pixel& p, u32 x, u32 y) 
+	{
+		if (x % 2 == 0 && y % 2 == 0)      { p = black; }
+		else if (x % 2 != 0 && y % 2 != 0) { p = gray; }
+		else                               { p = white; }
+	};
+
+	for_each_pixel(image, pattern);
+
+	// check for black pixels (both even)
+	check_pixel(pixel_value(image, 0, 0), black);
+	check_pixel(pixel_value(image, 10, 6), black);
+
+	// check for gray pixels (both odd)
+	check_pixel(pixel_value(image, 5, 7), gray);
+	check_pixel(pixel_value(image, 11, 1), gray);
+
+	// check for white pixels (odd and even)
+	check_pixel(pixel_value(image, 6, 3), white);
+	check_pixel(pixel_value(image, 15, 8), white);
+
+	write_enlarged_image(image, "out_files/pattern.bmp");
+
+	dispose_image(image);
 
 	std::cout << "\n\n";
 	int x = 0;
