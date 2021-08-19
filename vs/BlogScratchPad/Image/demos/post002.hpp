@@ -313,7 +313,7 @@ Pixel pixel_value(Image const& image, u32 x, u32 y)
 
 void write_enlarged_image(Image const& rgba, const char* dst_path)
 {
-	u32 factor = 20;
+	u32 factor = 10;
 	img::image_t big;
 	img::make_image(big, rgba.width * factor, rgba.height * factor);
 
@@ -384,7 +384,7 @@ void run()
 
 	for_each_pixel(image, count);
 
-	std::cout << "\nblue pixel count = " << blue_count << '\n';	
+	std::cout << "\nblue pixel count = " << blue_count << "\n\n";
 
 	auto const pattern = [&](Pixel& p, u32 x, u32 y) 
 	{
