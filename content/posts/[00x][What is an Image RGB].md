@@ -21,8 +21,10 @@ typedef struct
 } RGBImagePlanar;
 ```
 
+Make a new image by allocating memory for it.
+
 ```cpp
-#include <functional>
+#include <cassert>
 
 void make_image(RGBImagePlanar& image, u32 width, u32 height)
 {
@@ -39,14 +41,23 @@ void make_image(RGBImagePlanar& image, u32 width, u32 height)
     */
 
     // avoid 3 separate calls to malloc
-    image.red_data = (u8*)malloc( 3u * sizeof(u8) * width * height);
-    image.green_data = image.red_data + (width * height);
-    image.blue_data = image.green_data + (width * height);
+    auto const channel_size = width * height;
+    image.red_data = (u8*)malloc(3u * sizeof(u8) * channel_size);
 
-    assert(image.data);
+    assert(image.red_data);
+
+    image.green_data = image.red_data + channel_size;
+    image.blue_data = image.green_data + channel_size;
+
+    assert(image.red_data);
 }
+```
 
+Instead of allocating memory for each channel, one large buffer can be allocated and pointers for each channel can be assigned appropriately.  In this example the red channel gets the first third of the memory, the green channel gets the middle third, and the blue channel gets the final third.
 
+The memory needs to be released when we are done with the image.
+
+```cpp
 void dispose_image(RGBImagePlanar& image)
 {
     if (image.red_data != nullptr)
@@ -57,21 +68,11 @@ void dispose_image(RGBImagePlanar& image)
 }
 ```
 
-Each pixel is the red, green and blue values at the same relative offset.
-
-```cpp
-void for_each_pixel(RGBImagePlanar const& image, std::function<void(u8& r, u8& g, u8& b> const& func)
-{
-    for(size_t i = 0; i < image.width * image.height; ++i)
-    {
-        func(image.red_data[i], image.green_data[i], image.blue_data[i]);
-    }
-}
-```
-
 Each channel can be processed individually.
 
 ```cpp
+#include <functional>
+
 void for_each_pixel_ch(u8* ch_data, u32 width, u32 height, std::function<void(u8& ch)> const& func)
 {
     for(size_t i = 0; i < width * height; ++i)
@@ -98,20 +99,37 @@ void process_image_by_channel(RGBImagePlanar const& image)
 }
 ```
 
+It may seem inefficient to iterate over an image 3 times, and it is.  But having the image's memory organized in this manner means that each channel is independent.  Each channel can be processed on a separate thread without interfering with the others allowing to process the channels in parallel.
+
+Since each channel is essentially a pointer with a width and a height, we can treat them each as grayscale images.  Any algorithm that can be used on a grayscale image can be used on an individual channel as well.
+
+A pixel is effectively the red, green and blue values at the same relative offset.
+
+```cpp
+
+void for_each_pixel(RGBImagePlanar const& image, std::function<void(u8& r, u8& g, u8& b)> const& func)
+{
+    for(size_t i = 0; i < image.width * image.height; ++i)
+    {
+        func(image.red_data[i], image.green_data[i], image.blue_data[i]);
+    }
+}
+```
+
 Iterate over an image in terms of the x and y coordinates
 
 ```cpp
-void for_each_pixel(RGBImagePlanar const& image, std::function<void(u8& r, u8& g, u8& b, u32 x, u32 y> const& func)
+void for_each_pixel(RGBImagePlanar const& image, std::function<void(u8& r, u8& g, u8& b, u32 x, u32 y)> const& func)
 {
-    for(u32 y = 0; y < height; ++y)
+    for(u32 y = 0; y < image.height; ++y)
     {
-        auto row_offset = static_cast<size_t>(y * width);
+        auto row_offset = static_cast<size_t>(y * image.width);
 
         auto red_row_begin = image.red_data + row_offset;
         auto green_row_begin = image.green_data + row_offset;
         auto blue_row_begin = image.blue_data + row_offset;
 
-        for(u32 x = 0; x < width; ++x)
+        for(u32 x = 0; x < image.width; ++x)
         {
             auto& r = red_row_begin[x];
             auto& g = green_row_begin[x];
@@ -123,8 +141,7 @@ void for_each_pixel(RGBImagePlanar const& image, std::function<void(u8& r, u8& g
 }
 ```
 
-Process each channel separately in terms of the x and y coordinates.
-
+We can also allow for parallel processing in terms of the x and y coordinates.
 
 ```cpp
 void for_each_pixel_ch(u8* ch_data, u32 width, u32 height, std::function<void(u8& ch, u32 x, u32 y)> const& func)
@@ -172,7 +189,7 @@ typedef struct
 } RGBPixel;
 ```
 
-We can get the pixel at a given x and y position like so.
+We can get the pixel values at a given x and y position like so.
 
 ```cpp
 RGBPixel get_pixel(RGBImagePlanar const& image, u32 x, u32 y)
@@ -184,10 +201,27 @@ RGBPixel get_pixel(RGBImagePlanar const& image, u32 x, u32 y)
     auto blue_row_begin = image.blue_data + row_offset;
 
     return {
-        red_row_begin[x];
-        green_row_begin[x];
-        blue_row_begin[x];
+        red_row_begin[x],
+        green_row_begin[x],
+        blue_row_begin[x]
     };
+}
+```
+
+We can also assign a new color to a pixel.
+
+```cpp
+void set_pixel(RGBImagePlanar const& image, u32 x, u32 y, RGBPixel const& color)
+{
+    auto row_offset = static_cast<size_t>(y * image.width);
+
+    auto red_row_begin = image.red_data + row_offset;
+    auto green_row_begin = image.green_data + row_offset;
+    auto blue_row_begin = image.blue_data + row_offset;
+
+    red_row_begin[x] = color.red;
+    green_row_begin[x] = color.green;
+    blue_row_begin[x] = color.blue;
 }
 ```
 
