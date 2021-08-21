@@ -5,6 +5,8 @@ I'm pretty old, so I remember when dealing with images on a computer was rare.  
 
 So what is a digital image?  It's not a 2D matrix, although you can treat is as one if you like.  It is a chunk of memory on your hard drive, or in RAM if you are actually looking at it.  Actually, the same can be said for anything on your computer.  The real question is how do we deal with it in code?
 
+### Monochrome Images
+
 An image is simply a pointer with a width and height.  We can represent it using a simple struct.
 
 ```cpp
@@ -17,14 +19,17 @@ using u32 = unsigned;  // 32 bit unsigned integer
 
 typedef struct MonoImage_t
 {
-    u32 width = 0;
+    u32 width  = 0;
     u32 height = 0;
-    u8* data = nullptr;
+    u8* data   = nullptr;
 
 } MonoImage;
 ```
 
 This is a monochrome (grayscale) image.  Each pixel is represented as an 8 bit unsigned integer with values ranging from 0 to 255.  A value of 0 means that the pixel is black, and 255 means that the pixel is white.  The values in between are different shades of gray.
+
+
+### Image Creation
 
 The pixels themselves are a block of memory with a size in bytes equal to the product of the width and height.  Each pixel being one byte.  The pointer in our struct is the address of the first byte in the block of memory.  In order to create a new image, we simply need to allocate memory on the heap.
 
@@ -56,6 +61,9 @@ void dispose_image(MonoImage& image)
     }
 }
 ```
+
+
+### Image Processing
 
 Iterating over an image is pretty straightforward.
 
@@ -152,9 +160,9 @@ using u32 = unsigned;
 
 typedef struct MonoImage_t
 {
-    u32 width = 0;
+    u32 width  = 0;
     u32 height = 0;
-    u8* data = nullptr;
+    u8* data   = nullptr;
 
 } MonoImage;
 

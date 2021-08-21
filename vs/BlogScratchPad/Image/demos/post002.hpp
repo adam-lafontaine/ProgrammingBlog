@@ -363,35 +363,51 @@ void run()
 	Pixel black = { 0, 0, 0, 255 };
 	Pixel gray = { 125, 125, 125, 255 };
 
-	Image image;
 	u32 image_width = 45;
 	u32 image_height = 30;
-	make_image(image, image_width, image_height);
 
-	auto const french_flag = [&](Pixel& p, u32 x, u32 y) 
+	auto const french_flag = [&](Pixel& p, u32 x, u32 y)
 	{
-		if (x < image_width / 3)          { p = blue; }
+		if (x < image_width / 3) { p = blue; }
 		else if (x < image_width * 2 / 3) { p = white; }
-		else                              { p = red; }
+		else { p = red; }
 	};
+
+	auto const dutch_flag = [&](Pixel& p, u32 x, u32 y) 
+	{
+		if (y < image_height / 3) { p = red; }
+		else if (y < image_height * 2 / 3) { p = white; }
+		else { p = blue; }
+	};
+
+	auto const pattern = [&](Pixel& p, u32 x, u32 y)
+	{
+		if (x % 2 == 0 && y % 2 == 0) { p = black; }
+		else if (x % 2 != 0 && y % 2 != 0) { p = gray; }
+		else { p = white; }
+	};
+
+	Image image;	
+	make_image(image, image_width, image_height);	
 
 	for_each_pixel(image, french_flag);
 
+	u32 blue_count = 0;
+	auto const count_blue = [&](Pixel& p) { blue_count += (p == blue); };
+
+	for_each_pixel(image, count_blue);
+
+	std::cout << "\nFrench flag blue pixel count = " << blue_count << "\n";
+
 	write_enlarged_image(image, "out_files/french.bmp");
 
-	u32 blue_count = 0;
-	auto const count = [&](Pixel& p) { blue_count += (p == blue); };
+	blue_count = 0;
+	for_each_pixel(image, dutch_flag);
+	for_each_pixel(image, count_blue);
 
-	for_each_pixel(image, count);
+	std::cout << "Dutch flag blue pixel count = " << blue_count << "\n\n";
 
-	std::cout << "\nblue pixel count = " << blue_count << "\n\n";
-
-	auto const pattern = [&](Pixel& p, u32 x, u32 y) 
-	{
-		if (x % 2 == 0 && y % 2 == 0)      { p = black; }
-		else if (x % 2 != 0 && y % 2 != 0) { p = gray; }
-		else                               { p = white; }
-	};
+	write_enlarged_image(image, "out_files/dutch.bmp");
 
 	for_each_pixel(image, pattern);
 
@@ -412,5 +428,4 @@ void run()
 	dispose_image(image);
 
 	std::cout << "\n\n";
-	int x = 0;
 }
