@@ -35,7 +35,7 @@ typedef struct RGBImage_t
 
 The image struct holds the width and height and a pointer to the pixel data.
 
-Each channel contains 8 bits, so they can have a value between 0 and 255.  Each combination of values is rendered as a different color.  When all three values are the same, the color is a shade of gray.  Black is when all three channels are 0 and white is when they are all 255.
+Each channel contains 8 bits, so they can have a value between 0 and 255.  Each combination of values is rendered as a different color.  When all three values are the same, the color is a shade of gray.  Black is when all three channels are 0 and white is when they are 255.
 
 
 ### RGBA Images
@@ -368,4 +368,9 @@ The same checkerboard pattern as the previous post using RGB grayscale.
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B002%5D/pattern.bmp)
 
-Conclusion
+
+### Conclusion
+
+Handling color images is very similar to monochrome images.  It is more complex because there are either three or four different channels per pixel instead of just one byte.  However each channel is still one byte so an RGBA pixel is no different in memory than a 32 bit unsigned integer.  Packing the struct the way we do makes it easier to work with.
+
+In the next post we'll see how we can handle image files.  That way you'll be able to see the images generated instead of taking my word for it with the screenshots that I provide.
