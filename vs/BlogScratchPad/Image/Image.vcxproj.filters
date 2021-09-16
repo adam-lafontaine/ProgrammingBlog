@@ -68,5 +68,11 @@
     <ClInclude Include="..\util\libimage\rgba.hpp">
       <Filter>Header Files\util\libimage</Filter>
     </ClInclude>
+    <ClInclude Include="demos\post003.hpp">
+      <Filter>Header Files\demos</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\image003.hpp">
+      <Filter>Header Files\demos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
