@@ -1,24 +1,21 @@
 #include "image.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 #include "../../../util/libimage/stb_wrapper/stb_image.h"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+//#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../../../util/libimage/stb_wrapper/stb_image_write.h"
 
 #include <cassert>
 
 
-void make_image(Image& image, u32 width, u32 height)
+bool operator == (Pixel const& lhs, Pixel const& rhs)
 {
-    assert(width);
-    assert(height);
-
-    image.width = width;
-    image.height = height;
-    image.data = (Pixel*)malloc(sizeof(Pixel) * width * height);
-
-    assert(image.data);
+    return
+        lhs.red == rhs.red &&
+        lhs.green == rhs.green &&
+        lhs.blue == rhs.blue &&
+        lhs.alpha == rhs.alpha;
 }
 
 
@@ -29,6 +26,24 @@ void dispose_image(Image& image)
         free(image.data);
         image.data = nullptr;
     }
+}
+
+
+void for_each_pixel(Image const& image, std::function<void(Pixel& p)> const& func)
+{
+    for (size_t i = 0; i < image.width * image.height; ++i)
+    {
+        func(image.data[i]);
+    }
+}
+
+
+Pixel pixel_value(Image const& image, u32 x, u32 y)
+{
+    auto row_offset = static_cast<size_t>(y * image.width);
+    auto row_begin = image.data + row_offset;
+
+    return row_begin[x];
 }
 
 

@@ -146,17 +146,18 @@
     <ClCompile Include="..\util\libimage\libimage.cpp" />
     <ClCompile Include="..\util\libimage\stb_wrapper\stb_libimage.cpp" />
     <ClCompile Include="cpp\source_main.cpp" />
+    <ClCompile Include="demos\post003\image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\util\libimage\gray.hpp" />
     <ClInclude Include="..\util\libimage\libimage.hpp" />
     <ClInclude Include="..\util\libimage\rgba.hpp" />
     <ClInclude Include="..\util\win32_leak_check.h" />
-    <ClInclude Include="demos\image003.hpp" />
     <ClInclude Include="demos\post001.hpp" />
     <ClInclude Include="demos\planar.hpp" />
     <ClInclude Include="demos\post002.hpp" />
-    <ClInclude Include="demos\post003.hpp" />
+    <ClInclude Include="demos\post003\image.hpp" />
+    <ClInclude Include="demos\post003\post003.hpp" />
     <ClInclude Include="demos\transparent_background.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

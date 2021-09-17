@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 using u8 = unsigned char;
 using u32 = unsigned;
 
@@ -24,9 +26,14 @@ typedef struct RGBAImage_t
 } Image;
 
 
-void make_image(Image& image, u32 width, u32 height);
+bool operator == (Pixel const& lhs, Pixel const& rhs);
+
 
 void dispose_image(Image& image);
+
+void for_each_pixel(Image const& image, std::function<void(Pixel& p)> const& func);
+
+Pixel pixel_value(Image const& image, u32 x, u32 y);
 
 
 void read_image_from_file(const char* img_path_src, Image& image_dst);
