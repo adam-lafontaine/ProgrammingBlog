@@ -13,18 +13,17 @@ inline void run()
 	Pixel red = { 237, 41, 57, 255 };
 	Pixel white = { 255, 255, 255, 255 };
 
-	auto src_color = pixel_value(image, image.width / 2, image.height / 2);
+	// find the color of the character's shirt by selecting the pixel in the middle of the image
+	auto search_color = pixel_value(image, image.width / 2, image.height / 2);
+	
+	// change the character's shirt to blue
 	auto dst_color = blue;	
 
 	auto const convert = [&](Pixel& p) 
 	{
-		if (p == src_color)
+		if (p == search_color)
 		{
 			p = dst_color;
-		}
-		else if (p.alpha < 255)
-		{
-			p = white;
 		}
 	};
 
@@ -32,7 +31,8 @@ inline void run()
 
 	write_image(image, "out_files/pixel-character-blue.bmp");
 
-	src_color = dst_color;
+	// now change the blue shirt to red
+	search_color = dst_color;
 	dst_color = red;
 
 	for_each_pixel(image, convert);
