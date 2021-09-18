@@ -4,7 +4,7 @@
 #include "../../util/win32_leak_check.h"
 #endif
 
-#include "../demos/post002.hpp"
+#include "../demos/post003/post003.hpp"
 
 
 int main()

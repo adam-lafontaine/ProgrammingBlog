@@ -31,6 +31,15 @@
     <Filter Include="Header Files\demos">
       <UniqueIdentifier>{9ee73853-cbec-4ccd-9f1d-ab3ed54397c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\demos">
+      <UniqueIdentifier>{8f5779d7-b4d2-4cdd-a49d-5f69d36b8726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\demos\post003">
+      <UniqueIdentifier>{7f3ad24b-ff27-40da-903c-70fdb4255d05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\demos\post003">
+      <UniqueIdentifier>{231c489f-82b0-4b17-8057-3af3a9c7c45e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
@@ -41,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="..\util\libimage\stb_wrapper\stb_libimage.cpp">
       <Filter>Source Files\util\libimage\stb_wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="demos\post003\image.cpp">
+      <Filter>Source Files\demos\post003</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +79,12 @@
     </ClInclude>
     <ClInclude Include="..\util\libimage\rgba.hpp">
       <Filter>Header Files\util\libimage</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\post003\image.hpp">
+      <Filter>Header Files\demos\post003</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\post003\post003.hpp">
+      <Filter>Header Files\demos\post003</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

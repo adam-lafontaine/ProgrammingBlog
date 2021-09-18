@@ -10,6 +10,8 @@
     font-size: 1.0rem;
 }
 
+
+
 </style>
 
 <template>
@@ -59,7 +61,7 @@ import { DateUtil } from "../../util/date_util"
 
 import hljs from 'highlight.js/lib/core';
 import cpp from 'highlight.js/lib/languages/cpp';
-import 'highlight.js/styles/atom-one-dark.css';
+import '../../styles/code.css';
 hljs.registerLanguage('cpp', cpp);
 
 const PostModule = namespace("post_module");
