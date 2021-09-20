@@ -86,11 +86,6 @@
 }
 
 
-.hljs-meta {
-    color: #9b9b9b;;
-}
-
-
 .hljs-meta-keyword {
     color: #9b9b9b;
 }
@@ -103,6 +98,8 @@
 .hljs-built_in {
     color: #afaef2;
 }
+
+
 
 
 .hljs-attr {
@@ -158,6 +155,12 @@
     color: #61aeee;
 }
 
+
+.hljs-meta {
+    color: #61aeee;
+}
+
+
 .hljs-selector-id {
     color: #61aeee;
 }
@@ -191,3 +194,4 @@
 .hljs-function .hljs-title {
     color: #c4bf81;
 }
+  
