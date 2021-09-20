@@ -9,7 +9,7 @@ module.exports = {
     '@vue/typescript/recommended'
   ],
   parserOptions: {
-    ecmaVersion: 2020
+    ecmaVersion: 2021
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -35,6 +35,7 @@ module.exports = {
     "no-prototype-builtins": 'warn',
     'no-multiple-empty-lines': 'off',
     'space-before-blocks': 'warn',
+    'func-call-spacing' : 'off',
     "@typescript-eslint/prefer-namespace-keyword": 'off',
     "@typescript-eslint/no-namespace": 'warn',
     "@typescript-eslint/ban-types": 'warn',    
