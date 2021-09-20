@@ -81,7 +81,7 @@ export default class PostComponent extends Vue
     private post_subtitle: string = "";
     private post_tags: Array<string> = [];
     private post_date: string = "";
-    private content_html: string = "";    
+    private content_html: string = "";
 
     private mounted(): void
     {      
@@ -117,10 +117,12 @@ export default class PostComponent extends Vue
         {
             this.content_html = content;
             this.post_date = DateUtil.to_date_string(this.st_selected_post.id);            
-        }        
+        }
         
         document.getElementById(this.CONTENT_ID).innerHTML = this.content_html;
+
         hljs.highlightAll();
+
         document.getElementById(this.FOOTER_ID).style.visibility = "visible";
     }
 
