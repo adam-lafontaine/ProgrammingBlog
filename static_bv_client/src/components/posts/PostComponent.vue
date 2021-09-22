@@ -10,20 +10,37 @@
     font-size: 1.0rem;
 }
 
-.page-footer {
-    color: gba(255,255,255,.75);
-    background-color: #343a40;
+.post-header {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    margin-bottom: 2rem;
+    background-color: #e9ecef;
+}
+
+.post-header h1 {
+    font-size: 4.5rem;
+    font-weight: 300;
+    line-height: 1.2;
+}
+
+.post-header p {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 
 </style>
 
 <template>
 <div>
-    <b-jumbotron fluid container-fluid="lg"
-        :header="post_title"
-        :lead="post_subtitle"
-        >
-    </b-jumbotron>    
+    <!-- Jumbotron replacement -->
+    <b-container fluid class="post-header">
+        <b-container fluid="lg">
+            <h1>{{post_title}}</h1>
+            <p>{{post_subtitle}}</p>
+        </b-container>
+    </b-container>    
 
     <b-container fluid="lg">
 
@@ -48,7 +65,6 @@
         <div :id="CONTENT_ID" class="main-content" />
     </b-container>
     <footer-component :id="FOOTER_ID" style="visibility: hidden;"/>
-    <!-- <footer :id="FOOTER_ID" class="page-footer" style="height:200px;visibility: hidden;"></footer> -->
 
 </div>
 </template>
@@ -96,8 +112,14 @@ export default class PostComponent extends Vue
 
         const loaded_from_url = this.st_post_list.length === 0;
 
+        this.ac_fetch_post_list()
+            .then(this.load_post);
+
+            /*
+
         if(loaded_from_url)
         {
+            console.log("no list")
             this.ac_fetch_post_list()
             .then(this.load_post);
         }
@@ -105,6 +127,7 @@ export default class PostComponent extends Vue
         {
             this.load_post();
         }
+        */
         
     }
 
