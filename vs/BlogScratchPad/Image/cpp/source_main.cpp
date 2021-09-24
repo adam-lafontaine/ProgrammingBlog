@@ -1,10 +1,10 @@
-#define LEAK_CHECK
+//#define LEAK_CHECK
 
 #if defined(_WIN32) && defined(LEAK_CHECK)
 #include "../../util/win32_leak_check.h"
 #endif
 
-#include "../demos/post003/post003.hpp"
+#include "../demos/post004/algorithm_example.hpp"
 
 
 int main()
