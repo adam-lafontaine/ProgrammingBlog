@@ -74,6 +74,8 @@ void run()
 
     size_t count = 100000;
 
+    std::cout << '\n';
+
     sw.start();
 
     algorithm_example(count);
