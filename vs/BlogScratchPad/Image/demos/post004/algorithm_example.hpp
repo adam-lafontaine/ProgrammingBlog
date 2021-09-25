@@ -18,7 +18,7 @@ void sort(T& container)
 }
 
 
-constexpr unsigned AMOUNT_OF_WORK = 100;
+constexpr unsigned AMOUNT_OF_WORK = 1000;
 
 
 int do_work(int n)
@@ -62,7 +62,7 @@ void process_vector_par(std::vector<int>& src, std::vector<int>& dst)
 }
 
 
-constexpr unsigned ELEMENT_COUNT = 100000;
+constexpr unsigned ELEMENT_COUNT = 1000000;
 
 
 void run()
