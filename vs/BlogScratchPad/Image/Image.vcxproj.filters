@@ -40,6 +40,9 @@
     <Filter Include="Source Files\demos\post003">
       <UniqueIdentifier>{231c489f-82b0-4b17-8057-3af3a9c7c45e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\demos\post004">
+      <UniqueIdentifier>{9b8c00ea-3f15-4b8f-a058-11601da9f9f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
@@ -85,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="demos\post003\post003.hpp">
       <Filter>Header Files\demos\post003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\stopwatch.hpp">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\post004\algorithm_example.hpp">
+      <Filter>Header Files\demos\post004</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
