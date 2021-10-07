@@ -1,10 +1,10 @@
-# Algorithms for free
-## And parallelism too
+# Parallelism for free
+## And algorithms too
 
 
 ### Standard Algorithms
 
-There are a multitude of algorithms available in the C++ Standard Template Library (STL).  Cppreference is a good resource https://en.cppreference.com/w/cpp/algorithm.  There's no need to have them all memorized but it is good to know what is available.  There is a good chance that something already exists that will do what you need.  It can save you a lot of time trying to implement it yourself and also make your code cleaner and more readable.
+There are a multitude of algorithms available in the C++ Standard Template Library (STL).  Cppreference is a good resource https://en.cppreference.com/w/cpp/algorithm.  There's no need to have them all memorized but it's good to know what is available.  There is a good chance that something already exists that will do what you need.  It can save you a lot of time trying to implement it yourself and also make your code cleaner and more readable.
 
 The STL algorithms operate on a range of elements that you specify by providing an iterator to the first element and another to one past the last element.  The standard containers have methods for begin() and end() respectively.  Consider the following example.
 
@@ -24,7 +24,7 @@ int do_work(int n)
     std::default_random_engine eng(r());
     std::uniform_int_distribution<int> uniform_dist(10, 1000);
 
-    int sum = 0;
+    int sum = n;
 
     for (unsigned i = 0; i < AMOUNT_OF_WORK; ++i)
     {
@@ -47,13 +47,13 @@ void process_vector(std::vector<int>& src, std::vector<int>& dst)
 }
 ```
 
-The do_work function is intended to take some time generating a result.  It accumulates the modulus calculation of 100 randomly generated numbers.  We can adjust the amount of time it takes with the AMOUNT_OF_WORK constant.
+There is no real purpose to the do_work function.  It is simply supposed to take some time generating a result.  It accumulates the modulus calculation of 100 randomly generated numbers.  We can adjust the amount of time it takes with the AMOUNT_OF_WORK constant.
 
 The process_vector function demonstrates the standard algorithms std::for_each and std::transform.  It does the following.
 * Apply a lambda to each element of src, doubling them in place (https://en.cppreference.com/w/cpp/algorithm/for_each)
 * Call the do_work function with each element of src and saves the result in dst (https://en.cppreference.com/w/cpp/algorithm/transform)
 
-Many people find it irritating to have to pass begin and end iterators to these functions instead of just the container like in many other languages.  Sometimes they resort to writing wrapper functions to make their code more concise.  However, this has the drawback of having to maintain another library.
+Many people find it irritating to have to pass begin and end iterators to these functions instead of just the container like many other languages.  Sometimes they resort to writing wrapper functions to make their code more concise.  However, this has the drawback of having to maintain another library.
 
 ```cpp
 // https://en.cppreference.com/w/cpp/algorithm/sort
@@ -65,7 +65,7 @@ void sort(T& container)
 }
 ```
 
-Another option is the std::ranges namespace introduced in C++20.  That is a topic worthy of its own post but one thing it allows for is more concise function calls.
+Another option is the std::ranges namespace introduced in C++20.  That is a topic worthy of its own post, but one thing it allows for is more concise function calls.
 
 ```cpp
 // https://en.cppreference.com/w/cpp/algorithm/ranges/sort
@@ -73,7 +73,7 @@ Another option is the std::ranges namespace introduced in C++20.  That is a topi
 std::ranges::sort(vec);
 ```
 
-In any case, begin and end iterators are still required to define the range we want to perform the algorithm on.  We also have the option to only apply an algorithm to part of the range.  For example, we can sort only the first 10 elements of a containiner.
+In any case, begin and end iterators are still required to define the range we want to perform an algorithm on.  We also have the option to apply an algorithm to a subset of a range.  For example, we can sort only the first 10 elements of a containiner.
 
 ```cpp
 std::sort(vec.begin(), vec.begin() + 10);
@@ -96,7 +96,7 @@ The intent for specifying the begin and end iterators is to provide flexibility 
 
 ### Parallelism
 
-If your collections are quite large, then operating on each element one at a time can be a bottleneck in your application.  C++17 introduced the ability for many algorithms to process several elements at the same time using multi-threading.  How this is executed will depend on the operating system and the computer's CPU.  What this means for developers is that this functionality is available without any extra programming.  We only need to pass a parameter indicating that we wish the algorithm to execute in parallel.
+If your collections are quite large or if there are many of them to process, operating on each element one at a time can be a bottleneck in your application.  C++17 introduced the ability for many algorithms to process several elements at the same time using multi-threading.  How this is executed will depend on the operating system and the computer's CPU.  What this means for developers is that this functionality is available without any extra programming.  We only need to pass a parameter indicating that we wish the algorithm to execute in parallel.
 
 ```cpp
 #include <execution>
@@ -114,7 +114,7 @@ void process_vector_par(std::vector<int>& src, std::vector<int>& dst)
 }
 ```
 
-This example is the same as the one above except that we passed the Execution Policy std::execution::par to std::for_each and std::transform.  This should faster but we need to test it.
+This example is the same as the one above except that we passed the Execution Policy std::execution::par to std::for_each and std::transform.  This should be faster but we need to test it.
 
 
 ### Speed Test
@@ -191,7 +191,7 @@ int main()
     std::vector<int> dst_vec(ELEMENT_COUNT);
 
     // { 1, 2, 3, 4, ... , size }
-    std::iota(src_vec.begin(), src_vec.end(), 1);
+    std::iota(src_vec.begin(), src_vec.end(), 1); // https://en.cppreference.com/w/cpp/algorithm/iota
 
     std::cout << '\n';
 
@@ -227,6 +227,6 @@ constexpr unsigned ELEMENT_COUNT = 1000000;
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B004%5D/cpu_usage.png)
 
-While running sequencially, the CPU usage is at about 40%.  It then goes up to 100% while it does the parallel processing.  This shows that parallel execution can be a CPU resource hog.  It could slow down other processes running on the computer especially if they require significant CPU resources as well.  It's also impossible to know how much faster it will be if other processes will be running at the same time.
+While running sequencially, the CPU usage is at about 40%.  It then goes up to 100% when it does the parallel processing.  Parallel execution can be a CPU resource hog.  It could slow down other processes running on the computer, especially if they require significant CPU resources as well.  It's also impossible to know how much faster it will be if other processes will be running at the same time.
 
-As with anything, there are always several factors to take into consideration.  Parallel execution is not a magic bullet but it can be extremely useful and is basically free.  
+There are however several factors to take into consideration.  Executing algorithms in parallel is not always faster.  Sometimes the decreased execution time does not make up for the extra overhead required for setting up the multi-threading.  It's good to try both with different levels of optimization.  Sometimes the compiler can make running your code in parallel unnecessary.  Parallel execution is not a magic bullet but it can be extremely useful. It is basically free in that it requires no extra work to implement.  
