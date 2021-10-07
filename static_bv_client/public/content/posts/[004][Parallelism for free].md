@@ -4,9 +4,9 @@
 
 ### Standard Algorithms
 
-There are a multitude of algorithms available in the C++ Standard Template Library (STL).  Cppreference is a good resource https://en.cppreference.com/w/cpp/algorithm.  There's no need to have them all memorized but it's good to know what is available.  There is a good chance that something already exists that will do what you need.  It can save you a lot of time trying to implement it yourself and also make your code cleaner and more readable.
+There are a multitude of algorithms available in the C++ Standard Template Library (STL).  Cppreference is a good resource https://en.cppreference.com/w/cpp/algorithm.  There's no need to have them all memorized, but it's good to know what is available.  There is a good chance that what you need to do already exists.  It can save you a lot of time trying to implement it yourself, while making your code cleaner and more readable.
 
-The STL algorithms operate on a range of elements that you specify by providing an iterator to the first element and another to one past the last element.  The standard containers have methods for begin() and end() respectively.  Consider the following example.
+The STL algorithms operate on a range of elements specified by providing an iterator to the first element and another to one past the last element.  The standard containers have methods for begin() and end() respectively.  Consider the following example.
 
 ```cpp
 #include <vector>
@@ -51,9 +51,9 @@ There is no real purpose to the do_work function.  It is simply supposed to take
 
 The process_vector function demonstrates the standard algorithms std::for_each and std::transform.  It does the following.
 * Apply a lambda to each element of src, doubling them in place (https://en.cppreference.com/w/cpp/algorithm/for_each)
-* Call the do_work function with each element of src and saves the result in dst (https://en.cppreference.com/w/cpp/algorithm/transform)
+* Call the do_work function with each element of src and save the result in dst (https://en.cppreference.com/w/cpp/algorithm/transform)
 
-Many people find it irritating to have to pass begin and end iterators to these functions instead of just the container like many other languages.  Sometimes they resort to writing wrapper functions to make their code more concise.  However, this has the drawback of having to maintain another library.
+Many people find it irritating to have to pass begin and end iterators to these functions instead of just the container like many other languages.  Sometimes they resort to writing wrapper functions to make their code more concise.  However this has the drawback of having to maintain another library.
 
 ```cpp
 // https://en.cppreference.com/w/cpp/algorithm/sort
@@ -229,4 +229,4 @@ constexpr unsigned ELEMENT_COUNT = 1000000;
 
 While running sequencially, the CPU usage is at about 40%.  It then goes up to 100% when it does the parallel processing.  Parallel execution can be a CPU resource hog.  It could slow down other processes running on the computer, especially if they require significant CPU resources as well.  It's also impossible to know how much faster it will be if other processes will be running at the same time.
 
-There are however several factors to take into consideration.  Executing algorithms in parallel is not always faster.  Sometimes the decreased execution time does not make up for the extra overhead required for setting up the multi-threading.  It's good to try both with different levels of optimization.  Sometimes the compiler can make running your code in parallel unnecessary.  Parallel execution is not a magic bullet but it can be extremely useful. It is basically free in that it requires no extra work to implement.  
+Executing algorithms in parallel is not always faster.  Sometimes the decreased execution time does not make up for the extra overhead required to set up the multi-threading.  It's good to try both with different levels of optimization.  Sometimes the compiler can make running your code in parallel unnecessary.  Parallel execution is not a magic bullet but it can be extremely useful. It is basically free in that it requires no extra work to implement.  
