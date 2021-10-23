@@ -4,7 +4,7 @@
         { "number": "[002]", "id": "1629579790240", "title": "What is an image? - RGB edition", "route": "what-is-an-image-rgb", "tags": ["Image Processing", "C++"], "filename": "[002][What is an image RGB].md" },
         { "number": "[003]", "id": "1631976582706", "title": "Reading and writing images", "route": "read-write-image", "tags": ["Image Processing", "C++", "Libraries"], "filename": "[003][Reading and writing images].md" },
         { "number": "[004]", "id": "1633566894015", "title": "Parallelism for free", "route": "parallelism-for-free", "tags": ["C++", "STL", "Algorithms"], "filename": "[004][Parallelism for free].md" },
-        { "number": "[]", "id": "", "title": "", "route": "", "tags": [], "filename": "" },
+        { "number": "[005]", "id": "", "title": "", "route": "", "tags": [], "filename": "" },
         { "number": "[]", "id": "", "title": "", "route": "", "tags": [], "filename": "" },
         { "number": "[]", "id": "", "title": "", "route": "", "tags": [], "filename": "" }
     ]
