@@ -27,7 +27,7 @@ void no_memory_leak()
 }
 ```
 
-Memory leaks become a problem when they cause a program's memory usage to increase over time.  Calls to malloc() get made repeatedly and some or many of the required calls to free() never get made.  The severity of the problem varies.  Sometimes an application will crash, especially if the device has limited memory.  Other times nothing happens because the leak is very small or the program never runs long enough to generate any errors.
+Memory leaks become a problem when they cause a program's memory usage to increase over time.  Calls to malloc() get made repeatedly and some or many of the required calls to free() never get made.  The severity of the problem varies.  Sometimes an application will crash, especially if the device has limited memory.  Other times nothing happens because the leak is very small or the program never runs long enough to see a problem.
 
 Leaks are more likely to occur when a program is complicated and there is no clear owner of the memory.  As pointers are shared between different parts of a program, it's easy to lose track of when it was created and when it should be destroyed.  In Object Oriented Programming, memory is usually allocated when an object is created and destroyed when the object goes out of scope.  This practice is leak-safe and is easier to manage but could have performance implications.  Calls to malloc() and free() are very time consuming in relative terms.  If many objects are being created and destroyed quite often, it could be a bottleneck.  Whatever the coding style, leak-free programming is possible but leaks still end up in finished products all the time.
 
@@ -81,9 +81,9 @@ Even with the call to release(), the debug report is very clear.
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B005%5D/opencv_leak.png)
 
-So OpenCV's basic container, or the API itself does not clean up after itself.  Memory leaks do not always cause a program to crash though and OpenCV is a good example.  The library is over 20 years old and has been wildly used without issue.  However that does not mean that there are no issues.  One consequence is that any application using OpenCV cannot be reliably tested for leaks.  The test will always show leaks regardless.
+So OpenCV does not clean up after itself.  Tsk tsk.  Memory leaks do not always cause a program to crash though, and OpenCV is a good example.  The library is over 20 years old and has been wildly used without issue.  However that does not mean that there are no issues.  One consequence is that any application using OpenCV cannot be reliably tested for leaks.  The test will always show leaks regardless.
 
 
 ### Clean code
 
-Writing "clean code" is hard and there is no consensus as to what "clean code" actually is.  Some libraries are leaky and work great.  Others take a very disciplined approach to memory management yet still don't work or are just not practical to use.  The great thing about software is everything can be solved with typing.  So if you're really not happy with some library or application, you could always just do it yourself.
+Writing "clean code" is hard and there is no consensus as to what "clean code" actually is.  Some libraries are leaky and work great.  Others take a very disciplined approach to memory management yet still don't work or are just not practical to use.  The great thing about software is everything can be solved with typing.  So when we're not happy with an application or library, we can just write it ourselves and learn how difficult it actually is.
