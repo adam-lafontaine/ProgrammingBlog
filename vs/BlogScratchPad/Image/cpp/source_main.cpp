@@ -1,10 +1,28 @@
-//#define LEAK_CHECK
+#define LEAK_CHECK
 
 #if defined(_WIN32) && defined(LEAK_CHECK)
 #include "../../util/win32_leak_check.h"
 #endif
+#include <corecrt_malloc.h>
 
-#include "../demos/post004/algorithm_example.hpp"
+//#include "../demos/post004/algorithm_example.hpp"
+
+void memory_leak()
+{
+    auto total_bytes = 100;
+
+    auto p = malloc(total_bytes);
+}
+
+
+void no_memory_leak()
+{
+    auto total_bytes = 100;
+
+    auto p = malloc(total_bytes);
+
+    free(p);
+}
 
 
 int main()
@@ -17,5 +35,5 @@ int main()
     _CrtSetDbgFlag(dbgFlags);
 #endif
 
-    run();
+    memory_leak();
 }

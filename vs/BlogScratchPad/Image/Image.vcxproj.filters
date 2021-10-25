@@ -43,6 +43,9 @@
     <Filter Include="Header Files\demos\post004">
       <UniqueIdentifier>{9b8c00ea-3f15-4b8f-a058-11601da9f9f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\demos\post005">
+      <UniqueIdentifier>{449ce903-cc40-4cb4-bc41-37659808c655}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
