@@ -1,7 +1,7 @@
 #!/bin/sh
 # chmod +x deploy_static.sh
 
-# in static_bv_client:
+# cd static_bv_client:
 # npm run build
 
 # remove existing client files on server
