@@ -12,6 +12,7 @@ export function getDefaultState(): State
         selected_post: Make.post(),
 
         video_resources: [],
+        website_resources: [],
 
         error: "",
     }

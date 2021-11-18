@@ -13,7 +13,7 @@
 
 <template>
 <b-container>
-    <h1 class="code-font mt-3">Posts</h1>
+    <h2 class="code-font mt-3">Posts</h2>
     <b-list-group>
         <b-list-group-item v-for="item in list_items" :key="item.id"
             class="post-header"

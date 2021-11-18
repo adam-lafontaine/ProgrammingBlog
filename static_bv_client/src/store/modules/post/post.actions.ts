@@ -8,7 +8,8 @@ import {
     IPost, IPostInfo,
     Make,
     IVideoResource,
-    IHomepageContent
+    IHomepageContent,
+    IWebsiteResource
 } from './post.types'
 import marked from "marked"
 
@@ -200,9 +201,62 @@ const actions: Tree<State, any> = {
             console.error(error);
             commit(Mutation.SET_VIDEO_RESOURCES, []);
         }
+    },
+
+
+    async [Action.FETCH_WEBSITE_RESOURCES]({ commit, state }): Promise<any>
+    {
+        const url = ENTRY_ROUTE + "/resources/websites.json";
+        const empty = Make.website_resource();
+        let status = "";
+
+        const set_status = (s: string) => { status = `FETCH_WEBSITE_RESOURCES ${s}`; };
+        const report_error = () => 
+        { 
+            console.error(status);
+            commit(Mutation.SET_WEBSITE_RESOURCES, []);
+        };
+
+        try
+        {
+            set_status("fetching resources");
+            const response = await axios.get(url);
+            
+            set_status("checking response data");
+            if(!has_object_properties(response.data, { websites: [] }))
+            {
+                report_error();
+                return;
+            }
+
+            const list = response.data.websites as Array<any>;            
+
+            const valid_data = 
+                Array.isArray(list) &&
+                list.length > 0 &&
+                array_has_object_properties(list, empty);
+
+            if(!valid_data)
+            {
+                report_error();
+                return;
+            }
+
+            const data = list as Array<IWebsiteResource>;
+            commit(Mutation.SET_WEBSITE_RESOURCES, data);
+        }
+        catch(error: unknown)
+        {
+            console.error(status);
+            console.error(error);
+            commit(Mutation.SET_WEBSITE_RESOURCES, []);
+        }
     }
 
 }
+
+
+
 
 
 function build_post(info: IPostInfo, content_md: string): IPost
@@ -228,9 +282,9 @@ function build_post(info: IPostInfo, content_md: string): IPost
 }
 
 
-function has_object_properties(val: any, obj: object): boolean
+function has_object_properties(val: any, obj: any): boolean
 {
-    if(val === null || typeof val !== 'object')
+    if(val === null || typeof val !== 'object' || typeof obj !== 'object')
     {
         return false;
     }
