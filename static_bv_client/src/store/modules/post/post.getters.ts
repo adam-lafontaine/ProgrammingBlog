@@ -8,6 +8,7 @@ const getters: Tree<State, any> = {
     [Get.GET_SELECTED_POST]: state => state.selected_post,
 
     [Get.GET_VIDEO_RESOURCES]: state => state.video_resources,
+    [Get.GET_WEBSITE_RESOURCES]: state => state.website_resources,
 
     [Get.GET_ERROR]: state => state.error
 }

@@ -200,9 +200,58 @@ const actions: Tree<State, any> = {
             console.error(error);
             commit(Mutation.SET_VIDEO_RESOURCES, []);
         }
+    },
+
+
+    async [Action.FETCH_WEBSITE_RESOURCES]({ commit, state }): Promise<any>
+    {
+        const url = ENTRY_ROUTE + "resources/websites.json";
+        var empty = Make.website_resource();
+        let status = "";
+
+        const set_status = (s: string) => { status = `FETCH_WEBSITE_RESOURCES ${s}`; };
+        const report_error = () => 
+        { 
+            console.error(status);
+            commit(Mutation.SET_WEBSITE_RESOURCES, []);
+        };
+
+        try
+        {
+            set_status("fetching resources");
+            const response = await axios.get(url);
+            
+            set_status("checking response data");
+            if(!has_object_properties(response.data, { websites: [] }))
+            {
+                report_error();
+                return;
+            }
+
+            const list = response.data.websites as Array<any>;            
+
+            const valid_data = 
+                Array.isArray(list) &&
+                list.length > 0 &&
+                array_has_object_properties(list, empty);
+
+            if(!valid_data)
+            {
+                report_error();
+                return;
+            }
+        }
+        catch(error: unknown)
+        {
+            console.error(error);
+            commit(Mutation.SET_WEBSITE_RESOURCES, []);
+        }
     }
 
 }
+
+
+
 
 
 function build_post(info: IPostInfo, content_md: string): IPost
