@@ -15,7 +15,7 @@
             All posts: <b-link to="/posts">Posts</b-link>
         </b-col>
         <b-col cols="12" class="mt-3">
-            Video resources: <b-link to="/resources">videos</b-link>
+            Online resources: <b-link to="/resources">Resources</b-link>
         </b-col>
     </b-row>
 </b-container>

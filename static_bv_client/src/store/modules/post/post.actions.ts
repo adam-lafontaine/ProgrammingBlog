@@ -8,7 +8,8 @@ import {
     IPost, IPostInfo,
     Make,
     IVideoResource,
-    IHomepageContent
+    IHomepageContent,
+    IWebsiteResource
 } from './post.types'
 import marked from "marked"
 
@@ -205,8 +206,8 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_WEBSITE_RESOURCES]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + "resources/websites.json";
-        var empty = Make.website_resource();
+        const url = ENTRY_ROUTE + "/resources/websites.json";
+        const empty = Make.website_resource();
         let status = "";
 
         const set_status = (s: string) => { status = `FETCH_WEBSITE_RESOURCES ${s}`; };
@@ -240,9 +241,13 @@ const actions: Tree<State, any> = {
                 report_error();
                 return;
             }
+
+            const data = list as Array<IWebsiteResource>;
+            commit(Mutation.SET_WEBSITE_RESOURCES, data);
         }
         catch(error: unknown)
         {
+            console.error(status);
             console.error(error);
             commit(Mutation.SET_WEBSITE_RESOURCES, []);
         }
@@ -277,9 +282,9 @@ function build_post(info: IPostInfo, content_md: string): IPost
 }
 
 
-function has_object_properties(val: any, obj: object): boolean
+function has_object_properties(val: any, obj: any): boolean
 {
-    if(val === null || typeof val !== 'object')
+    if(val === null || typeof val !== 'object' || typeof obj !== 'object')
     {
         return false;
     }

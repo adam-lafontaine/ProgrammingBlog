@@ -24,7 +24,7 @@ module.exports = {
     'space-before-function-paren': 'off',
     'indent': 'off',
     'prefer-const': 'warn',
-    'keyword-spacing': 'warn',
+    'keyword-spacing': 'off',
     'eol-last': 'off',
     'spaced-comment': 'off',
     'comma-dangle': 'off',
