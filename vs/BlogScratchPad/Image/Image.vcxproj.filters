@@ -19,9 +19,6 @@
     <Filter Include="Source Files\util">
       <UniqueIdentifier>{df42370a-39c0-42db-9e3f-2821a98be289}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\util\libimage">
-      <UniqueIdentifier>{d5dacad9-8535-4ad1-b91f-69c58191d54b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\util\libimage">
       <UniqueIdentifier>{e69f6654-a4e7-4c78-92e4-5d0ef6f9146b}</UniqueIdentifier>
     </Filter>
@@ -46,30 +43,72 @@
     <Filter Include="Header Files\demos\post005">
       <UniqueIdentifier>{449ce903-cc40-4cb4-bc41-37659808c655}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\jobs">
+      <UniqueIdentifier>{b13cb674-795f-4ab6-af9a-8fe801dd6b59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\util\libimage">
+      <UniqueIdentifier>{aa5e390d-1fc9-49a1-899c-15dc1a7a9ea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\util\libimage\proc">
+      <UniqueIdentifier>{f95fa195-9f86-46c8-bcc1-2eb2d6c1bfbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\util\libimage\proc">
+      <UniqueIdentifier>{293cf03e-5071-4180-a923-c0cb52a0a958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\util\libimage\stb_wrapper">
+      <UniqueIdentifier>{a78018fb-cfb2-4889-9e75-1dde2d76d0cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\util\libimage\math">
+      <UniqueIdentifier>{f0d3d5c0-70cd-494c-b1fa-ccd1e51700b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\util\libimage\math">
+      <UniqueIdentifier>{707aca6a-9150-4a1f-8951-565706b6aa00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\util\libimage\libimage.cpp">
-      <Filter>Source Files\util\libimage</Filter>
+    <ClCompile Include="demos\post003\image.cpp">
+      <Filter>Source Files\demos\post003</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\proc\alpha_blend.cpp">
+      <Filter>Source Files\util\libimage\proc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\proc\binarize.cpp">
+      <Filter>Source Files\util\libimage\proc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\proc\blur.cpp">
+      <Filter>Source Files\util\libimage\proc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\proc\convolve.cpp">
+      <Filter>Source Files\util\libimage\proc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\proc\copy.cpp">
+      <Filter>Source Files\util\libimage\proc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\proc\gradient.cpp">
+      <Filter>Source Files\util\libimage\proc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\proc\transform.cpp">
+      <Filter>Source Files\util\libimage\proc</Filter>
     </ClCompile>
     <ClCompile Include="..\util\libimage\stb_wrapper\stb_libimage.cpp">
       <Filter>Source Files\util\libimage\stb_wrapper</Filter>
     </ClCompile>
-    <ClCompile Include="demos\post003\image.cpp">
-      <Filter>Source Files\demos\post003</Filter>
+    <ClCompile Include="..\util\libimage\libimage.cpp">
+      <Filter>Source Files\util\libimage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\math\charts.cpp">
+      <Filter>Source Files\util\libimage\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\util\libimage\math\math.cpp">
+      <Filter>Source Files\util\libimage\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\util\win32_leak_check.h">
       <Filter>Header Files\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\util\libimage\libimage.hpp">
-      <Filter>Header Files\util\libimage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\util\libimage\gray.hpp">
-      <Filter>Header Files\util\libimage</Filter>
     </ClInclude>
     <ClInclude Include="demos\post001.hpp">
       <Filter>Header Files\demos</Filter>
@@ -83,9 +122,6 @@
     <ClInclude Include="demos\post002.hpp">
       <Filter>Header Files\demos</Filter>
     </ClInclude>
-    <ClInclude Include="..\util\libimage\rgba.hpp">
-      <Filter>Header Files\util\libimage</Filter>
-    </ClInclude>
     <ClInclude Include="demos\post003\image.hpp">
       <Filter>Header Files\demos\post003</Filter>
     </ClInclude>
@@ -97,6 +133,51 @@
     </ClInclude>
     <ClInclude Include="demos\post004\algorithm_example.hpp">
       <Filter>Header Files\demos\post004</Filter>
+    </ClInclude>
+    <ClInclude Include="jobs\transform_logo.hpp">
+      <Filter>Header Files\jobs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\gray.hpp">
+      <Filter>Header Files\util\libimage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\libimage.hpp">
+      <Filter>Header Files\util\libimage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\rgba.hpp">
+      <Filter>Header Files\util\libimage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\types.hpp">
+      <Filter>Header Files\util\libimage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\proc\convolve.hpp">
+      <Filter>Header Files\util\libimage\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\proc\index_range.hpp">
+      <Filter>Header Files\util\libimage\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\proc\process.hpp">
+      <Filter>Header Files\util\libimage\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\proc\verify.hpp">
+      <Filter>Header Files\util\libimage\proc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\stb_wrapper\stb_image.h">
+      <Filter>Header Files\util\libimage\stb_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\stb_wrapper\stb_image_resize.h">
+      <Filter>Header Files\util\libimage\stb_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\stb_wrapper\stb_image_write.h">
+      <Filter>Header Files\util\libimage\stb_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\stb_wrapper\stb_include.hpp">
+      <Filter>Header Files\util\libimage\stb_wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\math\charts.hpp">
+      <Filter>Header Files\util\libimage\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\util\libimage\math\math.hpp">
+      <Filter>Header Files\util\libimage\math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
