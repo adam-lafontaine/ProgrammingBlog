@@ -80,7 +80,7 @@ std::fill(gray_image.begin(), gray_image.end(), 255);
 
 ### Grayscale
 
-Converting a color image to black and white is simply iterating over each pixel and taking a weighted average of the red, green and blue channels.  Here is an implementation of the formula that is typically used.
+Converting a color image to black and white is done simply by iterating over each pixel and taking a weighted average of the red, green and blue channels.  Here is an implementation of the formula that is typically used.
 
 ```cpp
 u8 to_grayscale(u8 red, u8 green, u8 blue)
@@ -107,8 +107,6 @@ void convert_to_grayscale(RGBAImage& src, GrayImage& dst)
 
     std::transform(src.begin(), src.end(), dst.begin(), convert);
 }
-
-
 ```
 
 Starting with an image containing two sprites.
@@ -138,7 +136,7 @@ void binarize_simple(GrayImage& src, GrayImage& dst)
 }
 ```
 
-If we don't care about preserving the original image, we can binarize it without having to create a new image in memory.
+If we don't care about preserving the original image data, we can binarize it without having to create a new image in memory.
 
 ```cpp
 void binarize_simple(GrayImage& src_dst)
@@ -193,6 +191,9 @@ int main()
 
     binarize_simple(gray);
     write_image(gray, binary_dst);
+
+    dispose_image(rgba);
+    dispose_image(gray);
 }
 ```
 
