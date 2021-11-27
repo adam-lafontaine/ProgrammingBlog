@@ -64,6 +64,9 @@
     <Filter Include="Source Files\util\libimage\math">
       <UniqueIdentifier>{707aca6a-9150-4a1f-8951-565706b6aa00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\demos\post006">
+      <UniqueIdentifier>{290120a3-4f67-4ea8-8b3b-eddfb48c2713}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="..\util\libimage\math\math.hpp">
       <Filter>Header Files\util\libimage\math</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\post006\image_transforms.hpp">
+      <Filter>Header Files\demos\post006</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

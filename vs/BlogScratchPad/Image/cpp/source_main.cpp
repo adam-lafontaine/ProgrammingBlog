@@ -1,7 +1,6 @@
-#include "../jobs/transform_logo.hpp"
-
+#include "../demos/post006/image_transforms.hpp"
 
 int main()
 {
-	make_binary();
+	run();
 }

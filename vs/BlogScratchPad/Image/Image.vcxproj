@@ -181,6 +181,7 @@
     <ClInclude Include="demos\post003\image.hpp" />
     <ClInclude Include="demos\post003\post003.hpp" />
     <ClInclude Include="demos\post004\algorithm_example.hpp" />
+    <ClInclude Include="demos\post006\image_transforms.hpp" />
     <ClInclude Include="demos\transparent_background.hpp" />
     <ClInclude Include="jobs\transform_logo.hpp" />
   </ItemGroup>

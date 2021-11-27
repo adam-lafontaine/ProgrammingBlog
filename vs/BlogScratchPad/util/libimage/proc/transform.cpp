@@ -73,6 +73,8 @@ namespace libimage
 
 	static constexpr u8 lerp_clamp(u8 src_low, u8 src_high, u8 dst_low, u8 dst_high, u8 val)
 	{
+		assert(dst_low < dst_high);
+
 		if (val < src_low)
 		{
 			return dst_low;
