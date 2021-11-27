@@ -3,7 +3,7 @@
 
 ### The standard algorithms
 
-In a previous post ([Parallelism for free](https://almostalwaysauto.com/posts/parallelism-for-free)) I wrote about the C++ Standard Template Library (STL) and demonstrated some of the algorithms that are available.  These algorithms are not only available for standard containers such as std::vector and std::array, but they can be used for any container with a valid iterator.  How to write a valid iterator is another topic and doing it is kind of irritating.  It is basically an object that behaves like a pointer to an item in the container.  The idea is that when we create our custom containers, we can have access to the STL algorthms at the cost of implementing some C++ bureaucracy.  When the iterator of your container is a raw pointer, then the bureaucracy is minimal.
+In a previous post I wrote about the C++ Standard Template Library (STL) and demonstrated some of the algorithms that are available.  These algorithms are not only available for standard containers such as std::vector and std::array, but they can be used for any container with a valid iterator.  How to write a valid iterator is another topic and doing it is kind of irritating.  It is basically an object that behaves like a pointer to an item in the container.  The idea is that when we create our custom containers, we can have access to the STL algorthms at the cost of implementing some C++ bureaucracy.  When the iterator of your container is a raw pointer, then the bureaucracy is minimal.
 
 In this post, our containers are images and the items in our containers are pixels.
 
