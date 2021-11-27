@@ -112,6 +112,8 @@ export default class PostComponent extends Vue
 
         const loaded_from_url = this.st_post_list.length === 0;
 
+        console.log("stuff")
+
         this.ac_fetch_post_list()
             .then(this.load_post);
         

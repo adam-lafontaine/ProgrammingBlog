@@ -26,8 +26,14 @@ const routes: Array<RouteConfig> = [
 
   {
     path: '/posts/:title_kebab',
-    name: 'Posts',
+    name: 'Post',
     component: () => import("../views/Post.vue")
+  },
+
+  {
+    path: '/posts/*',
+    name: 'Posts',
+    component: () => import("../views/PostList.vue")
   },
 
   {
@@ -35,6 +41,12 @@ const routes: Array<RouteConfig> = [
     name: 'Resources',
     component: () => import("../views/Resources.vue")
   },
+
+  {
+    path: '*',
+    name: 'Home',
+    component: Home
+  }, 
   
 ]
 
