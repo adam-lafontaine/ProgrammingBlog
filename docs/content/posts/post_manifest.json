@@ -55,12 +55,17 @@
             "filename": "[005][Leak check].md"
         },
         {
-            "number": "[]",
-            "id": "",
-            "title": "",
-            "route": "",
-            "tags": [],
-            "filename": ""
+            "number": "[006]",
+            "id": "1638025397851",
+            "title": "Simple image transforms",
+            "route": "simple-image-transforms",
+            "tags": [
+                "Image Processing",
+                "C++",
+                "STL",
+                "Algorithms"
+            ],
+            "filename": "[006][Simple image transforms].md"
         },
         {
             "number": "[]",
