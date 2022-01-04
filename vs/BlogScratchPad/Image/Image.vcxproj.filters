@@ -67,6 +67,12 @@
     <Filter Include="Header Files\demos\post006">
       <UniqueIdentifier>{290120a3-4f67-4ea8-8b3b-eddfb48c2713}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\demos\post007simd">
+      <UniqueIdentifier>{83b4ae21-4764-4665-910d-7f3edc6ef2b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\demos\post007simd">
+      <UniqueIdentifier>{92d37ef9-0ea4-4b6b-a86f-8cde120498e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
@@ -107,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="..\util\libimage\math\math.cpp">
       <Filter>Source Files\util\libimage\math</Filter>
+    </ClCompile>
+    <ClCompile Include="demos\post007simd\simd.cpp">
+      <Filter>Source Files\demos\post007simd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="demos\post006\image_transforms.hpp">
       <Filter>Header Files\demos\post006</Filter>
+    </ClInclude>
+    <ClInclude Include="demos\post007simd\simd.hpp">
+      <Filter>Header Files\demos\post007simd</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

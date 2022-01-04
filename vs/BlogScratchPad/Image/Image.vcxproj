@@ -157,6 +157,7 @@
     <ClCompile Include="..\util\libimage\stb_wrapper\stb_libimage.cpp" />
     <ClCompile Include="cpp\source_main.cpp" />
     <ClCompile Include="demos\post003\image.cpp" />
+    <ClCompile Include="demos\post007simd\simd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\util\libimage\gray.hpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="demos\post003\post003.hpp" />
     <ClInclude Include="demos\post004\algorithm_example.hpp" />
     <ClInclude Include="demos\post006\image_transforms.hpp" />
+    <ClInclude Include="demos\post007simd\simd.hpp" />
     <ClInclude Include="demos\transparent_background.hpp" />
     <ClInclude Include="jobs\transform_logo.hpp" />
   </ItemGroup>
