@@ -12,31 +12,65 @@ using r32 = float;
 using r64 = double;
 
 
-void multiply_single(r32* a, r32* b, r32* dst)
+void fill_array(r32* arr, r32 val, size_t N)
 {
-	*dst = *a * *b;
+	for (size_t i = 0; i < N; ++i)
+	{
+		arr[i] = val;
+	}
 }
 
 
-void multiply_4_wide(r32* a, r32* b, r32* dst)
+void multiply_single(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
 {
-	auto wa = _mm_load_ps(a);
-	auto wb = _mm_load_ps(b);
-
-	auto wdst = _mm_mul_ps(wa, wb);
-
-	_mm_store_ps(dst, wdst);
+	for (size_t i = 0; i < N; ++i)
+	{
+		arr_dst[i] = arr_a[i] * arr_b[i];
+	}
 }
 
 
-void multiply_8_wide(r32* a, r32* b, r32* dst)
+void multiply_4_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
 {
-	auto wa = _mm256_load_ps(a);
-	auto wb = _mm256_load_ps(b);
+	__m128 wa;
+	__m128 wb;
+	__m128 wdst;
 
-	auto wdst = _mm256_mul_ps(wa, wb);
+	for (size_t i = 0; i < N; i += 4)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto dst = arr_dst + i;
 
-	_mm256_store_ps(dst, wdst);
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+
+		wdst = _mm_mul_ps(wa, wb);
+
+		_mm_store_ps(dst, wdst);
+	}
+}
+
+
+void multiply_8_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
+{
+	__m256 wa;
+	__m256 wb;
+	__m256 wdst;
+
+	for (size_t i = 0; i < N; i += 8)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm256_load_ps(a);
+		wb = _mm256_load_ps(b);
+
+		wdst = _mm256_mul_ps(wa, wb);
+
+		_mm256_store_ps(dst, wdst);
+	}
 }
 
 
@@ -49,93 +83,119 @@ void multiply()
 
 	size_t const N = 80'000'000;
 
-	std::vector<r32> vec_a(N, 2.0f);
-	std::vector<r32> vec_b(N, 3.0f);
-	std::vector<r32> vec_dst(N, 0.0f);
+	auto arr_a = (r32*)malloc(N * sizeof(r32));
+	auto arr_b = (r32*)malloc(N * sizeof(r32));
+	auto arr_dst = (r32*)malloc(N * sizeof(r32));
+
+	fill_array(arr_a, 3.0f, N);
+	fill_array(arr_b, 2.0f, N);
+	fill_array(arr_dst, 0.0f, N);
 
 	auto const verify = [&]()
 	{
-		auto result = std::all_of(vec_dst.begin(), vec_dst.end(), [](r32 x) { return x == 6.0f; });
-		if (!result)
+		for (size_t i = 0; i < N; ++i)
 		{
-			printf("!!! multiplication error !!!\n");
+			if (arr_dst[i] != 6.0f)
+			{
+				printf("!!! multiply error !!!\n");
+				return;
+			}
 		}
-	};	
+	};
 
 	sw.start();
 
-	for (size_t i = 0; i < N; ++i)
-	{
-		auto a = vec_a.data() + i;
-		auto b = vec_b.data() + i;
-		auto dst = vec_dst.data() + i;
-
-		multiply_single(a, b, dst);
-	}
+	multiply_single(arr_a, arr_b, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
 	printf("single time: %f\n", time_ms);
+
 	verify();
 
-	std::fill(vec_dst.begin(), vec_dst.end(), 0.0f);
-	sw.start();
-	for (size_t i = 0; i < N; i += 4)
-	{
-		auto a = vec_a.data() + i;
-		auto b = vec_b.data() + i;
-		auto dst = vec_dst.data() + i;
-
-		multiply_4_wide(a, b, dst);
-	}
+	multiply_4_wide(arr_a, arr_b, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
 	printf("4 wide time: %f\n", time_ms);
+
 	verify();
+	fill_array(arr_dst, 0.0f, N);
 
-	std::fill(vec_dst.begin(), vec_dst.end(), 0.0f);
 	sw.start();
-	for (size_t i = 0; i < N; i += 8)
-	{
-		auto a = vec_a.data() + i;
-		auto b = vec_b.data() + i;
-		auto dst = vec_dst.data() + i;
 
-		multiply_8_wide(a, b, dst);
-	}
+	multiply_8_wide(arr_a, arr_b, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
 	printf("8 wide time: %f\n", time_ms);
+
 	verify();
+
+	free(arr_a);
+	free(arr_b);
+	free(arr_dst);
 }
 
 
-void fmadd_single(r32* a, r32* b, r32* c, r32* dst)
+void fmadd_single(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
 {
-	*dst = *a * *b + *c;
+	for (size_t i = 0; i < N; ++i)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
+
+		*dst = *a * *b + *c;
+	}
 }
 
 
-void fmadd_4_wide(r32* a, r32* b, r32* c, r32* dst)
+void fmadd_4_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
 {
-	auto wa = _mm_load_ps(a);
-	auto wb = _mm_load_ps(b);
-	auto wc = _mm_load_ps(c);
+	__m128 wa;
+	__m128 wb;
+	__m128 wc;
+	__m128 wdst;
 
-	auto wdst = _mm_fmadd_ps(wa, wb, wc);
+	for (size_t i = 0; i < N; i += 4)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
 
-	_mm_store_ps(dst, wdst);
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+		wc = _mm_load_ps(c);
+
+		wdst = _mm_fmadd_ps(wa, wb, wc);
+
+		_mm_store_ps(dst, wdst);
+	}
 }
 
 
-void fmadd_8_wide(r32* a, r32* b, r32* c, r32* dst)
+void fmadd_8_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
 {
-	auto wa = _mm256_load_ps(a);
-	auto wb = _mm256_load_ps(b);
-	auto wc = _mm256_load_ps(c);
+	__m256 wa;
+	__m256 wb;
+	__m256 wc;
+	__m256 wdst;
 
-	auto wdst = _mm256_fmadd_ps(wa, wb, wc);
+	for (size_t i = 0; i < N; i += 8)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
 
-	_mm256_store_ps(dst, wdst);
+		wa = _mm256_load_ps(a);
+		wb = _mm256_load_ps(b);
+		wc = _mm256_load_ps(c);
+
+		wdst = _mm256_fmadd_ps(wa, wb, wc);
+
+		_mm256_store_ps(dst, wdst);
+	}
 }
 
 
@@ -148,67 +208,61 @@ void fused_multiply_add()
 
 	size_t const N = 80'000'000;
 
-	std::vector<r32> vec_a(N, 2.0f);
-	std::vector<r32> vec_b(N, 3.0f);
-	std::vector<r32> vec_c(N, 1.0f);
-	std::vector<r32> vec_dst(N, 0.0f);
+	auto arr_a = (r32*)malloc(N * sizeof(r32));
+	auto arr_b = (r32*)malloc(N * sizeof(r32));
+	auto arr_c = (r32*)malloc(N * sizeof(r32));
+	auto arr_dst = (r32*)malloc(N * sizeof(r32));
+
+	fill_array(arr_a, 3.0f, N);
+	fill_array(arr_b, 2.0f, N);
+	fill_array(arr_c, 1.0f, N);
+	fill_array(arr_dst, 0.0f, N);
 
 	auto const verify = [&]()
 	{
-		auto result = std::all_of(vec_dst.begin(), vec_dst.end(), [](r32 x) { return x == 7.0f; });
-		if (!result)
+		for (size_t i = 0; i < N; ++i)
 		{
-			printf("!!! multiplication error !!!\n");
+			if (arr_dst[i] != 7.0f)
+			{
+				printf("!!! fmadd error !!!\n");
+				return;
+			}
 		}
-	};	
+	};
 
 	sw.start();
 
-	for (size_t i = 0; i < N; ++i)
-	{
-		auto a = vec_a.data() + i;
-		auto b = vec_b.data() + i;
-		auto c = vec_c.data() + i;
-		auto dst = vec_dst.data() + i;
-
-		fmadd_single(a, b, c, dst);
-	}
+	fmadd_single(arr_a, arr_b, arr_c, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
 	printf("single time: %f\n", time_ms);
+
 	verify();
+	fill_array(arr_dst, 0.0f, N);
 
-	std::fill(vec_dst.begin(), vec_dst.end(), 0.0f);
 	sw.start();
-	for (size_t i = 0; i < N; i += 4)
-	{
-		auto a = vec_a.data() + i;
-		auto b = vec_b.data() + i;
-		auto c = vec_c.data() + i;
-		auto dst = vec_dst.data() + i;
 
-		fmadd_4_wide(a, b, c, dst);
-	}
+	fmadd_4_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
 	printf("4 wide time: %f\n", time_ms);
+
 	verify();
+	fill_array(arr_dst, 0.0f, N);
 
-	std::fill(vec_dst.begin(), vec_dst.end(), 0.0f);
 	sw.start();
-	for (size_t i = 0; i < N; i += 8)
-	{
-		auto a = vec_a.data() + i;
-		auto b = vec_b.data() + i;
-		auto c = vec_c.data() + i;
-		auto dst = vec_dst.data() + i;
 
-		fmadd_8_wide(a, b, c, dst);
-	}
+	fmadd_8_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
 	printf("8 wide time: %f\n", time_ms);
+
 	verify();
+
+	free(arr_a);
+	free(arr_b);
+	free(arr_c);
+	free(arr_dst);
 }
 
 
@@ -297,8 +351,8 @@ void fmadd_struct_of_arrays()
 
 void run()
 {
-	//multiply();
-	//fused_multiply_add();
+	multiply();
+	fused_multiply_add();
 
 	fmadd_array_of_structs();
 	fmadd_struct_of_arrays();
