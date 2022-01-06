@@ -3,9 +3,7 @@
 
 #include <immintrin.h>
 #include <xmmintrin.h>
-#include <vector>
 #include <cstdio>
-#include <algorithm>
 
 
 using r32 = float;
@@ -111,6 +109,8 @@ void multiply()
 	printf("single time: %f\n", time_ms);
 
 	verify();
+
+	sw.start();
 
 	multiply_4_wide(arr_a, arr_b, arr_dst, N);
 
@@ -276,16 +276,6 @@ public:
 };
 
 
-class FusedMultplyAddSOA
-{
-public:
-	std::vector<r32> vec_a;
-	std::vector<r32> vec_b;
-	std::vector<r32> vec_c;
-	std::vector<r32> vec_dst;
-};
-
-
 void fmadd_array_of_structs()
 {
 	printf("\nFused Multiply-Add Array of Structs\n");
@@ -295,19 +285,35 @@ void fmadd_array_of_structs()
 
 	size_t const N = 80'000'000;
 
-	std::vector<FusedMultiplyAdd> fmadd_list(N);
-	auto struct_array = fmadd_list.data();
+	auto struct_array = (FusedMultiplyAdd*)malloc(N * sizeof(FusedMultiplyAdd));
+	if (!struct_array)
+	{
+		return;
+	}
 
 	sw.start();
 	for (size_t i = 0; i < N; ++i)
 	{
-		auto s = struct_array + i;
-		s->dst = s->a * s->b + s->c;
+		//auto& s = struct_array[i];
+		//s.dst = s.a * s.b + s.c;
+		struct_array[i].dst = struct_array[i].a* struct_array[i].b + struct_array[i].c;
 	}
 
 	time_ms = sw.get_time_milli();
 	printf("array of structs time: %f\n", time_ms);
+
+	free(struct_array);
 }
+
+
+class FusedMultplyAddSOA
+{
+public:
+	r32* arr_a;
+	r32* arr_b;
+	r32* arr_c;
+	r32* arr_dst;
+};
 
 
 void fmadd_struct_of_arrays()
@@ -319,31 +325,30 @@ void fmadd_struct_of_arrays()
 
 	size_t const N = 80'000'000;
 
-	auto const init_vec = [&](std::vector<r32>& vec, r32 val) 
-	{
-		vec.resize(N);
-		std::fill(vec.begin(), vec.end(), val);
-	};
-
 	FusedMultplyAddSOA fmadd_soa;
-	init_vec(fmadd_soa.vec_a, 2.0f);
-	init_vec(fmadd_soa.vec_b, 3.0f);
-	init_vec(fmadd_soa.vec_c, 1.0f);
-	init_vec(fmadd_soa.vec_dst, 0.0f);
+	fmadd_soa.arr_a = (r32*)malloc(N * sizeof(r32));
+	fmadd_soa.arr_b = (r32*)malloc(N * sizeof(r32));
+	fmadd_soa.arr_c = (r32*)malloc(N * sizeof(r32));
+	fmadd_soa.arr_dst = (r32*)malloc(N * sizeof(r32));
 
-	auto arr_a = fmadd_soa.vec_a.data();
-	auto arr_b = fmadd_soa.vec_b.data();
-	auto arr_c = fmadd_soa.vec_c.data();
-	auto arr_dst = fmadd_soa.vec_dst.data();
+	fill_array(fmadd_soa.arr_a, 3.0f, N);
+	fill_array(fmadd_soa.arr_b, 2.0f, N);
+	fill_array(fmadd_soa.arr_c, 1.0f, N);
+	fill_array(fmadd_soa.arr_dst, 0.0f, N);
 
 	sw.start();
 	for (size_t i = 0; i < N; ++i)
 	{
-		arr_dst[i] = arr_a[i] * arr_b[i] + arr_c[i];
+		fmadd_soa.arr_dst[i] = fmadd_soa.arr_a[i] * fmadd_soa.arr_b[i] + fmadd_soa.arr_c[i];
 	}
 
 	time_ms = sw.get_time_milli();
-	printf("struct of arrays time: %f\n", time_ms);	
+	printf("struct of arrays time: %f\n", time_ms);
+
+	free(fmadd_soa.arr_a);
+	free(fmadd_soa.arr_b);
+	free(fmadd_soa.arr_c);
+	free(fmadd_soa.arr_dst);
 }
 
 
