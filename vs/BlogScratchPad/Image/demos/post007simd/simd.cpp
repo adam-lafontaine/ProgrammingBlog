@@ -4,6 +4,7 @@
 #include <immintrin.h>
 #include <xmmintrin.h>
 #include <cstdio>
+#include <cmath>
 
 
 using r32 = float;
@@ -266,6 +267,144 @@ void fused_multiply_add()
 }
 
 
+void hypot_single(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	for (size_t i = 0; i < N; ++i)
+	{
+		auto asq = arr_a[i] * arr_a[i];
+		auto bsq = arr_b[i] * arr_b[i];
+		auto csq = arr_c[i] * arr_c[i];
+
+		arr_dst[i] = sqrtf(asq + bsq + csq);
+	}
+}
+
+
+void hypot_4_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	__m128 wa;
+	__m128 wb;
+	__m128 wc;
+	__m128 wdst;
+
+	for (size_t i = 0; i < N; i += 4)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+		wc = _mm_load_ps(c);
+
+		wa = _mm_mul_ps(wa, wa);
+		wb = _mm_mul_ps(wb, wb);
+		wc = _mm_mul_ps(wc, wc);
+
+		wdst = _mm_sqrt_ps(_mm_add_ps(_mm_add_ps(wa, wb), wc));
+
+		_mm_store_ps(dst, wdst);
+	}
+}
+
+
+void hypot_8_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	__m256 wa;
+	__m256 wb;
+	__m256 wc;
+	__m256 wdst;
+
+	for (size_t i = 0; i < N; i += 8)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm256_load_ps(a);
+		wb = _mm256_load_ps(b);
+		wc = _mm256_load_ps(c);
+
+		wa = _mm256_mul_ps(wa, wa);
+		wb = _mm256_mul_ps(wb, wb);
+		wc = _mm256_mul_ps(wc, wc);
+
+		wdst = _mm256_sqrt_ps(_mm256_add_ps(_mm256_add_ps(wa, wb), wc));
+
+		_mm256_store_ps(dst, wdst);
+	}
+}
+
+
+void hypotenuse_3d()
+{
+	printf("\nHypotenuse 3D\n");
+
+	Stopwatch sw;
+	r64 time_ms = 0.0;
+
+	size_t const N = 80'000'000;
+
+	auto arr_a = (r32*)malloc(N * sizeof(r32));
+	auto arr_b = (r32*)malloc(N * sizeof(r32));
+	auto arr_c = (r32*)malloc(N * sizeof(r32));
+	auto arr_dst = (r32*)malloc(N * sizeof(r32));
+
+	fill_array(arr_a, 3.0f, N);
+	fill_array(arr_b, 2.0f, N);
+	fill_array(arr_c, 1.0f, N);
+	fill_array(arr_dst, 0.0f, N);
+
+	auto const verify = [&]()
+	{
+		for (size_t i = 0; i < N; ++i)
+		{
+			if (fabs(arr_dst[i] * arr_dst[i] - 14.0f) > 0.00001f)
+			{
+				printf("!!! hypotenuse error !!!\n");
+				return;
+			}
+		}
+	};
+
+	sw.start();
+
+	hypot_single(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("single time: %f\n", time_ms);
+
+	verify();
+	fill_array(arr_dst, 0.0f, N);
+
+	sw.start();
+
+	hypot_4_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("4 wide time: %f\n", time_ms);
+
+	verify();
+	fill_array(arr_dst, 0.0f, N);
+
+	sw.start();
+
+	hypot_8_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("8 wide time: %f\n", time_ms);
+
+	verify();
+
+	free(arr_a);
+	free(arr_b);
+	free(arr_c);
+	free(arr_dst);
+}
+
+
 class FusedMultiplyAdd
 {
 public:
@@ -294,8 +433,6 @@ void fmadd_array_of_structs()
 	sw.start();
 	for (size_t i = 0; i < N; ++i)
 	{
-		//auto& s = struct_array[i];
-		//s.dst = s.a * s.b + s.c;
 		struct_array[i].dst = struct_array[i].a* struct_array[i].b + struct_array[i].c;
 	}
 
@@ -354,10 +491,15 @@ void fmadd_struct_of_arrays()
 
 
 
+
+
+
 void run()
 {
 	multiply();
 	fused_multiply_add();
+
+	hypotenuse_3d();
 
 	fmadd_array_of_structs();
 	fmadd_struct_of_arrays();
