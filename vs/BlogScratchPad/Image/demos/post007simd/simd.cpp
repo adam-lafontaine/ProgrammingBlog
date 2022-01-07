@@ -20,7 +20,7 @@ void fill_array(r32* arr, r32 val, size_t N)
 }
 
 
-void multiply_single(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
+void multiply_1_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
 {
 	for (size_t i = 0; i < N; ++i)
 	{
@@ -104,10 +104,10 @@ void multiply()
 
 	sw.start();
 
-	multiply_single(arr_a, arr_b, arr_dst, N);
+	multiply_1_wide(arr_a, arr_b, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
-	printf("single time: %f\n", time_ms);
+	printf("1 wide time: %f\n", time_ms);
 
 	verify();
 
@@ -136,16 +136,11 @@ void multiply()
 }
 
 
-void fmadd_single(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+void fmadd_1_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
 {
 	for (size_t i = 0; i < N; ++i)
 	{
-		auto a = arr_a + i;
-		auto b = arr_b + i;
-		auto c = arr_c + i;
-		auto dst = arr_dst + i;
-
-		*dst = *a * *b + *c;
+		arr_dst[i] = arr_a[i] * arr_b[i] + arr_c[i];
 	}
 }
 
@@ -233,10 +228,10 @@ void fused_multiply_add()
 
 	sw.start();
 
-	fmadd_single(arr_a, arr_b, arr_c, arr_dst, N);
+	fmadd_1_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
-	printf("single time: %f\n", time_ms);
+	printf("1 wide time: %f\n", time_ms);
 
 	verify();
 	fill_array(arr_dst, 0.0f, N);
@@ -267,7 +262,7 @@ void fused_multiply_add()
 }
 
 
-void hypot_single(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+void hypot_1_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
 {
 	for (size_t i = 0; i < N; ++i)
 	{
@@ -371,10 +366,10 @@ void hypotenuse_3d()
 
 	sw.start();
 
-	hypot_single(arr_a, arr_b, arr_c, arr_dst, N);
+	hypot_1_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
 	time_ms = sw.get_time_milli();
-	printf("single time: %f\n", time_ms);
+	printf("1 wide time: %f\n", time_ms);
 
 	verify();
 	fill_array(arr_dst, 0.0f, N);
@@ -491,15 +486,32 @@ void fmadd_struct_of_arrays()
 
 
 
+void print_build_mode()
+{
+#ifdef _DEBUG
 
+	printf("\nDebug Build\n");
+
+#else
+
+	printf("\nRelease Build /O2\n");
+
+#endif // _DEBUG
+
+}
 
 
 void run()
 {
+	print_build_mode();
+
+	printf("\nSIMD\n");
+
 	multiply();
 	fused_multiply_add();
-
 	hypotenuse_3d();
+
+	printf("\n\nSOA\n");
 
 	fmadd_array_of_structs();
 	fmadd_struct_of_arrays();
