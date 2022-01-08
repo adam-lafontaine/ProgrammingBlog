@@ -11,11 +11,29 @@ using r32 = float;
 using r64 = double;
 
 
-void fill_array(r32* arr, r32 val, size_t N)
+void add_4_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
 {
-	for (size_t i = 0; i < N; ++i)
+	__m128 wa; // 128 bits wide, holds 4 32 bit floats
+	__m128 wb;
+	__m128 wdst;
+
+	// loop over the arrays, 4 elements at a time
+	for (size_t i = 0; i < N; i += 4)
 	{
-		arr[i] = val;
+		// get starting pointers for the current 4 elements
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto dst = arr_dst + i;
+
+		// load values from arr_a and arr_b into the registers
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+
+		// add the values in a and b together
+		wdst = _mm_add_ps(wa, wb);
+
+		// store the results at this location in arr_dst
+		_mm_store_ps(dst, wdst);
 	}
 }
 
@@ -73,6 +91,15 @@ void multiply_8_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
 }
 
 
+void fill_array(r32* arr, r32 val, size_t N)
+{
+	for (size_t i = 0; i < N; ++i)
+	{
+		arr[i] = val;
+	}
+}
+
+
 void multiply()
 {
 	printf("\nMultiply\n");
@@ -90,45 +117,40 @@ void multiply()
 	fill_array(arr_b, 2.0f, N);
 	fill_array(arr_dst, 0.0f, N);
 
-	auto const verify = [&]()
+	auto const report_and_reset = [&](int width)
 	{
+		time_ms = sw.get_time_milli();
+		printf("%d wide time: %f\n", width, time_ms);
+
 		for (size_t i = 0; i < N; ++i)
 		{
 			if (arr_dst[i] != 6.0f)
 			{
 				printf("!!! multiply error !!!\n");
-				return;
+				break;
 			}
 		}
+
+		fill_array(arr_dst, 0.0f, N);
 	};
 
 	sw.start();
 
 	multiply_1_wide(arr_a, arr_b, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("1 wide time: %f\n", time_ms);
-
-	verify();
+	report_and_reset(1);
 
 	sw.start();
 
 	multiply_4_wide(arr_a, arr_b, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("4 wide time: %f\n", time_ms);
-
-	verify();
-	fill_array(arr_dst, 0.0f, N);
+	report_and_reset(4);
 
 	sw.start();
 
 	multiply_8_wide(arr_a, arr_b, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("8 wide time: %f\n", time_ms);
-
-	verify();
+	report_and_reset(8);
 
 	free(arr_a);
 	free(arr_b);
@@ -214,46 +236,40 @@ void fused_multiply_add()
 	fill_array(arr_c, 1.0f, N);
 	fill_array(arr_dst, 0.0f, N);
 
-	auto const verify = [&]()
+	auto const report_and_reset = [&](int width)
 	{
+		time_ms = sw.get_time_milli();
+		printf("%d wide time: %f\n", width, time_ms);
+
 		for (size_t i = 0; i < N; ++i)
 		{
 			if (arr_dst[i] != 7.0f)
 			{
 				printf("!!! fmadd error !!!\n");
-				return;
+				break;
 			}
 		}
+
+		fill_array(arr_dst, 0.0f, N);
 	};
 
 	sw.start();
 
 	fmadd_1_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("1 wide time: %f\n", time_ms);
-
-	verify();
-	fill_array(arr_dst, 0.0f, N);
+	report_and_reset(1);
 
 	sw.start();
 
 	fmadd_4_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("4 wide time: %f\n", time_ms);
-
-	verify();
-	fill_array(arr_dst, 0.0f, N);
+	report_and_reset(4);
 
 	sw.start();
 
 	fmadd_8_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("8 wide time: %f\n", time_ms);
-
-	verify();
+	report_and_reset(8);
 
 	free(arr_a);
 	free(arr_b);
@@ -352,46 +368,40 @@ void hypotenuse_3d()
 	fill_array(arr_c, 1.0f, N);
 	fill_array(arr_dst, 0.0f, N);
 
-	auto const verify = [&]()
+	auto const report_and_reset = [&](int width)
 	{
+		time_ms = sw.get_time_milli();
+		printf("%d wide time: %f\n", width, time_ms);
+
 		for (size_t i = 0; i < N; ++i)
 		{
 			if (fabs(arr_dst[i] * arr_dst[i] - 14.0f) > 0.00001f)
 			{
 				printf("!!! hypotenuse error !!!\n");
-				return;
+				break;
 			}
 		}
+
+		fill_array(arr_dst, 0.0f, N);
 	};
 
 	sw.start();
 
 	hypot_1_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("1 wide time: %f\n", time_ms);
-
-	verify();
-	fill_array(arr_dst, 0.0f, N);
+	report_and_reset(1);
 
 	sw.start();
 
 	hypot_4_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("4 wide time: %f\n", time_ms);
-
-	verify();
-	fill_array(arr_dst, 0.0f, N);
+	report_and_reset(4);
 
 	sw.start();
 
 	hypot_8_wide(arr_a, arr_b, arr_c, arr_dst, N);
 
-	time_ms = sw.get_time_milli();
-	printf("8 wide time: %f\n", time_ms);
-
-	verify();
+	report_and_reset(8);
 
 	free(arr_a);
 	free(arr_b);
