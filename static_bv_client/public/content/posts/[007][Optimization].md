@@ -1,29 +1,592 @@
-# Optimization
-## 
+# Optimization - What's the point?
+## Is it really worth it?
 
+Optimizing our code can be a lot of work, but before we get into some examples lets have a look at what we get for free.  Below are the execution times of several operations using different implementations.  The left side shows the times with compiler optimizations turned on, and the right side shows the times with compiler optimizations disabled.
+
+![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/example_output.png)
+
+In general, the optimized version is faster and the performance gains are quite significant.  The only exception being the "8 wide" version of the Fused Muliply-Add example.  In the "SIMD" section, the times decrease with the "width" in the unoptimized version and the times are much closer together in the optimized version.  The "8 wide" versions are also the slowest when optimized.  When unoptimized, the "8 wide" versions are just as fast as the optimized versions.
 
 
 ### SIMD - Single Instruction Multiple Data
 
-* Getting more and more difficult to increase the speed of modern CPUs
-* many CPUs can process multiple values at once as long as the data in memory is contiguous (all next to each other) and the operation performed is the same
-* The acronym SIMD for Single Instruction Multiple Data
-* Used when iterating over large amounts of data
-* Requires fewer iterations
-* "pack" a group of values into a data structure, process the data and move on to the next group instead of processing one element at a time
+Chip manufacturers provide special instructions that can be used to perform the same operation on multiple data elements at once.  This can greatly reduce the amount of time it takes to process large amounts of data.  It is not multithreading.  The array elements are "packed" or "loaded" into registers that hold multiple values, and the operation (e.g. add, subtract, multiply etc.) is performed on all of them together.  Below is an example of adding the values of two arrays together.
 
-Chip manufacturers are getting more and more creative in methods to cram more and more transistors in a tiny area.  There is a limit to how small
+```cpp
 
-### Example - Multiply
+// header files for Intel intrinsics
+#include <immintrin.h>
+#include <xmmintrin.h>
 
 
-### Example - Fused Multiply-Add
+using r32 = float;
 
 
-### Example - Hypotenuse 3D
+void add_4_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
+{
+    // add elements of arr_a to elements of arr_b and store them in arr_dst
+
+	__m128 wa; // 128 bits wide, holds 4 32 bit floats
+	__m128 wb;
+	__m128 wdst;
+
+	// loop over the arrays, 4 elements at a time
+	for (size_t i = 0; i < N; i += 4)
+	{
+		// get starting pointers for the current 4 elements
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto dst = arr_dst + i;
+
+		// load values from arr_a and arr_b into the registers
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+
+		// add the values in a and b together
+		wdst = _mm_add_ps(wa, wb);
+
+        /* 
+
+          wa: [ 1.0f, 2.0f, 3.0f, 4.0f ]
+          wb: [ 5.0f, 6.0f, 7.0f, 8.0f ]
+
+        wdst: [ 6.0f, 8.0f, 10.0f, 12.0f ]
+
+        */
+
+		// store the results at this location in arr_dst
+		_mm_store_ps(dst, wdst);
+	}
+}
+```
+
+There is no standard API for these types of operations.  Each chip manufacturer has its own instructions and not all chips have the same functionality.  In order to use them, we need to be sure that the device running our program has the instructions available.
+
+The SIMD examples in this post use Intel instructions compiled with Visual Studio (output above).  The "1 wide" examples process the arrays in the usual way one element at a time.  The "4 wide" examples process 4 elements at a time and the "8 wide" examples process 8 elements.
+
+SIMD is a large topic and there are a lot of instructions available.  Check out the [Intel Intrinsics Guide](https://intel.com/content/www/us/en/docs/intrinsics-guide/index.html) if you would like to feel overwhelmed.
 
 
-### SOA - Struct of Arrays
+### Example - SIMD Multiply
+
+The first example is similar to the add example above except that the values are multiplied.  Doing this normally is pretty straightforward.
+
+```cpp
+void multiply_1_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
+{
+	for (size_t i = 0; i < N; ++i)
+	{
+		arr_dst[i] = arr_a[i] * arr_b[i];
+	}
+}
+```
+
+Multiplying 4 elements at a time looks very similar to the add example.
+
+```cpp
+void multiply_4_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
+{
+	__m128 wa;
+	__m128 wb;
+	__m128 wdst;
+
+	for (size_t i = 0; i < N; i += 4)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+
+		wdst = _mm_mul_ps(wa, wb);
+
+		_mm_store_ps(dst, wdst);
+	}
+}
+```
+
+In order to do the same with 8 elements we need to use registers that are 256 bits (8 x 32) wide.
+
+```cpp
+void multiply_8_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
+{
+	__m256 wa;
+	__m256 wb;
+	__m256 wdst;
+
+	for (size_t i = 0; i < N; i += 8)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm256_load_ps(a);
+		wb = _mm256_load_ps(b);
+
+		wdst = _mm256_mul_ps(wa, wb);
+
+		_mm256_store_ps(dst, wdst);
+	}
+}
+```
+
+The output is generated by initializing three arrays, calling each function on them and timing how long they take to execute.
+
+
+```cpp
+void fill_array(r32* arr, r32 val, size_t N)
+{    
+	for (size_t i = 0; i < N; ++i)
+	{
+		arr[i] = val;
+	}
+}
+
+
+void multiply()
+{
+	printf("\nMultiply\n");
+
+	Stopwatch sw;
+	double time_ms = 0.0;
+
+	size_t const N = 80'000'000;
+
+	auto arr_a = (r32*)malloc(N * sizeof(r32));
+	auto arr_b = (r32*)malloc(N * sizeof(r32));
+	auto arr_dst = (r32*)malloc(N * sizeof(r32));
+
+	fill_array(arr_a, 3.0f, N);
+	fill_array(arr_b, 2.0f, N);
+	fill_array(arr_dst, 0.0f, N);
+
+	auto const verify = [&]()
+	{
+		for (size_t i = 0; i < N; ++i)
+		{
+			if (arr_dst[i] != 6.0f)
+			{
+				printf("!!! multiply error !!!\n");
+				return;
+			}
+		}
+	};
+
+	sw.start();
+
+	multiply_1_wide(arr_a, arr_b, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("1 wide time: %f\n", time_ms);
+
+	verify();
+
+	sw.start();
+
+	multiply_4_wide(arr_a, arr_b, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("4 wide time: %f\n", time_ms);
+
+	verify();
+	fill_array(arr_dst, 0.0f, N);
+
+	sw.start();
+
+	multiply_8_wide(arr_a, arr_b, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("8 wide time: %f\n", time_ms);
+
+	verify();
+
+	free(arr_a);
+	free(arr_b);
+	free(arr_dst);
+}
+```
+
+Note: The Stopwatch class is available in this [previous post](https://almostalwaysauto.com/posts/parallelism-for-free)
+
+
+### Example - SIMD Fused Multiply-Add
+
+```cpp
+void fmadd_1_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	for (size_t i = 0; i < N; ++i)
+	{
+		arr_dst[i] = arr_a[i] * arr_b[i] + arr_c[i];
+	}
+}
+```
+
+
+```cpp
+void fmadd_4_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	__m128 wa;
+	__m128 wb;
+	__m128 wc;
+	__m128 wdst;
+
+	for (size_t i = 0; i < N; i += 4)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+		wc = _mm_load_ps(c);
+
+		wdst = _mm_fmadd_ps(wa, wb, wc);
+
+		_mm_store_ps(dst, wdst);
+	}
+}
+```
+
+
+```cpp
+void fmadd_8_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	__m256 wa;
+	__m256 wb;
+	__m256 wc;
+	__m256 wdst;
+
+	for (size_t i = 0; i < N; i += 8)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm256_load_ps(a);
+		wb = _mm256_load_ps(b);
+		wc = _mm256_load_ps(c);
+
+		wdst = _mm256_fmadd_ps(wa, wb, wc);
+
+		_mm256_store_ps(dst, wdst);
+	}
+}
+```
+
+
+```cpp
+void fused_multiply_add()
+{
+	printf("\nFused Multiply-Add\n");
+
+	Stopwatch sw;
+	double time_ms = 0.0;
+
+	size_t const N = 80'000'000;
+
+	auto arr_a = (r32*)malloc(N * sizeof(r32));
+	auto arr_b = (r32*)malloc(N * sizeof(r32));
+	auto arr_c = (r32*)malloc(N * sizeof(r32));
+	auto arr_dst = (r32*)malloc(N * sizeof(r32));
+
+	fill_array(arr_a, 3.0f, N);
+	fill_array(arr_b, 2.0f, N);
+	fill_array(arr_c, 1.0f, N);
+	fill_array(arr_dst, 0.0f, N);
+
+	auto const verify = [&]()
+	{
+		for (size_t i = 0; i < N; ++i)
+		{
+			if (arr_dst[i] != 7.0f)
+			{
+				printf("!!! fmadd error !!!\n");
+				return;
+			}
+		}
+	};
+
+	sw.start();
+
+	fmadd_1_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("1 wide time: %f\n", time_ms);
+
+	verify();
+	fill_array(arr_dst, 0.0f, N);
+
+	sw.start();
+
+	fmadd_4_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("4 wide time: %f\n", time_ms);
+
+	verify();
+	fill_array(arr_dst, 0.0f, N);
+
+	sw.start();
+
+	fmadd_8_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("8 wide time: %f\n", time_ms);
+
+	verify();
+
+	free(arr_a);
+	free(arr_b);
+	free(arr_c);
+	free(arr_dst);
+}
+```
+
+
+### Example - SIMD Hypotenuse 3D
+
+```cpp
+void hypot_1_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	for (size_t i = 0; i < N; ++i)
+	{
+		auto asq = arr_a[i] * arr_a[i];
+		auto bsq = arr_b[i] * arr_b[i];
+		auto csq = arr_c[i] * arr_c[i];
+
+		arr_dst[i] = sqrtf(asq + bsq + csq);
+	}
+}
+```
+
+
+```cpp
+void hypot_4_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	__m128 wa;
+	__m128 wb;
+	__m128 wc;
+	__m128 wdst;
+
+	for (size_t i = 0; i < N; i += 4)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm_load_ps(a);
+		wb = _mm_load_ps(b);
+		wc = _mm_load_ps(c);
+
+		wa = _mm_mul_ps(wa, wa);
+		wb = _mm_mul_ps(wb, wb);
+		wc = _mm_mul_ps(wc, wc);
+
+		wdst = _mm_sqrt_ps(_mm_add_ps(_mm_add_ps(wa, wb), wc));
+
+		_mm_store_ps(dst, wdst);
+	}
+}
+```
+
+
+```cpp
+void hypot_8_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
+{
+	__m256 wa;
+	__m256 wb;
+	__m256 wc;
+	__m256 wdst;
+
+	for (size_t i = 0; i < N; i += 8)
+	{
+		auto a = arr_a + i;
+		auto b = arr_b + i;
+		auto c = arr_c + i;
+		auto dst = arr_dst + i;
+
+		wa = _mm256_load_ps(a);
+		wb = _mm256_load_ps(b);
+		wc = _mm256_load_ps(c);
+
+		wa = _mm256_mul_ps(wa, wa);
+		wb = _mm256_mul_ps(wb, wb);
+		wc = _mm256_mul_ps(wc, wc);
+
+		wdst = _mm256_sqrt_ps(_mm256_add_ps(_mm256_add_ps(wa, wb), wc));
+
+		_mm256_store_ps(dst, wdst);
+	}
+}
+```
+
+
+```cpp
+void hypotenuse_3d()
+{
+	printf("\nHypotenuse 3D\n");
+
+	Stopwatch sw;
+	double time_ms = 0.0;
+
+	size_t const N = 80'000'000;
+
+	auto arr_a = (r32*)malloc(N * sizeof(r32));
+	auto arr_b = (r32*)malloc(N * sizeof(r32));
+	auto arr_c = (r32*)malloc(N * sizeof(r32));
+	auto arr_dst = (r32*)malloc(N * sizeof(r32));
+
+	fill_array(arr_a, 3.0f, N);
+	fill_array(arr_b, 2.0f, N);
+	fill_array(arr_c, 1.0f, N);
+	fill_array(arr_dst, 0.0f, N);
+
+	auto const verify = [&]()
+	{
+		for (size_t i = 0; i < N; ++i)
+		{
+			if (fabs(arr_dst[i] * arr_dst[i] - 14.0f) > 0.00001f)
+			{
+				printf("!!! hypotenuse error !!!\n");
+				return;
+			}
+		}
+	};
+
+	sw.start();
+
+	hypot_1_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("1 wide time: %f\n", time_ms);
+
+	verify();
+	fill_array(arr_dst, 0.0f, N);
+
+	sw.start();
+
+	hypot_4_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("4 wide time: %f\n", time_ms);
+
+	verify();
+	fill_array(arr_dst, 0.0f, N);
+
+	sw.start();
+
+	hypot_8_wide(arr_a, arr_b, arr_c, arr_dst, N);
+
+	time_ms = sw.get_time_milli();
+	printf("8 wide time: %f\n", time_ms);
+
+	verify();
+
+	free(arr_a);
+	free(arr_b);
+	free(arr_c);
+	free(arr_dst);
+}
+```
+
+![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/image_processing.png)
+
+
+### Example SOA - Struct of Arrays
+
+```cpp
+class FusedMultiplyAdd
+{
+public:
+	r32 a = 2.0f;
+	r32 b = 3.0f;
+	r32 c = 1.0f;
+	r32 dst = 0.0f;
+};
+```
+
+
+```cpp
+void fmadd_array_of_structs()
+{
+	printf("\nFused Multiply-Add Array of Structs\n");
+
+	Stopwatch sw;
+	double time_ms = 0.0;
+
+	size_t const N = 80'000'000;
+
+	auto struct_array = (FusedMultiplyAdd*)malloc(N * sizeof(FusedMultiplyAdd));
+	if (!struct_array)
+	{
+		return;
+	}
+
+	sw.start();
+	for (size_t i = 0; i < N; ++i)
+	{
+		struct_array[i].dst = struct_array[i].a* struct_array[i].b + struct_array[i].c;
+	}
+
+	time_ms = sw.get_time_milli();
+	printf("array of structs time: %f\n", time_ms);
+
+	free(struct_array);
+}
+```
 
 
 ### Example - SOA Fused Multiply-Add
+
+```cpp
+class FusedMultplyAddSOA
+{
+public:
+	r32* arr_a;
+	r32* arr_b;
+	r32* arr_c;
+	r32* arr_dst;
+};
+```
+
+
+```cpp
+void fmadd_struct_of_arrays()
+{
+	printf("\nFused Multiply-Add Struct of Arrays\n");
+
+	Stopwatch sw;
+	double time_ms = 0.0;
+
+	size_t const N = 80'000'000;
+
+	FusedMultplyAddSOA fmadd_soa;
+	fmadd_soa.arr_a = (r32*)malloc(N * sizeof(r32));
+	fmadd_soa.arr_b = (r32*)malloc(N * sizeof(r32));
+	fmadd_soa.arr_c = (r32*)malloc(N * sizeof(r32));
+	fmadd_soa.arr_dst = (r32*)malloc(N * sizeof(r32));
+
+	fill_array(fmadd_soa.arr_a, 3.0f, N);
+	fill_array(fmadd_soa.arr_b, 2.0f, N);
+	fill_array(fmadd_soa.arr_c, 1.0f, N);
+	fill_array(fmadd_soa.arr_dst, 0.0f, N);
+
+	sw.start();
+	for (size_t i = 0; i < N; ++i)
+	{
+		fmadd_soa.arr_dst[i] = fmadd_soa.arr_a[i] * fmadd_soa.arr_b[i] + fmadd_soa.arr_c[i];
+	}
+
+	time_ms = sw.get_time_milli();
+	printf("struct of arrays time: %f\n", time_ms);
+
+	free(fmadd_soa.arr_a);
+	free(fmadd_soa.arr_b);
+	free(fmadd_soa.arr_c);
+	free(fmadd_soa.arr_dst);
+}
+```
