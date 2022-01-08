@@ -502,22 +502,72 @@ void hypotenuse_3d()
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/simd_hypot3d.png)
 
-The calculation takes considerably more time when compiled without optimizations.  With optimizations, the times are the same as those for the fused multiply-add.  The compiler optimized 8 wide version is also slower than the 1 and 4 wide versions but faster than the 8 wide fused multiply add.
+The calculation takes considerably more time when compiled without optimizations.  With optimizations, the times are the same as those for the fused multiply-add.  The compiler-optimized 8 wide version is also slower than the 1 and 4 wide versions but faster than the 8 wide fused multiply-add.
 
 ### SIMD Recap
 
-From a production standpoint, the above excercise has been a complete waste of time.  In all cases the compiler optimized, 1 wide implementation was the fastest.  This would have been the default scenario anyway.  After refactoring to process multiple elements at once, we made the code slightly slower as well as more complicated and less portable.  The "SIMDified" functions were faster as expected when compiled as is, but optimizations done by the compiler make these performance gains irrelevant.  This is not to be expected in every case though.  These examples are just examples and very simple compared to many real world applications.  
+From a production standpoint, the above excercise has been a complete waste of time.  In all cases the compiler-optimized, 1 wide implementation was the fastest.  This would have been the default scenario anyway.  After refactoring to process multiple elements at once, we made the code slightly slower as well as more complicated and less portable.  The "SIMDified" functions were faster as expected when compiled as is, but optimizations done by the compiler make these performance gains irrelevant.  This is not to be expected in every case though.  These examples are just examples and very simple compared to many real world applications.  
 
 
 ### SOA - Struct of Arrays
 
+SOA refers to structuring your data in such a way as to allow the compiler and CPU to process the code and data more efficiently.  The idea is instead of having an array of structs containing properties to do work on, have one struct containing an array for each property.  This can be less intuitive but it allows the compiler to better optimize the code and the processor can cache data more effectively, reducing the number of times it needs to fetch data from RAM.  
 
-
-
-### Example SOA - Struct of Arrays
+Suppose we have an array of points that we want to plot and a function that draws to the screen given an x and y position.  We would implement it like so.
 
 ```cpp
-class FusedMultiplyAdd
+class Point
+{
+public:
+    int x;
+    int y;
+};
+
+
+void plot_graph(Point* pts, size_t n_points)
+{
+    for(size_t i = 0; i < n_points; ++i)
+    {
+        draw_to_screen(pts[i].x, pts[i].y);
+    }
+}
+```
+
+This is the array of structs approach.  We iterate over an array of Point structs to process their elements.
+
+Alternatively we can have a struct that contains an array of x values and an array of y values and iterate over their elements.
+
+```cpp
+class PointSOA
+{
+public:
+    int* x_values;
+    int* y_values;
+
+    size_t n_points;
+};
+
+
+void plot_graph(PointSOA const& pts)
+{
+    for(size_t i = 0; i < pts.n_points; ++i)
+    {
+        draw_to_screen(pts.x_values[i], pts.y_values[i]);
+    }
+}
+```
+
+This is the struct of arrays (SOA) approach and should be faster.
+
+
+### Example - SOA Multiply-Add
+
+We'll use an example that is similar to the SIMD fused multiply-add example.  In this case it is not fused because the multiply and add operations are actually separate.
+
+
+
+```cpp
+class MultiplyAdd
 {
 public:
 	r32 a = 2.0f;
@@ -525,20 +575,18 @@ public:
 	r32 c = 1.0f;
 	r32 dst = 0.0f;
 };
-```
 
 
-```cpp
-void fmadd_array_of_structs()
+void madd_array_of_structs()
 {
-	printf("\nFused Multiply-Add Array of Structs\n");
+	printf("\nMultiply-Add Array of Structs\n");
 
 	Stopwatch sw;
-	double time_ms = 0.0;
+	r64 time_ms = 0.0;
 
 	size_t const N = 80'000'000;
 
-	auto struct_array = (FusedMultiplyAdd*)malloc(N * sizeof(FusedMultiplyAdd));
+	auto struct_array = (MultiplyAdd*)malloc(N * sizeof(MultiplyAdd));
 	if (!struct_array)
 	{
 		return;
@@ -558,10 +606,10 @@ void fmadd_array_of_structs()
 ```
 
 
-### Example - SOA Fused Multiply-Add
 
 ```cpp
-class FusedMultplyAddSOA
+
+class MultplyAddSOA
 {
 public:
 	r32* arr_a;
@@ -569,20 +617,18 @@ public:
 	r32* arr_c;
 	r32* arr_dst;
 };
-```
 
 
-```cpp
-void fmadd_struct_of_arrays()
+void madd_struct_of_arrays()
 {
-	printf("\nFused Multiply-Add Struct of Arrays\n");
+	printf("\nMultiply-Add Struct of Arrays\n");
 
 	Stopwatch sw;
-	double time_ms = 0.0;
+	r64 time_ms = 0.0;
 
 	size_t const N = 80'000'000;
 
-	FusedMultplyAddSOA fmadd_soa;
+	MultplyAddSOA fmadd_soa;
 	fmadd_soa.arr_a = (r32*)malloc(N * sizeof(r32));
 	fmadd_soa.arr_b = (r32*)malloc(N * sizeof(r32));
 	fmadd_soa.arr_c = (r32*)malloc(N * sizeof(r32));
@@ -608,6 +654,11 @@ void fmadd_struct_of_arrays()
 	free(fmadd_soa.arr_dst);
 }
 ```
+
+![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/soa_fma.png)
+
+
+### SOA Recap
 
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/image_processing.png)
