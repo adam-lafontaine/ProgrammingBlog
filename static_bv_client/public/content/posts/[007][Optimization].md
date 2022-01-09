@@ -5,15 +5,14 @@ Optimizing our code can be a lot of work, but before we get into some examples l
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/example_output.png)
 
-In general, the optimized version is faster and the performance gains are quite significant.  The only exception being the "8 wide" version of the Fused Muliply-Add example.  In the "SIMD" section, the times decrease with the "width" in the unoptimized version and the times are much closer together in the optimized version.  The "8 wide" versions are also the slowest when optimized.  When unoptimized, the "8 wide" versions are just as fast as the optimized versions.
+In general, the compiler-optimized versions are faster and the performance gains are quite significant.  The only exception being the "8 wide" version of the Fused Muliply-Add example.  In the "SIMD" section, the times decrease with the "width" when unoptimized version and the times are much closer together in the optimized version.  The "8 wide" versions are also the slowest when optimized.  When unoptimized, the "8 wide" versions are just as fast as the optimized versions.
 
 
 ### SIMD - Single Instruction Multiple Data
 
-Chip manufacturers provide special instructions that can be used to perform the same operation on multiple data elements at once.  This can greatly reduce the amount of time it takes to process large amounts of data.  It is not multithreading.  The array elements are "packed" or "loaded" into registers that hold multiple values, and the operation (e.g. add, subtract, multiply etc.) is performed on all of them together.  Below is an example of adding the values of two arrays together.
+Chip manufacturers provide special instructions that can be used to perform the same operation on multiple data elements at once.  This can greatly reduce the amount of time it takes to process large amounts of data.  It is not multithreading.  The array elements are "packed" or "vectorized" into registers that hold multiple values, and the operation (e.g. add, subtract, multiply etc.) is performed on all of them together.  Below is an example of adding the values of two arrays together.
 
 ```cpp
-
 // header files for Intel intrinsics
 #include <immintrin.h>
 #include <xmmintrin.h>
@@ -60,9 +59,9 @@ void add_4_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
 }
 ```
 
-There is no standard API for these types of operations.  Each chip manufacturer has its own instructions and not all chips have the same functionality.  In order to use them, we need to be sure that the device running our program has the instructions available.
+There is no standard API for these types of operations.  Each chip manufacturer has its own intrinsics and not all chips have the same functionality.  In order to use them, we need to be sure that the device running our program has the instructions available.
 
-The SIMD examples in this post use Intel instructions compiled with Visual Studio (output above).  The "1 wide" examples process the arrays in the usual way one element at a time.  The "4 wide" examples process 4 elements at a time and the "8 wide" examples process 8 elements.
+The SIMD examples in this post use Intel intrinsics compiled with Visual Studio (output above).  The "1 wide" examples process the arrays in the usual way one element at a time.  The "4 wide" examples process 4 elements at a time and the "8 wide" examples process 8 elements.
 
 SIMD is a large topic and there are a lot of instructions available.  Check out the [Intel Intrinsics Guide](https://intel.com/content/www/us/en/docs/intrinsics-guide/index.html) if you would like to feel overwhelmed.
 
@@ -215,9 +214,9 @@ We would expect the 8 wide version to be fastest because it has the fewest total
 
 ### Example - SIMD Fused Multiply-Add
 
-The fused multiply-add operation is an interesting one because it is two operations done in one step.  It is the multiplication of two numbers followed by adding a third. The equation for a straight line (y = mx + b) is a fused multiply-add.
+The fused multiply-add operation is an interesting one because it is two operations done in one step.  It is the multiplication of two numbers followed by adding a third. The equation for a straight line (y = mx + b) would be a fused multiply-add.
 
-The default implementation is done in two steps.
+The default implementation is done like so.
 
 ```cpp
 void fmadd_1_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
@@ -348,7 +347,7 @@ void fused_multiply_add()
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/simd_fma.png)
 
-All versions are slower than then their multiply counterparts.  The fused multiply-add is technically one operation but it is clearly more work for the processor to perform.  With compiler optimizations, the one and four wide implementations are faster than the 8 wide implementation.  8 wide is still the same speed with our without compiler optimizations.
+All versions are slower than then their multiply counterparts.  The fused multiply-add is technically one operation but it is clearly more work for the processor to perform.  With compiler optimizations, the 1 and 4 wide implementations are faster than the 8 wide implementation.  8 wide is still the same speed with our without compiler optimizations.
 
 
 ### Example - SIMD Hypotenuse 3D
@@ -374,7 +373,7 @@ void hypot_1_wide(r32* arr_a, r32* arr_b, r32* arr_c, r32* arr_dst, size_t N)
 }
 ```
 
-Not so simple in SIMD but doable.
+Not so simple in SIMD, but doable.
 
 
 ```cpp
@@ -506,7 +505,7 @@ The calculation takes considerably more time when compiled without optimizations
 
 ### SIMD Recap
 
-From a production standpoint, the above excercise has been a complete waste of time.  In all cases the compiler-optimized, 1 wide implementation was the fastest.  This would have been the default scenario anyway.  After refactoring to process multiple elements at once, we made the code slightly slower as well as more complicated and less portable.  The "SIMDified" functions were faster as expected when compiled as is, but optimizations done by the compiler make these performance gains irrelevant.  This is not to be expected in every case though.  These examples are just examples and very simple compared to many real world applications.  
+From a production standpoint, the above excercise has been a complete waste of time.  In all cases the compiler-optimized, 1 wide implementation was the fastest.  This would have been the default scenario anyway.  After refactoring to process multiple elements at once, we made the code slightly slower as well as more complicated and less portable.  The vectorized functions were faster as expected when compiled as is, but optimizations done by the compiler make these performance gains irrelevant.  This is not to be expected in every case though.  These examples are just examples and very simple compared to many real world applications.  
 
 
 ### SOA - Struct of Arrays
@@ -533,7 +532,7 @@ void plot_graph(Point* pts, size_t n_points)
 }
 ```
 
-This is the array of structs approach.  We iterate over an array of Point structs to process their elements.
+This is the array of structs approach.  We iterate over an array of Point structs to process its elements.
 
 Alternatively we can have a struct that contains an array of x values and an array of y values and iterate over their elements.
 
@@ -562,9 +561,7 @@ This is the struct of arrays (SOA) approach and should be faster.
 
 ### Example - SOA Multiply-Add
 
-We'll use an example that is similar to the SIMD fused multiply-add example.  In this case it is not fused because the multiply and add operations are actually separate.
-
-
+Our example is similar to the SIMD fused multiply-add example.  The struct contains the values for the calculation as well as the result.
 
 ```cpp
 class MultiplyAdd
@@ -586,12 +583,6 @@ void madd_array_of_structs()
 
 	size_t const N = 80'000'000;
 
-	auto struct_array = (MultiplyAdd*)malloc(N * sizeof(MultiplyAdd));
-	if (!struct_array)
-	{
-		return;
-	}
-
 	sw.start();
 	for (size_t i = 0; i < N; ++i)
 	{
@@ -605,11 +596,11 @@ void madd_array_of_structs()
 }
 ```
 
-
+The struct of arrays holds pointers for the arrays of values.
 
 ```cpp
 
-class MultplyAddSOA
+class MultiplyAddSOA
 {
 public:
 	r32* arr_a;
@@ -628,7 +619,7 @@ void madd_struct_of_arrays()
 
 	size_t const N = 80'000'000;
 
-	MultplyAddSOA fmadd_soa;
+	MultiplyAddSOA fmadd_soa;
 	fmadd_soa.arr_a = (r32*)malloc(N * sizeof(r32));
 	fmadd_soa.arr_b = (r32*)malloc(N * sizeof(r32));
 	fmadd_soa.arr_c = (r32*)malloc(N * sizeof(r32));
@@ -657,8 +648,29 @@ void madd_struct_of_arrays()
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/soa_fma.png)
 
+The SOA version is significantly faster with and without compiler optimizations.  The speeds match the 1 wide implementations of the SIMD fused multiply-add example.  This is because the implementations are exactly the same.  Data elements are contiguous, which makes it possible to vectorize and cache efficiently.
+
 
 ### SOA Recap
 
+It seems that the biggest bang for your buck can be achieved by arranging data in memory that is optimal for the CPU to process.  It's easy to forget that computers are physical devices in the real world and data exists in physical memory.  Where and how the memory is arranged does matter.  Software is more than just code and abstractions.  It is instructions for a CPU to follow.  When completing a given task, some instructions can be better than others.
+
+
+### Should we optimize?
+
+This is the question that we should always be asking ourselves rather than simply optimizing for its own sake or never bothering to in order to save time.  It requires an investement of time and effort and each situation will have different considerations.  The SIMD examples in this post did not show any performance gains but their operations are quite simple.  It's likely that the compiler optimizations did them for us anyway.  There are certainly situations where it is worth while, otherwise why would it exist?  
+
+Here is an example doing edge detection on grayscale images.  The numbers are relative times per pixel rather than raw milliseconds.  This allows for comparing different sizes of images and differnet quantities.
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/image_processing.png)
+
+* seq => Raw loops or std::for_each(...)
+* par => Parallel processing using std::execution::par
+* simd => 4 wide intel SIMD instrinsics
+
+Here the SIMD implementations made a difference though not as much as using the parallelized standard algorithms.  I could try other optimizations.  I could use 8 wide intrinsics.  I could parallelize the SIMD operations.  I could apply the SOA principle and use planar color images instead of interleaved RGBA channels.  Eventually I will try these as an excercise because that is the purpose of my image processing library.  They will take more time and cause more headaches.  Sometimes the end result will be worth the effort and sometimes it won't.  Sometimes we won't find out if the extra effort was worthwhile until after the fact.
+
+
+### First make it work, and then make it better
+
+The main objective should always be to solve the problem.  There is no point in trying to figure out the optimal implementation at the start because we won't understand the problem until after we have solved it.  Solve the problem first.  Improve it afterwards if necessary.  At least a working solution will be available for people to use while an improved version is being developed.  Remember that nothing is ever perfect so there will always be improvements to be made.  The key is to know when to stop and move on.
