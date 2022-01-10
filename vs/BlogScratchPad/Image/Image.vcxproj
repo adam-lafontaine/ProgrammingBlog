@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,6 +136,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,46 +146,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\util\libimage\libimage.cpp" />
-    <ClCompile Include="..\util\libimage\math\charts.cpp" />
-    <ClCompile Include="..\util\libimage\math\math.cpp" />
-    <ClCompile Include="..\util\libimage\proc\alpha_blend.cpp" />
-    <ClCompile Include="..\util\libimage\proc\binarize.cpp" />
-    <ClCompile Include="..\util\libimage\proc\blur.cpp" />
-    <ClCompile Include="..\util\libimage\proc\convolve.cpp" />
-    <ClCompile Include="..\util\libimage\proc\copy.cpp" />
-    <ClCompile Include="..\util\libimage\proc\gradient.cpp" />
-    <ClCompile Include="..\util\libimage\proc\transform.cpp" />
-    <ClCompile Include="..\util\libimage\stb_wrapper\stb_libimage.cpp" />
     <ClCompile Include="cpp\source_main.cpp" />
-    <ClCompile Include="demos\post003\image.cpp" />
+    <ClCompile Include="demos\post007simd\simd.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\util\libimage\gray.hpp" />
-    <ClInclude Include="..\util\libimage\libimage.hpp" />
-    <ClInclude Include="..\util\libimage\math\charts.hpp" />
-    <ClInclude Include="..\util\libimage\math\math.hpp" />
-    <ClInclude Include="..\util\libimage\proc\convolve.hpp" />
-    <ClInclude Include="..\util\libimage\proc\index_range.hpp" />
-    <ClInclude Include="..\util\libimage\proc\process.hpp" />
-    <ClInclude Include="..\util\libimage\proc\verify.hpp" />
-    <ClInclude Include="..\util\libimage\rgba.hpp" />
-    <ClInclude Include="..\util\libimage\stb_wrapper\stb_image.h" />
-    <ClInclude Include="..\util\libimage\stb_wrapper\stb_image_resize.h" />
-    <ClInclude Include="..\util\libimage\stb_wrapper\stb_image_write.h" />
-    <ClInclude Include="..\util\libimage\stb_wrapper\stb_include.hpp" />
-    <ClInclude Include="..\util\libimage\types.hpp" />
     <ClInclude Include="..\util\stopwatch.hpp" />
     <ClInclude Include="..\util\win32_leak_check.h" />
-    <ClInclude Include="demos\post001.hpp" />
-    <ClInclude Include="demos\planar.hpp" />
-    <ClInclude Include="demos\post002.hpp" />
-    <ClInclude Include="demos\post003\image.hpp" />
-    <ClInclude Include="demos\post003\post003.hpp" />
-    <ClInclude Include="demos\post004\algorithm_example.hpp" />
-    <ClInclude Include="demos\post006\image_transforms.hpp" />
-    <ClInclude Include="demos\transparent_background.hpp" />
-    <ClInclude Include="jobs\transform_logo.hpp" />
+    <ClInclude Include="demos\post007simd\simd.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

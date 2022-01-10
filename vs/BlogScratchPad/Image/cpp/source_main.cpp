@@ -1,12 +1,15 @@
-#include "../demos/post006/image_transforms.hpp"
+#include "../demos/post007simd/simd.hpp"
 
-#if defined(_WIN32)
+
+//#define CHECK_LEAKS
+
+#if defined(_WIN32) && defined(CHECK_LEAKS)
 #include "../../util/win32_leak_check.h"
 #endif
 
 int main()
 {
-#if defined(_WIN32) && defined(_DEBUG)
+#if defined(_WIN32) && defined(_DEBUG) && defined(CHECK_LEAKS)
 int dbgFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 dbgFlags |= _CRTDBG_CHECK_ALWAYS_DF;   // check block integrity
 dbgFlags |= _CRTDBG_DELAY_FREE_MEM_DF; // don't recycle memory
