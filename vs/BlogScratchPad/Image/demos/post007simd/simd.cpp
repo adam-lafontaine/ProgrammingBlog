@@ -410,7 +410,7 @@ void hypotenuse_3d()
 }
 
 
-class FusedMultiplyAdd
+class MultiplyAdd
 {
 public:
 	r32 a = 2.0f;
@@ -420,7 +420,7 @@ public:
 };
 
 
-void fmadd_array_of_structs()
+void madd_array_of_structs()
 {
 	printf("\nFused Multiply-Add Array of Structs\n");
 
@@ -429,7 +429,7 @@ void fmadd_array_of_structs()
 
 	size_t const N = 80'000'000;
 
-	auto struct_array = (FusedMultiplyAdd*)malloc(N * sizeof(FusedMultiplyAdd));
+	auto struct_array = (MultiplyAdd*)malloc(N * sizeof(MultiplyAdd));
 	if (!struct_array)
 	{
 		return;
@@ -448,7 +448,7 @@ void fmadd_array_of_structs()
 }
 
 
-class FusedMultplyAddSOA
+class MultplyAddSOA
 {
 public:
 	r32* arr_a;
@@ -458,7 +458,7 @@ public:
 };
 
 
-void fmadd_struct_of_arrays()
+void madd_struct_of_arrays()
 {
 	printf("\nFused Multiply-Add Struct of Arrays\n");
 
@@ -467,7 +467,7 @@ void fmadd_struct_of_arrays()
 
 	size_t const N = 80'000'000;
 
-	FusedMultplyAddSOA fmadd_soa;
+	MultplyAddSOA fmadd_soa;
 	fmadd_soa.arr_a = (r32*)malloc(N * sizeof(r32));
 	fmadd_soa.arr_b = (r32*)malloc(N * sizeof(r32));
 	fmadd_soa.arr_c = (r32*)malloc(N * sizeof(r32));
