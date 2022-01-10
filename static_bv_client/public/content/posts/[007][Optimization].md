@@ -5,12 +5,12 @@ Optimizing our code can be a lot of work, but before we get into some examples l
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/example_output.png)
 
-In general, the compiler-optimized versions are faster and the performance gains are quite significant.  The only exception being the "8 wide" version of the Fused Muliply-Add example.  In the "SIMD" section, the times decrease with the "width" when unoptimized version and the times are much closer together in the optimized version.  The "8 wide" versions are also the slowest when optimized.  When unoptimized, the "8 wide" versions are just as fast as the optimized versions.
+In general, the compiler-optimized versions are faster and the performance gains are quite significant.  The only exception being the "8 wide" version of the Fused Muliply-Add example.  In the "SIMD" section, the times decrease with the "width" when unoptimized and the times are much closer together in the optimized versions.  The "8 wide" versions are also the slowest when optimized.  When unoptimized, the "8 wide" versions are just as fast as the optimized versions.
 
 
 ### SIMD - Single Instruction Multiple Data
 
-Chip manufacturers provide special instructions that can be used to perform the same operation on multiple data elements at once.  This can greatly reduce the amount of time it takes to process large amounts of data.  It is not multithreading.  The array elements are "packed" or "vectorized" into registers that hold multiple values, and the operation (e.g. add, subtract, multiply etc.) is performed on all of them together.  Below is an example of adding the values of two arrays together.
+Chip manufacturers provide special instructions that can be used to perform the same operation on multiple data elements at a time.  This can greatly reduce the amount of time it takes to process large amounts of data.  It is not multithreading.  The array elements are "packed" or "vectorized" into registers that hold multiple values, and the operation (e.g. add, subtract, multiply etc.) is performed on all of them together.  Below is an example of adding the values of two arrays together.
 
 ```cpp
 // header files for Intel intrinsics
@@ -23,7 +23,7 @@ using r32 = float;
 
 void add_4_wide(r32* arr_a, r32* arr_b, r32* arr_dst, size_t N)
 {
-    // add elements of arr_a to elements of arr_b and store them in arr_dst
+    // add elements of arr_a to elements of arr_b and store the result in arr_dst
 
 	__m128 wa; // 128 bits wide, holds 4 32 bit floats
 	__m128 wb;
@@ -505,12 +505,12 @@ The calculation takes considerably more time when compiled without optimizations
 
 ### SIMD Recap
 
-From a production standpoint, the above excercise has been a complete waste of time.  In all cases the compiler-optimized, 1 wide implementation was the fastest.  This would have been the default scenario anyway.  After refactoring to process multiple elements at once, we made the code slightly slower as well as more complicated and less portable.  The vectorized functions were faster as expected when compiled as is, but optimizations done by the compiler make these performance gains irrelevant.  This is not to be expected in every case though.  These examples are just examples and very simple compared to many real world applications.  
+From a production standpoint, the above excercise has been a complete waste of time.  In all cases the compiler-optimized, 1 wide implementation was the fastest.  This would have been the default scenario anyway.  After refactoring to process multiple elements at once, we made the code slightly slower as well as more complicated and less portable.  The vectorized functions were faster as expected when compiled as is, but optimizations done by the compiler make these performance gains irrelevant.  This is not to be expected in every case though.  These examples are very simple compared to many real world applications.  
 
 
 ### SOA - Struct of Arrays
 
-SOA refers to structuring your data in such a way as to allow the compiler and CPU to process the code and data more efficiently.  The idea is instead of having an array of structs containing properties to do work on, have one struct containing an array for each property.  This can be less intuitive but it allows the compiler to better optimize the code and the processor can cache data more effectively, reducing the number of times it needs to fetch data from RAM.  
+SOA refers to structuring your data in such a way as to allow the compiler and CPU to process the code and data more efficiently.  The idea is instead of having an array of structs containing properties to do work on, have one struct containing an array for each property.  This can be less intuitive for the developer but it allows the compiler to better optimize the code and the processor can cache data more effectively, reducing the number of times it needs to fetch data from RAM.  
 
 Suppose we have an array of points that we want to plot and a function that draws to the screen given an x and y position.  We would implement it like so.
 
@@ -532,7 +532,7 @@ void plot_graph(Point* pts, size_t n_points)
 }
 ```
 
-This is the array of structs approach.  We iterate over an array of Point structs to process its elements.
+This is the array of structs approach.  We iterate over an array of Point structs to process their elements.
 
 Alternatively we can have a struct that contains an array of x values and an array of y values and iterate over their elements.
 
@@ -561,7 +561,9 @@ This is the struct of arrays (SOA) approach and should be faster.
 
 ### Example - SOA Multiply-Add
 
-Our example is similar to the SIMD fused multiply-add example.  The struct contains the values for the calculation as well as the result.
+Our example is similar to the SIMD fused multiply-add example.  
+
+The struct contains the values for the calculation as well as the result.
 
 ```cpp
 class MultiplyAdd
@@ -619,30 +621,30 @@ void madd_struct_of_arrays()
 
 	size_t const N = 80'000'000;
 
-	MultiplyAddSOA fmadd_soa;
-	fmadd_soa.arr_a = (r32*)malloc(N * sizeof(r32));
-	fmadd_soa.arr_b = (r32*)malloc(N * sizeof(r32));
-	fmadd_soa.arr_c = (r32*)malloc(N * sizeof(r32));
-	fmadd_soa.arr_dst = (r32*)malloc(N * sizeof(r32));
+	MultiplyAddSOA madd_soa;
+	madd_soa.arr_a = (r32*)malloc(N * sizeof(r32));
+	madd_soa.arr_b = (r32*)malloc(N * sizeof(r32));
+	madd_soa.arr_c = (r32*)malloc(N * sizeof(r32));
+	madd_soa.arr_dst = (r32*)malloc(N * sizeof(r32));
 
-	fill_array(fmadd_soa.arr_a, 3.0f, N);
-	fill_array(fmadd_soa.arr_b, 2.0f, N);
-	fill_array(fmadd_soa.arr_c, 1.0f, N);
-	fill_array(fmadd_soa.arr_dst, 0.0f, N);
+	fill_array(madd_soa.arr_a, 3.0f, N);
+	fill_array(madd_soa.arr_b, 2.0f, N);
+	fill_array(madd_soa.arr_c, 1.0f, N);
+	fill_array(madd_soa.arr_dst, 0.0f, N);
 
 	sw.start();
 	for (size_t i = 0; i < N; ++i)
 	{
-		fmadd_soa.arr_dst[i] = fmadd_soa.arr_a[i] * fmadd_soa.arr_b[i] + fmadd_soa.arr_c[i];
+		madd_soa.arr_dst[i] = madd_soa.arr_a[i] * madd_soa.arr_b[i] + madd_soa.arr_c[i];
 	}
 
 	time_ms = sw.get_time_milli();
 	printf("struct of arrays time: %f\n", time_ms);
 
-	free(fmadd_soa.arr_a);
-	free(fmadd_soa.arr_b);
-	free(fmadd_soa.arr_c);
-	free(fmadd_soa.arr_dst);
+	free(madd_soa.arr_a);
+	free(madd_soa.arr_b);
+	free(madd_soa.arr_c);
+	free(madd_soa.arr_dst);
 }
 ```
 
@@ -658,17 +660,19 @@ It seems that the biggest bang for your buck can be achieved by arranging data i
 
 ### Should we optimize?
 
-This is the question that we should always be asking ourselves rather than simply optimizing for its own sake or never bothering to in order to save time.  It requires an investement of time and effort and each situation will have different considerations.  The SIMD examples in this post did not show any performance gains but their operations are quite simple.  It's likely that the compiler optimizations did them for us anyway.  There are certainly situations where it is worth while, otherwise why would it exist?  
+This is the question that we should always be asking ourselves rather than simply optimizing for its own sake or never bothering to in order to save time.  It requires an investement of time and effort and each situation will have different pros and cons to consider.  The SIMD examples in this post did not show any performance gains but their operations are quite simple.  It's likely that the compiler optimizations did them for us anyway.  There are certainly situations where it is worth while, otherwise why would it exist?  
 
-Here is an example doing edge detection on grayscale images.  The numbers are relative times per pixel rather than raw milliseconds.  This allows for comparing different sizes of images and differnet quantities.
+Here is an example doing edge detection on grayscale images.  The numbers are relative times per pixel rather than raw milliseconds.  This allows for comparing different sizes of images and different quantities.
 
 ![alt text](https://github.com/adam-lafontaine/CMS/raw/master/img/%5B007%5D/image_processing.png)
 
-* seq => Raw loops or std::for_each(...)
-* par => Parallel processing using std::execution::par
-* simd => 4 wide intel SIMD instrinsics
+* seq = Raw loops or std::for_each(...)
+* par = Parallel processing using std::execution::par
+* simd = 4 wide intel SIMD instrinsics
 
-Here the SIMD implementations made a difference though not as much as using the parallelized standard algorithms.  I could try other optimizations.  I could use 8 wide intrinsics.  I could parallelize the SIMD operations.  I could apply the SOA principle and use planar color images instead of interleaved RGBA channels.  Eventually I will try these as an excercise because that is the purpose of my image processing library.  They will take more time and cause more headaches.  Sometimes the end result will be worth the effort and sometimes it won't.  Sometimes we won't find out if the extra effort was worthwhile until after the fact.
+Here the SIMD implementations made a difference though not as much as using the parallelized standard algorithms.  I could try other optimizations.  I could use 8 wide intrinsics.  I could parallelize the SIMD operations.  I could apply the SOA principle and use planar color images instead of interleaved RGBA channels.  Eventually I will try these as an excercise because that is the purpose of my image processing library.  They will take more time and cause more headaches.  
+
+Sometimes the end result will be worth the effort and sometimes it won't.  Sometimes we won't find out if the extra effort was worthwhile until after the fact.
 
 
 ### First make it work, and then make it better

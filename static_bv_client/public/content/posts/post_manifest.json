@@ -68,6 +68,14 @@
             "filename": "[006][Simple image transforms].md"
         },
         {
+            "number": "[007]",
+            "id": "1641852382419",
+            "title": "Optimization - What's the point?",
+            "route": "optimization-wtp",
+            "tags": ["C", "C++", "Optimization"],
+            "filename": "[007][Optimization].md"
+        },
+        {
             "number": "[]",
             "id": "",
             "title": "",
