@@ -21,13 +21,83 @@ using r64 = double;
 
 
 constexpr auto WINDOW_TITLE = "Image Window";
-constexpr int WINDOW_WIDTH = 800;
-constexpr int WINDOW_HEIGHT = 800;
+constexpr int WINDOW_WIDTH = 600;
+constexpr int WINDOW_HEIGHT = 600;
 
 constexpr r64 TARGET_FRAMERATE_HZ = 60.0;
 constexpr auto TARGET_MS_PER_FRAME = 1000.0 / TARGET_FRAMERATE_HZ;
 
 static bool g_running = false;
+
+
+class WindowBuffer
+{
+public:
+
+    SDL_Renderer* renderer;
+    SDL_Texture* texture;
+};
+
+
+class Pixel
+{
+public:
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 alpha; // padding
+};
+
+
+class Image
+{
+public:
+    u32 width;
+    u32 height;
+
+    Pixel* data;
+};
+
+
+bool init_window_buffer(WindowBuffer& buffer, SDL_Window* window)
+{
+    buffer.renderer = SDL_CreateRenderer(window, -1, 0);
+
+    if (!buffer.renderer)
+    {
+        printf("SDL_CreateRenderer failed\n%s\n", SDL_GetError());
+        return false;
+    }
+
+    buffer.texture = SDL_CreateTexture(
+        buffer.renderer,
+        SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_STREAMING,
+        WINDOW_WIDTH,
+        WINDOW_HEIGHT);
+
+    if (!buffer.texture)
+    {
+        printf("SDL_CreateTexture failed\n%s\n", SDL_GetError());
+        return false;
+    }
+
+    return true;
+}
+
+
+void destroy_window_buffer(WindowBuffer& buffer)
+{
+    if (buffer.texture)
+    {
+        SDL_DestroyTexture(buffer.texture);
+    }
+
+    if (buffer.renderer)
+    {
+        SDL_DestroyRenderer(buffer.renderer);
+    }
+}
 
 
 void wait_for_framerate(Stopwatch& sw)
@@ -51,10 +121,6 @@ void wait_for_framerate(Stopwatch& sw)
 }
 
 
-
-
-
-
 bool init_sdl()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -67,18 +133,8 @@ bool init_sdl()
 }
 
 
-void cleanup()
-{
-    SDL_Quit();
-}
-
-
 SDL_Window* create_window()
 {
-    const char* title = "Image Window";
-    int width = 800;
-    int height = 800;
-
     auto window = SDL_CreateWindow(
         WINDOW_TITLE,
         SDL_WINDOWPOS_UNDEFINED,
@@ -93,6 +149,68 @@ SDL_Window* create_window()
     }
 
     return window;
+}
+
+
+void handle_keyboard_event(SDL_Event const& event)
+{
+    if (event.key.repeat || event.key.state != SDL_PRESSED)
+    {
+        return;
+    }
+
+    auto key_code = event.key.keysym.sym;
+    switch (key_code)
+    {
+    case SDLK_a:
+    {
+        printf("A\n");
+    } break;
+    case SDLK_b:
+    {
+        printf("B\n");
+    } break;
+    case SDLK_c:
+    {
+        printf("C\n");
+    } break;
+
+    }
+}
+
+
+void handle_sdl_event(SDL_Event const& event)
+{
+    switch (event.type)
+    {
+    case SDL_QUIT:
+    {
+        printf("SDL_QUIT\n");
+        g_running = false;
+    } break;
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+    {
+        auto key_code = event.key.keysym.sym;
+        auto alt = event.key.keysym.mod & KMOD_ALT;
+        if (key_code == SDLK_F4 && alt)
+        {
+            printf("ALT F4\n");
+            g_running = false;
+        }
+        else if (key_code == SDLK_ESCAPE)
+        {
+            printf("ESC\n");
+            g_running = false;
+        }
+        else
+        {
+            handle_keyboard_event(event);
+        }
+
+    } break;
+
+    }
 }
 
 
@@ -111,24 +229,33 @@ int main(int argc, char* args[])
         return EXIT_FAILURE;
     }
 
+    WindowBuffer window_buffer{};    
+
+    auto const cleanup = [&]() 
+    {
+        destroy_window_buffer(window_buffer);
+        SDL_Quit();
+    };
+
+    if (!init_window_buffer(window_buffer, window))
+    {
+        cleanup();
+        return EXIT_FAILURE;
+    }
+
     g_running = true;
     Stopwatch sw;
     sw.start();
 
-    // temp
-    u32 temp_n_frames = (u32)(5000.0 / TARGET_MS_PER_FRAME); // keep app running for 5 seconds
-    u32 temp_frame_count = 0;
-
     while (g_running)
     {
-        wait_for_framerate(sw);
-
-        // temp
-        ++temp_frame_count;
-        if (temp_frame_count >= temp_n_frames)
+        SDL_Event event;
+        if (SDL_PollEvent(&event))
         {
-            g_running = false;
+            handle_sdl_event(event);
         }
+
+        wait_for_framerate(sw);
     }
 
     cleanup();
