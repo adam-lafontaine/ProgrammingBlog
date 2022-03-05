@@ -76,12 +76,20 @@
             "filename": "[007][Optimization].md"
         },
         {
+            "number": "[008]",
+            "id": "1646485135061",
+            "title": "Basic GUI application",
+            "route": "basic-gui",
+            "tags": ["C++", "SDL2"],
+            "filename": "[008][Basic GUI].md"
+        },
+        {
             "number": "[]",
             "id": "",
             "title": "",
             "route": "",
             "tags": [],
-            "filename": ""
+            "filename": "[][].md"
         }
     ]
 }
