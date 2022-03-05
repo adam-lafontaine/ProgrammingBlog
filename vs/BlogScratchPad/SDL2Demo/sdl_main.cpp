@@ -4,8 +4,13 @@
 #include <cstdio>
 #include <cstddef>
 #include <thread>
+#include <cassert>
 
 #include "../util/stopwatch.hpp"
+
+#if defined(_WIN32) && defined(_DEBUG)
+#include "../util/win32_leak_check.h"
+#endif
 
 using u8 = uint8_t;
 using u16 = uint16_t;
@@ -18,16 +23,6 @@ using i64 = int64_t;
 
 using r32 = float;
 using r64 = double;
-
-
-constexpr auto WINDOW_TITLE = "Image Window";
-constexpr int WINDOW_WIDTH = 600;
-constexpr int WINDOW_HEIGHT = 600;
-
-constexpr r64 TARGET_FRAMERATE_HZ = 60.0;
-constexpr auto TARGET_MS_PER_FRAME = 1000.0 / TARGET_FRAMERATE_HZ;
-
-static bool g_running = false;
 
 
 class WindowBuffer
@@ -55,8 +50,78 @@ public:
     u32 width;
     u32 height;
 
-    Pixel* data;
+    Pixel* data = nullptr;
 };
+
+
+constexpr auto WINDOW_TITLE = "Image Window";
+constexpr int WINDOW_WIDTH = 600;
+constexpr int WINDOW_HEIGHT = 600;
+
+constexpr r64 TARGET_FRAMERATE_HZ = 60.0;
+constexpr auto TARGET_MS_PER_FRAME = 1000.0 / TARGET_FRAMERATE_HZ;
+
+constexpr u32 IMAGE_WIDTH = WINDOW_WIDTH;
+constexpr u32 IMAGE_HEIGHT = WINDOW_HEIGHT;
+
+static bool g_running = false;
+
+static WindowBuffer g_window_buffer;
+static Image g_image;
+
+
+bool create_image(Image& image, u32 width, u32 height)
+{
+    image.width = width;
+    image.height = height;
+    image.data = (Pixel*)malloc(sizeof(Pixel) * width * height);
+
+    if (!image.data)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+void destroy_image(Image& image)
+{
+    if (image.data != nullptr)
+    {
+        free(image.data);
+        image.data = nullptr;
+    }
+}
+
+
+Pixel to_pixel(u8 r, u8 g, u8 b)
+{
+    Pixel p{};
+
+    p.red = r;
+    p.green = g;
+    p.blue = b;
+    p.alpha = 255;
+
+    return p;
+}
+
+
+void display_image(Image const& image, WindowBuffer const& buffer)
+{
+    auto pitch = (int)(image.width * sizeof(Pixel));
+    auto error = SDL_UpdateTexture(buffer.texture, 0, (void*)image.data, pitch);
+    if (error)
+    {
+        printf("SDL_UpdateTexture failed %s\n", SDL_GetError());
+        return;
+    }
+
+    SDL_RenderCopy(buffer.renderer, buffer.texture, 0, 0);
+
+    SDL_RenderPresent(buffer.renderer);
+}
 
 
 bool init_window_buffer(WindowBuffer& buffer, SDL_Window* window)
@@ -133,6 +198,15 @@ bool init_sdl()
 }
 
 
+void cleanup()
+{
+    //SDL_DestroyWindow();
+    destroy_window_buffer(g_window_buffer);
+    SDL_Quit();
+    destroy_image(g_image);
+}
+
+
 SDL_Window* create_window()
 {
     auto window = SDL_CreateWindow(
@@ -152,6 +226,17 @@ SDL_Window* create_window()
 }
 
 
+void render_color(Pixel p)
+{
+    for (u32 i = 0; i < g_image.width * g_image.height; ++i)
+    {
+        g_image.data[i] = p;
+    }
+
+    display_image(g_image, g_window_buffer);
+}
+
+
 void handle_keyboard_event(SDL_Event const& event)
 {
     if (event.key.repeat || event.key.state != SDL_PRESSED)
@@ -165,14 +250,20 @@ void handle_keyboard_event(SDL_Event const& event)
     case SDLK_a:
     {
         printf("A\n");
+
+        render_color(to_pixel(255, 0, 0));
     } break;
     case SDLK_b:
     {
         printf("B\n");
+
+        render_color(to_pixel(0, 255, 0));
     } break;
     case SDLK_c:
     {
         printf("C\n");
+
+        render_color(to_pixel(0, 0, 255));
     } break;
 
     }
@@ -216,7 +307,13 @@ void handle_sdl_event(SDL_Event const& event)
 
 int main(int argc, char* args[])
 {
-    printf("\n");
+#if defined(_WIN32) && defined(_DEBUG)
+    int dbgFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    dbgFlags |= _CRTDBG_CHECK_ALWAYS_DF;   // check block integrity
+    dbgFlags |= _CRTDBG_DELAY_FREE_MEM_DF; // don't recycle memory
+    dbgFlags |= _CRTDBG_LEAK_CHECK_DF;     // leak report on exit
+    _CrtSetDbgFlag(dbgFlags);
+#endif
 
     if (!init_sdl())
     {
@@ -229,15 +326,13 @@ int main(int argc, char* args[])
         return EXIT_FAILURE;
     }
 
-    WindowBuffer window_buffer{};    
-
-    auto const cleanup = [&]() 
+    if (!init_window_buffer(g_window_buffer, window))
     {
-        destroy_window_buffer(window_buffer);
-        SDL_Quit();
-    };
+        cleanup();
+        return EXIT_FAILURE;
+    }
 
-    if (!init_window_buffer(window_buffer, window))
+    if (!create_image(g_image, IMAGE_WIDTH, IMAGE_HEIGHT))
     {
         cleanup();
         return EXIT_FAILURE;

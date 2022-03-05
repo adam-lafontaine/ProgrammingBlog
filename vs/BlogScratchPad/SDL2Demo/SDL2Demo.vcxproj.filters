@@ -26,5 +26,8 @@
     <ClInclude Include="..\util\stopwatch.hpp">
       <Filter>Header Files\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\util\win32_leak_check.h">
+      <Filter>Header Files\util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

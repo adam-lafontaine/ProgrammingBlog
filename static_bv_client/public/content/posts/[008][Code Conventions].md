@@ -39,7 +39,7 @@ int main(int argc, char* args[])
 ```cpp
 #include <cstdio>
 
-static bool init_sdl()
+bool init_sdl()
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -51,6 +51,37 @@ static bool init_sdl()
 }
 ```
 
+```cpp
+void cleanup()
+{
+    SDL_Quit();
+}
+```
+
+### Warning - Memory leak
+
+```cpp
+int main(int argc, char* args[])
+{
+#if defined(_WIN32) && defined(_DEBUG)
+    int dbgFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    dbgFlags |= _CRTDBG_CHECK_ALWAYS_DF;   // check block integrity
+    dbgFlags |= _CRTDBG_DELAY_FREE_MEM_DF; // don't recycle memory
+    dbgFlags |= _CRTDBG_LEAK_CHECK_DF;     // leak report on exit
+    _CrtSetDbgFlag(dbgFlags);
+#endif
+
+    if (!init_sdl())
+    {
+        return EXIT_FAILURE;
+    }
+
+        cleanup();
+    return EXIT_SUCCESS;
+}
+```
+
+### Application Setup (continued)
 
 ```cpp
 constexpr auto WINDOW_TITLE = "Image Window";
@@ -81,8 +112,6 @@ SDL_Window* create_window()
 ```cpp
 int main(int argc, char* args[])
 {
-    printf("\n");
-
     if (!init_sdl())
     {
         return EXIT_FAILURE;
@@ -93,11 +122,6 @@ int main(int argc, char* args[])
     {
         return EXIT_FAILURE;
     }
-
-    auto const cleanup = []() 
-    {
-        SDL_Quit();
-    };
 
     // TODO: Add program logic here
 
@@ -110,8 +134,6 @@ int main(int argc, char* args[])
 
 ```cpp
 #include <cstddef>
-
-
 
 using u8 = uint8_t;
 using u16 = uint16_t;
@@ -163,8 +185,6 @@ void wait_for_framerate(Stopwatch& sw)
 ```cpp
 int main(int argc, char* args[])
 {
-    printf("\n");
-
     if (!init_sdl())
     {
         return EXIT_FAILURE;
@@ -175,11 +195,6 @@ int main(int argc, char* args[])
     {
         return EXIT_FAILURE;
     }
-
-    auto const cleanup = []() 
-    {
-        SDL_Quit();
-    };
 
     g_running = true;
     Stopwatch sw;
@@ -280,8 +295,6 @@ void handle_sdl_event(SDL_Event const& event)
 ```cpp
 int main(int argc, char* args[])
 {
-    printf("\n");
-
     if (!init_sdl())
     {
         return EXIT_FAILURE;
@@ -292,11 +305,6 @@ int main(int argc, char* args[])
     {
         return EXIT_FAILURE;
     }
-
-    auto const cleanup = []() 
-    {
-        SDL_Quit();
-    };
 
     g_running = true;
     Stopwatch sw;
@@ -319,7 +327,7 @@ int main(int argc, char* args[])
 ```
 
 
-### Rendering
+### Enable Rendering
 
 ```cpp
 class WindowBuffer
@@ -328,28 +336,6 @@ public:
 
     SDL_Renderer* renderer;
     SDL_Texture* texture;
-};
-```
-
-
-```cpp
-class Pixel
-{
-public:
-    u8 red;
-    u8 green;
-    u8 blue;
-    u8 alpha; // padding
-};
-
-
-class Image
-{
-public:
-    u32 width;
-    u32 height;
-
-    Pixel* data;
 };
 ```
 
@@ -397,12 +383,22 @@ void destroy_window_buffer(WindowBuffer& buffer)
 }
 ```
 
+```cpp
+static WindowBuffer g_window_buffer;
+```
+
+```cpp
+void cleanup()
+{
+    destroy_window_buffer(g_window_buffer);
+    SDL_Quit();
+}
+```
+
 
 ```cpp
 int main(int argc, char* args[])
 {
-    printf("\n");
-
     if (!init_sdl())
     {
         return EXIT_FAILURE;
@@ -414,15 +410,7 @@ int main(int argc, char* args[])
         return EXIT_FAILURE;
     }
 
-    WindowBuffer window_buffer{};    
-
-    auto const cleanup = [&]() 
-    {
-        destroy_window_buffer(window_buffer);
-        SDL_Quit();
-    };
-
-    if (!init_window_buffer(window_buffer, window))
+    if (!init_window_buffer(g_window_buffer, window))
     {
         cleanup();
         return EXIT_FAILURE;
@@ -445,5 +433,198 @@ int main(int argc, char* args[])
 
     cleanup();
     return EXIT_SUCCESS;
+}
+```
+
+
+### Setup the image data
+
+
+```cpp
+class Pixel
+{
+public:
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 alpha; // padding
+};
+
+
+class Image
+{
+public:
+    u32 width;
+    u32 height;
+
+    Pixel* data;
+};
+
+
+bool create_image(Image& image, u32 width, u32 height)
+{
+    image.width = width;
+    image.height = height;
+    image.data = (Pixel*)malloc(sizeof(Pixel) * width * height);
+
+    if (!image.data)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+void destroy_image(Image& image)
+{
+    if (image.data != nullptr)
+    {
+        free(image.data);
+        image.data = nullptr;
+    }
+}
+
+
+Pixel to_pixel(u8 r, u8 g, u8 b)
+{
+    Pixel p{};
+
+    p.red = r;
+    p.green = g;
+    p.blue = b;
+    p.alpha = 255;
+
+    return p;
+}
+```
+
+```cpp
+constexpr u32 IMAGE_WIDTH = WINDOW_WIDTH;
+constexpr u32 IMAGE_HEIGHT = WINDOW_HEIGHT;
+
+static Image g_image;
+```
+
+
+```cpp
+void cleanup()
+{
+    destroy_window_buffer(g_window_buffer);
+    SDL_Quit();
+    destroy_image(g_image);
+}
+```
+
+```cpp
+int main(int argc, char* args[])
+{
+    if (!init_sdl())
+    {
+        return EXIT_FAILURE;
+    }
+
+    auto window = create_window();
+    if (!window)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (!init_window_buffer(g_window_buffer, window))
+    {
+        cleanup();
+        return EXIT_FAILURE;
+    }
+
+    if (!create_image(g_image, IMAGE_WIDTH, IMAGE_HEIGHT))
+    {
+        cleanup();
+        return EXIT_FAILURE;
+    }
+
+    g_running = true;
+    Stopwatch sw;
+    sw.start();
+
+    while (g_running)
+    {
+        SDL_Event event;
+        if (SDL_PollEvent(&event))
+        {
+            handle_sdl_event(event);
+        }
+
+        wait_for_framerate(sw);
+    }
+
+    cleanup();
+    return EXIT_SUCCESS;
+}
+```
+
+### Rendering
+
+
+```cpp
+void display_image(Image const& image, WindowBuffer const& buffer)
+{
+    auto pitch = (int)(image.width * sizeof(Pixel));
+    auto error = SDL_UpdateTexture(buffer.texture, 0, image.data, pitch);
+    if (error)
+    {
+        printf("SDL_UpdateTexture failed %s\n", SDL_GetError());
+        return;
+    }
+
+    SDL_RenderCopy(buffer.renderer, buffer.texture, 0, 0);
+
+    SDL_RenderPresent(buffer.renderer);
+}
+```
+
+```cpp
+void render_color(Pixel p)
+{
+    for (u32 i = 0; i < g_image.width * g_image.height; ++i)
+    {
+        g_image.data[i] = p;
+    }
+
+    display_image(g_image, g_window_buffer);
+}
+```
+
+
+```cpp
+void handle_keyboard_event(SDL_Event const& event)
+{
+    if (event.key.repeat || event.key.state != SDL_PRESSED)
+    {
+        return;
+    }
+
+    auto key_code = event.key.keysym.sym;
+    switch (key_code)
+    {
+    case SDLK_a:
+    {
+        printf("A\n");
+
+        render_color(to_pixel(255, 0, 0));
+    } break;
+    case SDLK_b:
+    {
+        printf("B\n");
+
+        render_color(to_pixel(0, 255, 0));
+    } break;
+    case SDLK_c:
+    {
+        printf("C\n");
+
+        render_color(to_pixel(0, 0, 255));
+    } break;
+
+    }
 }
 ```
