@@ -1,7 +1,7 @@
 # Make a basic GUI application
 ## Using SDL2
 
-This post will walk you through getting a basic application started using SDL2.  The application will open a window and display a generated image based on user input.
+This post will walk you through getting a basic application started using SDL2.  SDL2 is a wrapper around operating system APIs.  The application will open a window and display a generated image based on user input.
 
 ### Install SDL2 - Windows
 
@@ -745,7 +745,7 @@ void handle_keyboard_event(SDL_Event const& event)
 }
 ```
 
-Finally, write the current image data to the window in each frame.
+Finally, write the selected image data to the window on each frame.
 
 ```cpp
 int main(int argc, char* args[])
@@ -797,3 +797,12 @@ int main(int argc, char* args[])
 
 Now we can update the window by pressing the A, B, C and D keys.
 
+### Further Study
+
+This post is barely an introduction to SDL2 and my knowledge of it is barely more than this post.  To learn how to implement similar functionality (and more) directly on Windows and Linux, I highly recommend the Handmade Hero series by Casey Muratori.
+
+https://handmadehero.org/
+
+The SDL implementation for this post is based on David Gow's companion series called Handmade Penguin.  
+
+https://davidgow.net/handmadepenguin/
