@@ -1,29 +1,68 @@
-# Simple GUI
+# Make a basic GUI application
 ## Using SDL2
 
+This post will walk you through getting a basic application started using SDL2.  The application will open a window and display a generated image based on user input.
 
-### Install SDL2
+### Install SDL2 - Windows
+
+The first thing is to get the SDL2 libraries installed.  On Windows/Visual Studio, it is easiest to use vcpkg.
 
 https://vcpkg.io/en/getting-started.html
 
+Simply clone/download the repository and follow the instructions in the guide.
+
+Run the following commands in **Windows Powershell as administrator**.
+
+Set Visual Studio to automatically include and link installed libraries.
+
 ```
-Powershell as administrator
-
 .\vcpkg.exe integrate install
+```
 
+Install SDL2 (32 bit)
+
+```
 .\vcpkg.exe install sdl2
+```
 
+Install SDL2 (64 bit)
+
+```
 .\vcpkg.exe install sdl2:x64-windows
 ```
 
+### Install SDL2 - Ubuntu
+
 ```
 apt-get install libsdl2-dev libsdl2-dbg
+```
 
+Include the following in your g++ command line arguments when compiling and linking
+
+```
+`sdl2-config --cflags --libs`
+```
+
+Note: You may receive an error similar to the following when running your application.
+
+```
+dbus[8661]: arguments to dbus_message_new_method_call() were incorrect, assertion "path != NULL" failed in file ../../../dbus/dbus-message.c line 1362.
+This is normally a bug in some application using the D-Bus library.
+
+  D-Bus not built with -rdynamic so unable to print a backtrace
+```
+Internet searches have found that this is a bug with either SDL or Ubuntu.  The workaround is to kill the service in question.
+
+```
 sudo killall ibus-daemon
 ```
 
+If everything is setup properly, the following program should compile and run without errors.
+
 ```cpp
+#if defined(_WIN32)
 #define SDL_MAIN_HANDLED
+#endif
 #include <SDL2/SDL.h>
 
 
@@ -35,6 +74,7 @@ int main(int argc, char* args[])
 
 ### Application Setup
 
+Before using the libray, SDL needs to be initialized.
 
 ```cpp
 #include <cstdio>
@@ -51,6 +91,8 @@ bool init_sdl()
 }
 ```
 
+We'll start a cleanup function to free resources when the program ends.
+
 ```cpp
 void cleanup()
 {
@@ -58,35 +100,39 @@ void cleanup()
 }
 ```
 
-### Warning - Memory leak
+Now our main function does nothing but initialize and close the SDL library.
 
 ```cpp
 int main(int argc, char* args[])
 {
-#if defined(_WIN32) && defined(_DEBUG)
-    int dbgFlags = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-    dbgFlags |= _CRTDBG_CHECK_ALWAYS_DF;   // check block integrity
-    dbgFlags |= _CRTDBG_DELAY_FREE_MEM_DF; // don't recycle memory
-    dbgFlags |= _CRTDBG_LEAK_CHECK_DF;     // leak report on exit
-    _CrtSetDbgFlag(dbgFlags);
-#endif
-
     if (!init_sdl())
     {
         return EXIT_FAILURE;
     }
 
-        cleanup();
+    cleanup();
     return EXIT_SUCCESS;
 }
 ```
 
+### Warning - Memory leak
+
+If we run our program checking for memory leaks, we will find them.
+
+https://almostalwaysauto.com/posts/no-leaks-allowed
+
+Unfortunately, this makes it more difficult for us to check for leaks in our code.
+
+When using a library for the first time, it is a good idea to check for leaks by isolating it in a small program.  It can save time later on by preventing you from searching for a leak in your code that doesn't exist.
+
 ### Application Setup (continued)
+
+Next, we need a function to create our window.
 
 ```cpp
 constexpr auto WINDOW_TITLE = "Image Window";
-constexpr int WINDOW_WIDTH = 800;
-constexpr int WINDOW_HEIGHT = 800;
+constexpr int WINDOW_WIDTH = 600;
+constexpr int WINDOW_HEIGHT = 600;
 
 
 SDL_Window* create_window()
@@ -108,6 +154,7 @@ SDL_Window* create_window()
 }
 ```
 
+In main, we'll attempt to create the window if the SDL library was initialized successfully.
 
 ```cpp
 int main(int argc, char* args[])
@@ -120,10 +167,9 @@ int main(int argc, char* args[])
     auto window = create_window();
     if (!window)
     {
+        cleanup();
         return EXIT_FAILURE;
     }
-
-    // TODO: Add program logic here
 
     cleanup();
     return EXIT_SUCCESS;
@@ -132,33 +178,32 @@ int main(int argc, char* args[])
 
 ### Set Application Framerate
 
-```cpp
-#include <cstddef>
+In general, GUI applications run an infinite loop that reads input, processes the input and other data and renders the frame in the window.  We need to control how frequently the application does this otherwise each frame will render at different speeds and more load than necessary will be placed on the CPU.
 
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-
-using i16 = int16_t;
-using i32 = int32_t;
-using i64 = int64_t;
-
-using r32 = float;
-using r64 = double;
-
-```
-
+60 frames per second is usually a good target.
 
 ```cpp
 #include <thread>
+#include <cstddef>
 
-#include "stopwatch.hpp"
+using u8 = uint8_t;
+using u32 = uint32_t;
+using r64 = double;
 
 constexpr r64 TARGET_FRAMERATE_HZ = 60.0;
-constexpr auto TARGET_MS_PER_FRAME = 1000.0 / TARGET_FRAMERATE_HZ;
+constexpr r64 TARGET_MS_PER_FRAME = 1000.0 / TARGET_FRAMERATE_HZ;
+```
 
+To keep things simple we'll start keeping global static variables.  This one will be used to signal when the application should be terminated.
+
+```cpp
 static bool g_running = false;
+```
+
+In the loop we need a function that pauses each frame for just enough time to maintain our 60 FPS.
+
+```cpp
+#include "stopwatch.hpp"
 
 
 void wait_for_framerate(Stopwatch& sw)
@@ -182,6 +227,12 @@ void wait_for_framerate(Stopwatch& sw)
 }
 ```
 
+The Stopwatch class is available here:
+
+https://github.com/adam-lafontaine/Cpp_Utilities/blob/master/stopwatch/stopwatch.hpp
+
+Add the loop in main along with some temporary code that terminates the application after running for 5 seconds.
+
 ```cpp
 int main(int argc, char* args[])
 {
@@ -193,6 +244,7 @@ int main(int argc, char* args[])
     auto window = create_window();
     if (!window)
     {
+        cleanup();
         return EXIT_FAILURE;
     }
 
@@ -206,17 +258,14 @@ int main(int argc, char* args[])
 
     while (g_running)
     {
-        // TODO: Add program logic here
-
-        wait_for_framerate(sw);
-
-
         // temp
         ++temp_frame_count;
         if (temp_frame_count >= temp_n_frames)
         {
             g_running = false;
         }
+
+        wait_for_framerate(sw);
     }
 
     cleanup();
@@ -224,8 +273,9 @@ int main(int argc, char* args[])
 }
 ```
 
+### Keyboard Input
 
-### Handle Keyboard Input
+In every frame, SDL checks for an input event and stores the information in a SDL_Event struct.  We will only concern ourselves with keyboard events when the A, B, C or D keys are pressed.
 
 ```cpp
 void handle_keyboard_event(SDL_Event const& event)
@@ -250,10 +300,16 @@ void handle_keyboard_event(SDL_Event const& event)
     {
         printf("C\n");
     } break;
+    case SDLK_d:
+    {
+        printf("D\n");
+    } break;
 
     }
 }
 ```
+
+Before handling keyboard events, we first check if the user wishes to quit the application.  The application will terminate if the user clicks the 'X' button in the window tile bar, presses ALT+F4 or ESC.
 
 ```cpp
 void handle_sdl_event(SDL_Event const& event)
@@ -262,6 +318,7 @@ void handle_sdl_event(SDL_Event const& event)
     {
     case SDL_QUIT:
     {
+        // window X button pressed
         printf("SDL_QUIT\n");
         g_running = false;
     } break;
@@ -291,6 +348,7 @@ void handle_sdl_event(SDL_Event const& event)
 }
 ```
 
+In main, replace the temporary frame counting code with code for event handling.
 
 ```cpp
 int main(int argc, char* args[])
@@ -303,6 +361,7 @@ int main(int argc, char* args[])
     auto window = create_window();
     if (!window)
     {
+        cleanup();
         return EXIT_FAILURE;
     }
 
@@ -315,7 +374,7 @@ int main(int argc, char* args[])
         SDL_Event event;
         if (SDL_PollEvent(&event))
         {
-            handle_quit(event);
+            handle_sdl_event(event);
         }
 
         wait_for_framerate(sw);
@@ -326,8 +385,9 @@ int main(int argc, char* args[])
 }
 ```
 
-
 ### Enable Rendering
+
+For displaying image data in a window, SDL has a texture and a renderer.  The texture holds a reference to the image data and the renderer renders the texture data to the window.  We'll group them together and call it a WindowBuffer.
 
 ```cpp
 class WindowBuffer
@@ -339,6 +399,7 @@ public:
 };
 ```
 
+The renderer and texture need to be initialized at startup and destroyed when the program ends.
 
 ```cpp
 bool init_window_buffer(WindowBuffer& buffer, SDL_Window* window)
@@ -366,9 +427,8 @@ bool init_window_buffer(WindowBuffer& buffer, SDL_Window* window)
 
     return true;
 }
-```
 
-```cpp
+
 void destroy_window_buffer(WindowBuffer& buffer)
 {
     if (buffer.texture)
@@ -383,9 +443,13 @@ void destroy_window_buffer(WindowBuffer& buffer)
 }
 ```
 
+Add a global WindowBuffer variable.
+
 ```cpp
 static WindowBuffer g_window_buffer;
 ```
+
+Update the cleanup function.
 
 ```cpp
 void cleanup()
@@ -395,6 +459,7 @@ void cleanup()
 }
 ```
 
+Initialize the WindowBuffer in main.
 
 ```cpp
 int main(int argc, char* args[])
@@ -407,6 +472,7 @@ int main(int argc, char* args[])
     auto window = create_window();
     if (!window)
     {
+        cleanup();
         return EXIT_FAILURE;
     }
 
@@ -436,9 +502,9 @@ int main(int argc, char* args[])
 }
 ```
 
-
 ### Setup the image data
 
+We need to be able to write generated image data to the SDL texture.  To do that, we'll use image and pixel logic that is similar to previous posts.
 
 ```cpp
 class Pixel
@@ -469,6 +535,7 @@ bool create_image(Image& image, u32 width, u32 height)
 
     if (!image.data)
     {
+        image.data = nullptr;
         return false;
     }
 
@@ -499,6 +566,8 @@ Pixel to_pixel(u8 r, u8 g, u8 b)
 }
 ```
 
+We need a global image and its width and height will match the application widow's.
+
 ```cpp
 constexpr u32 IMAGE_WIDTH = WINDOW_WIDTH;
 constexpr u32 IMAGE_HEIGHT = WINDOW_HEIGHT;
@@ -506,6 +575,7 @@ constexpr u32 IMAGE_HEIGHT = WINDOW_HEIGHT;
 static Image g_image;
 ```
 
+Make sure to free the image memory when the application is finished.
 
 ```cpp
 void cleanup()
@@ -515,6 +585,8 @@ void cleanup()
     destroy_image(g_image);
 }
 ```
+
+Update main to create the image data.
 
 ```cpp
 int main(int argc, char* args[])
@@ -564,15 +636,16 @@ int main(int argc, char* args[])
 
 ### Rendering
 
+Now that everything is setup, we can finally write image data and display it in the window.  Writing an image to the window is done like so.
 
 ```cpp
 void display_image(Image const& image, WindowBuffer const& buffer)
 {
     auto pitch = (int)(image.width * sizeof(Pixel));
-    auto error = SDL_UpdateTexture(buffer.texture, 0, image.data, pitch);
+    auto error = SDL_UpdateTexture(buffer.texture, 0, (void*)image.data, pitch);
     if (error)
     {
-        printf("SDL_UpdateTexture failed %s\n", SDL_GetError());
+        printf("SDL_UpdateTexture failed\n%s\n", SDL_GetError());
         return;
     }
 
@@ -582,18 +655,55 @@ void display_image(Image const& image, WindowBuffer const& buffer)
 }
 ```
 
+We'll do some fairly simple image generation for our examples.  This function sets the the entire window to a single color.
+
 ```cpp
-void render_color(Pixel p)
+void draw_color(Pixel p)
 {
     for (u32 i = 0; i < g_image.width * g_image.height; ++i)
     {
         g_image.data[i] = p;
     }
-
-    display_image(g_image, g_window_buffer);
 }
 ```
 
+This will divide the window into blue, green and red vertical sections.
+
+```cpp
+void draw_bgr()
+{
+    auto blue = to_pixel(0, 0, 255);
+    auto green = to_pixel(0, 255, 0);
+    auto red = to_pixel(255, 0, 0);
+
+    auto blue_max = g_image.width / 3;
+    auto green_max = g_image.width * 2 / 3;
+
+    u32 i = 0;
+    for (u32 y = 0; y < g_image.height; ++y)
+    {
+        for (u32 x = 0; x < g_image.width; ++x)
+        {
+            if (x < blue_max)
+            {
+                g_image.data[i] = blue;
+            }
+            else if (x < green_max)
+            {
+                g_image.data[i] = green;
+            }
+            else
+            {
+                g_image.data[i] = red;
+            }
+
+            ++i;
+        }
+    }
+}
+```
+
+Decide which drawing function to call based on the keyboard input.
 
 ```cpp
 void handle_keyboard_event(SDL_Event const& event)
@@ -624,7 +734,66 @@ void handle_keyboard_event(SDL_Event const& event)
 
         render_color(to_pixel(0, 0, 255));
     } break;
+    case SDLK_d:
+    {
+        printf("D\n");
+
+        render_bgr();
+    } break;
 
     }
 }
 ```
+
+Finally, write the current image data to the window in each frame.
+
+```cpp
+int main(int argc, char* args[])
+{
+    if (!init_sdl())
+    {
+        return EXIT_FAILURE;
+    }
+
+    auto window = create_window();
+    if (!window)
+    {
+        return EXIT_FAILURE;
+    }
+
+    if (!init_window_buffer(g_window_buffer, window))
+    {
+        cleanup();
+        return EXIT_FAILURE;
+    }
+
+    if (!create_image(g_image, IMAGE_WIDTH, IMAGE_HEIGHT))
+    {
+        cleanup();
+        return EXIT_FAILURE;
+    }
+
+    g_running = true;
+    Stopwatch sw;
+    sw.start();
+
+    while (g_running)
+    {
+        SDL_Event event;
+        if (SDL_PollEvent(&event))
+        {
+            handle_sdl_event(event);
+        }
+
+        display_image(g_image, g_window_buffer);
+
+        wait_for_framerate(sw);
+    }
+
+    cleanup();
+    return EXIT_SUCCESS;
+}
+```
+
+Now we can update the window by pressing the A, B, C and D keys.
+

@@ -1,4 +1,6 @@
+#if defined(_WIN32)
 #define SDL_MAIN_HANDLED
+#endif
 #include <SDL2/SDL.h>
 
 #include <cstdio>
@@ -65,7 +67,6 @@ constexpr u32 IMAGE_WIDTH = WINDOW_WIDTH;
 constexpr u32 IMAGE_HEIGHT = WINDOW_HEIGHT;
 
 static bool g_running = false;
-
 static WindowBuffer g_window_buffer;
 static Image g_image;
 
@@ -78,6 +79,7 @@ bool create_image(Image& image, u32 width, u32 height)
 
     if (!image.data)
     {
+        image.data = nullptr;
         return false;
     }
 
@@ -226,14 +228,45 @@ SDL_Window* create_window()
 }
 
 
-void render_color(Pixel p)
+void draw_color(Pixel p)
 {
     for (u32 i = 0; i < g_image.width * g_image.height; ++i)
     {
         g_image.data[i] = p;
     }
+}
 
-    display_image(g_image, g_window_buffer);
+
+void draw_bgr()
+{
+    auto blue = to_pixel(0, 0, 255);
+    auto green = to_pixel(0, 255, 0);
+    auto red = to_pixel(255, 0, 0);
+
+    auto blue_max = g_image.width / 3;
+    auto green_max = g_image.width * 2 / 3;
+
+    u32 i = 0;
+    for (u32 y = 0; y < g_image.height; ++y)
+    {
+        for (u32 x = 0; x < g_image.width; ++x)
+        {
+            if (x < blue_max)
+            {
+                g_image.data[i] = blue;
+            }
+            else if (x < green_max)
+            {
+                g_image.data[i] = green;
+            }
+            else
+            {
+                g_image.data[i] = red;
+            }
+
+            ++i;
+        }
+    }
 }
 
 
@@ -251,19 +284,25 @@ void handle_keyboard_event(SDL_Event const& event)
     {
         printf("A\n");
 
-        render_color(to_pixel(255, 0, 0));
+        draw_color(to_pixel(255, 0, 0));
     } break;
     case SDLK_b:
     {
         printf("B\n");
 
-        render_color(to_pixel(0, 255, 0));
+        draw_color(to_pixel(0, 255, 0));
     } break;
     case SDLK_c:
     {
         printf("C\n");
 
-        render_color(to_pixel(0, 0, 255));
+        draw_color(to_pixel(0, 0, 255));
+    } break;
+    case SDLK_d:
+    {
+        printf("D\n");
+
+        draw_bgr();
     } break;
 
     }
@@ -323,6 +362,7 @@ int main(int argc, char* args[])
     auto window = create_window();
     if (!window)
     {
+        cleanup();
         return EXIT_FAILURE;
     }
 
@@ -350,7 +390,9 @@ int main(int argc, char* args[])
             handle_sdl_event(event);
         }
 
-        wait_for_framerate(sw);
+        display_image(g_image, g_window_buffer);
+
+        wait_for_framerate(sw);        
     }
 
     cleanup();
