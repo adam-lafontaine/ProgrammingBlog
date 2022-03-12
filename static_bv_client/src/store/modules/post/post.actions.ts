@@ -4,7 +4,6 @@ import {
     PostAction as Action,
     PostMutation as Mutation,
     IPostState as State,
-    DataResult,
     IPost, IPostInfo,
     Make,
     IVideoResource,
@@ -13,7 +12,7 @@ import {
 } from './post.types'
 import marked from "marked"
 
-const CMS_BRANCH = "host-blog-posts";
+const CMS_BRANCH = "current";
 const ENTRY_ROUTE = "https://raw.githubusercontent.com/adam-lafontaine/CMS/" + CMS_BRANCH + "/blog";
 
 const actions: Tree<State, any> = {
