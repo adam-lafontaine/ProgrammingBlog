@@ -1,10 +1,9 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { ActionTree as Tree } from 'vuex'
 import {    
     PostAction as Action,
     PostMutation as Mutation,
     IPostState as State,
-    DataResult,
     IPost, IPostInfo,
     Make,
     IVideoResource,
@@ -13,8 +12,8 @@ import {
 } from './post.types'
 import marked from "marked"
 
-
-const ENTRY_ROUTE = "/content";
+const CMS_BRANCH = "current";
+const ENTRY_ROUTE = "https://raw.githubusercontent.com/adam-lafontaine/CMS/" + CMS_BRANCH + "/blog";
 
 const actions: Tree<State, any> = {
 
@@ -35,7 +34,7 @@ const actions: Tree<State, any> = {
         {
             
             set_status("fetching content");
-            const response = await axios.get(url);            
+            const response = await axios_get(url);            
 
             set_status("checking response data");
             if(!has_object_properties(response.data, empty))
@@ -72,7 +71,7 @@ const actions: Tree<State, any> = {
         try
         {
             set_status("fetching post list");
-            const response = await axios.get(url);
+            const response = await axios_get(url);
 
             set_status("checking response data");
             if(!has_object_properties(response.data, { posts: [] }))
@@ -139,7 +138,7 @@ const actions: Tree<State, any> = {
             const url = ENTRY_ROUTE + `/posts/${info.filename}`;
 
             set_status("fetching blog post");
-            const response = await axios.get(url);
+            const response = await axios_get(url);
             
             set_status("building post");
             const post = build_post(info, response.data);
@@ -170,7 +169,7 @@ const actions: Tree<State, any> = {
         try
         {
             set_status("fetching resources");
-            const response = await axios.get(url);
+            const response = await axios_get(url);
             
             set_status("checking response data");
             if(!has_object_properties(response.data, { videos: [] }))
@@ -220,7 +219,7 @@ const actions: Tree<State, any> = {
         try
         {
             set_status("fetching resources");
-            const response = await axios.get(url);
+            const response = await axios_get(url);
             
             set_status("checking response data");
             if(!has_object_properties(response.data, { websites: [] }))
@@ -256,7 +255,12 @@ const actions: Tree<State, any> = {
 }
 
 
+function axios_get(url: string): Promise<AxiosResponse<any>>
+{
+    let response = axios.get(url/*, { headers: { 'Access-Control-Allow-Origin': '*' }}*/);
 
+    return response;
+}
 
 
 function build_post(info: IPostInfo, content_md: string): IPost
