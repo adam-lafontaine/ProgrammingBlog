@@ -1,4 +1,4 @@
-#include "../demos/post007simd/simd.hpp"
+#include "../demos/post009image_view/image_view.hpp"
 
 
 //#define CHECK_LEAKS

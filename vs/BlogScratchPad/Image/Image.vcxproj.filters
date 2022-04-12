@@ -25,19 +25,13 @@
     <Filter Include="Source Files\demos">
       <UniqueIdentifier>{8f5779d7-b4d2-4cdd-a49d-5f69d36b8726}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\demos\post007simd">
-      <UniqueIdentifier>{83b4ae21-4764-4665-910d-7f3edc6ef2b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\demos\post007simd">
-      <UniqueIdentifier>{92d37ef9-0ea4-4b6b-a86f-8cde120498e0}</UniqueIdentifier>
+    <Filter Include="Header Files\demos\post009image_view">
+      <UniqueIdentifier>{6dcd8513-6451-4dc7-b92f-48c8fa140fbb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="demos\post007simd\simd.cpp">
-      <Filter>Source Files\demos\post007simd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,8 +41,8 @@
     <ClInclude Include="..\util\stopwatch.hpp">
       <Filter>Header Files\util</Filter>
     </ClInclude>
-    <ClInclude Include="demos\post007simd\simd.hpp">
-      <Filter>Header Files\demos\post007simd</Filter>
+    <ClInclude Include="demos\post009image_view\image_view.hpp">
+      <Filter>Header Files\demos\post009image_view</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

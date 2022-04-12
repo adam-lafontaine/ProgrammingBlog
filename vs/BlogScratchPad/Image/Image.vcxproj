@@ -147,12 +147,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cpp\source_main.cpp" />
-    <ClCompile Include="demos\post007simd\simd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\util\stopwatch.hpp" />
     <ClInclude Include="..\util\win32_leak_check.h" />
-    <ClInclude Include="demos\post007simd\simd.hpp" />
+    <ClInclude Include="demos\post009image_view\image_view.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
