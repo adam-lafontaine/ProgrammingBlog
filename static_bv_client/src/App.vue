@@ -17,7 +17,7 @@
 
 <template>
   <div id="app">
-    <b-navbar type="dark" variant="dark" toggleable="lg">
+    <b-navbar type="dark" variant="dark" fixed="top" toggleable="lg">
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
