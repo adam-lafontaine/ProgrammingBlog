@@ -1,9 +1,11 @@
 <style>
-
+.below-navbar {
+    margin-top: 60px;
+}
 </style>
 
 <template>
-<b-container>
+<b-container class="below-navbar">
     <h1 class="code-font mt-3">{{page_title}}</h1>
     <p>{{page_text}}</p>
     

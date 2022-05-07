@@ -1,8 +1,12 @@
-<style></style>
+<style>
+.below-navbar {
+    margin-top: 60px;
+}
+</style>
 
 <template>
-<div>
-    <b-container>
+<div class="below-navbar">
+    <b-container>        
         <b-row>
             <b-col cols="12" lg="6">
                 <h2 class="code-font mt-3">Videos</h2>
