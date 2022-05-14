@@ -81,6 +81,7 @@ import { DateUtil } from "../../util/date_util"
 import FooterComponent from "../FooterComponent.vue"
 
 // Initialize hljs
+// declare modules in hljs.d.ts
 import hljs from 'highlight.js/lib/core';
 import cpp from 'highlight.js/lib/languages/cpp';
 import makefile from 'highlight.js/lib/languages/makefile';
