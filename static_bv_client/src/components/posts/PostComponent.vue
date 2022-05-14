@@ -80,10 +80,15 @@ import {
 import { DateUtil } from "../../util/date_util"
 import FooterComponent from "../FooterComponent.vue"
 
+// Initialize hljs
 import hljs from 'highlight.js/lib/core';
 import cpp from 'highlight.js/lib/languages/cpp';
+import makefile from 'highlight.js/lib/languages/makefile';
+import plaintext from 'highlight.js/lib/languages/plaintext';
 import '../../styles/code.css';
 hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('makefile', makefile);
+hljs.registerLanguage('plaintext', plaintext);
 
 const PostModule = namespace("post_module");
 
