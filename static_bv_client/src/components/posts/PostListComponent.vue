@@ -12,6 +12,7 @@
 </style>
 
 <template>
+<div>
 <b-container>
     <h2 class="code-font mt-3">Posts</h2>
     <b-list-group>
@@ -42,6 +43,9 @@
         </b-list-group-item>
     </b-list-group>
 </b-container>
+<footer-component :id="FOOTER_ID" style="visibility: hidden;"/>
+
+</div>
 </template>
 
 <script lang="ts">
@@ -52,6 +56,7 @@ import {
     IPostInfo
 } from '../../store/modules/post/post.types'
 import { DateUtil } from "../../util/date_util"
+import FooterComponent from "../FooterComponent.vue"
 
 const PostModule = namespace("post_module");
 
@@ -65,11 +70,15 @@ interface IPostListItem {
 }
 
 
-@Component({ components: {} })
+@Component({ components: {
+    FooterComponent
+} })
 export default class PostListComponent extends Vue
 {
     @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
+
+    private readonly FOOTER_ID = "POST_FOOTER";
 
     private list_items: Array<IPostListItem> = [];
 
@@ -89,6 +98,8 @@ export default class PostListComponent extends Vue
         this.list_items = this.st_post_list
         .sort(desc)
         .map(x => this.to_list_item(x));
+
+        document.getElementById(this.FOOTER_ID).style.visibility = "visible";
     }
 
 

@@ -47,6 +47,7 @@
         </b-row>
         
     </b-container>
+    <footer-component :id="FOOTER_ID" style="visibility: hidden;"/>
 </div>
 </template>
 
@@ -57,6 +58,7 @@ import {
     PostAction, PostGet,
     IVideoResource, IWebsiteResource
 } from '../store/modules/post/post.types'
+import FooterComponent from "./FooterComponent.vue"
 
 const PostModule = namespace("post_module");
 
@@ -75,13 +77,17 @@ interface IWebsite
     description: string;
 }
 
-@Component({ components: {}})
+@Component({ components: {
+    FooterComponent
+}})
 export default class ResourcesComponent extends Vue
 {
     @PostModule.Action(PostAction.FETCH_VIDEO_RESOURCES) ac_fetch_video_resources: any;
     @PostModule.Getter(PostGet.GET_VIDEO_RESOURCES) st_video_resources: Array<IVideoResource>;
     @PostModule.Action(PostAction.FETCH_WEBSITE_RESOURCES) ac_fetch_website_resources: any;
     @PostModule.Getter(PostGet.GET_WEBSITE_RESOURCES) st_website_resources: Array<IWebsiteResource>;
+
+    private readonly FOOTER_ID = "POST_FOOTER";
 
     private video_links: Array<IVideo> = [];
     private website_links: Array<IWebsite> = [];
@@ -102,6 +108,7 @@ export default class ResourcesComponent extends Vue
     private process_video_resources(): void
     {
         this.video_links = this.st_video_resources.map(x => this.to_youtube_reference(x));
+        //document.getElementById(this.FOOTER_ID).style.visibility = "visible";
     }
 
 
@@ -114,7 +121,7 @@ export default class ResourcesComponent extends Vue
         {
             this.website_links.push(this.to_website_reference(res, id));
             id++;
-        }
+        }        
     }
 
 
