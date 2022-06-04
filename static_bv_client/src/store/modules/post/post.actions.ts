@@ -12,9 +12,6 @@ import {
 } from './post.types'
 import marked from "marked"
 
-//const CMS_BRANCH = "current";
-//const ENTRY_ROUTE = "https://raw.githubusercontent.com/adam-lafontaine/CMS/" + CMS_BRANCH + "/blog";
-
 
 const actions: Tree<State, any> = {
 
