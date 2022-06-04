@@ -12,14 +12,15 @@ import {
 } from './post.types'
 import marked from "marked"
 
-const CMS_BRANCH = "current";
-const ENTRY_ROUTE = "https://raw.githubusercontent.com/adam-lafontaine/CMS/" + CMS_BRANCH + "/blog";
+//const CMS_BRANCH = "current";
+//const ENTRY_ROUTE = "https://raw.githubusercontent.com/adam-lafontaine/CMS/" + CMS_BRANCH + "/blog";
+
 
 const actions: Tree<State, any> = {
 
     async [Action.FETCH_HOMEPAGE_CONTENT]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + "/pages/home.json";
+        const url = cms_entry_route(state.cms_branch) + "/pages/home.json";
         let status = "";
         const empty = Make.homepage_content();
 
@@ -57,7 +58,7 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_POST_LIST]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + "/posts/post_manifest.json";
+        const url = cms_entry_route(state.cms_branch) + "/posts/post_manifest.json";
         let status = "";
         const empty = Make.post_info();
 
@@ -135,7 +136,7 @@ const actions: Tree<State, any> = {
                 return;
             }
 
-            const url = ENTRY_ROUTE + `/posts/${info.filename}`;
+            const url = cms_entry_route(state.cms_branch) + `/posts/${info.filename}`;
 
             set_status("fetching blog post");
             const response = await axios_get(url);
@@ -155,7 +156,7 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_VIDEO_RESOURCES]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + `/resources/youtube_videos.json`;
+        const url = cms_entry_route(state.cms_branch) + `/resources/youtube_videos.json`;
         const empty = Make.video_resource();
         let status = "";
 
@@ -205,7 +206,7 @@ const actions: Tree<State, any> = {
 
     async [Action.FETCH_WEBSITE_RESOURCES]({ commit, state }): Promise<any>
     {
-        const url = ENTRY_ROUTE + "/resources/websites.json";
+        const url = cms_entry_route(state.cms_branch) + "/resources/websites.json";
         const empty = Make.website_resource();
         let status = "";
 
@@ -252,6 +253,12 @@ const actions: Tree<State, any> = {
         }
     }
 
+}
+
+
+function cms_entry_route(branch_name: string): string
+{
+    return "https://raw.githubusercontent.com/adam-lafontaine/CMS/" + branch_name + "/blog";
 }
 
 

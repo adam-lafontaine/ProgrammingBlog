@@ -92,6 +92,8 @@ export interface IPostState {
     video_resources: Array<IVideoResource>;
     website_resources: Array<IWebsiteResource>;
 
+    cms_branch: string;
+
     error: string;
 }
 
