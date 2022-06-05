@@ -248,7 +248,46 @@ const actions: Tree<State, any> = {
             console.error(error);
             commit(Mutation.SET_WEBSITE_RESOURCES, []);
         }
-    }
+    },
+
+    async [Action.LOAD_CMS_BRANCH]({ commit, state }, branch: string): Promise<any>
+    {
+        const url = cms_entry_route(branch) + "/pages/home.json";
+        console.log(url)
+        let status = "";
+        const empty = Make.homepage_content();
+
+        const set_status = (s: string) => { status = `LOAD_CMS_BRANCH ${s}`; };
+        const report_error = () => 
+        { 
+            console.error(status);
+            commit(Mutation.SET_HOMEPAGE_CONTENT, empty);
+        };
+
+        try
+        {            
+            set_status("fetching content");
+            const response = await axios_get(url);            
+
+            set_status("checking response data");
+            if(!has_object_properties(response.data, empty))
+            {
+                report_error();
+                return;
+            }
+
+            const data = response.data as IHomepageContent;            
+
+            commit(Mutation.SET_HOMEPAGE_CONTENT, data);
+            commit(Mutation.SET_CMS_BRANCH, branch);
+        }
+        catch(error: unknown)
+        {
+            console.error(error);
+            commit(Mutation.SET_HOMEPAGE_CONTENT, empty);
+            commit(Mutation.SET_CMS_BRANCH, state.default_cms_branch);
+        }
+    },
 
 }
 

@@ -37,6 +37,12 @@ const mutations: Tree<State> = {
     },
 
 
+    [Mutation.SET_CMS_BRANCH](state: State, branch: string): void
+    {
+        state.cms_branch = branch;
+    },
+
+
     [Mutation.SET_ERROR](state: State, error: string): void
     {
         state.error = error;

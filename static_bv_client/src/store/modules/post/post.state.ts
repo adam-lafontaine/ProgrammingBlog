@@ -14,7 +14,9 @@ export function getDefaultState(): State
         video_resources: [],
         website_resources: [],
 
-        cms_branch: "p11-edge-detection",
+        default_cms_branch: "current",
+
+        cms_branch: "current",
 
         error: "",
     }

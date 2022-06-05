@@ -43,7 +43,7 @@
         </b-list-group-item>
     </b-list-group>
 </b-container>
-<footer-component :id="FOOTER_ID" style="visibility: hidden;"/>
+<FooterComponent :id="FOOTER_ID" style="opacity: 0;"/>
 
 </div>
 </template>
@@ -99,7 +99,7 @@ export default class PostListComponent extends Vue
         .sort(desc)
         .map(x => this.to_list_item(x));
 
-        document.getElementById(this.FOOTER_ID).style.visibility = "visible";
+        document.getElementById(this.FOOTER_ID).style.opacity = "1";
     }
 
 

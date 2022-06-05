@@ -33,17 +33,15 @@
             <b-col cols="10">
                 <b-form-input
                     type="text"
+                    v-model="branch_name"
                     >
                 </b-form-input>
             </b-col>
             <b-col cols="2">
                 <b-button
-                    @click="submit_branch_name"
+                    @click="submit_branch_name"                    
                     >OK</b-button>
             </b-col>
-        
-            
-
         </b-row> 
         
     </b-modal>
@@ -53,18 +51,46 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
+import { Action, Getter, namespace } from 'vuex-class'
+import { 
+    PostAction, PostGet,
+} from '../store/modules/post/post.types'
 
-Component({ components: {} })
+import router from '../router/router'
+
+const PostModule = namespace("post_module");
+
+Component({ 
+    name: "FooterComponent",
+    components: {} })
 export default class FooterComponent extends Vue
 {
-    
+    @PostModule.Action(PostAction.LOAD_CMS_BRANCH) ac_load_cms_branch: any;
+    @PostModule.Getter(PostGet.GET_CMS_BRANCH) st_cms_branch: string;
+    @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
 
     private branch_name: string = "";
 
-    private submit_branch_name = () =>
+
+    private process_submit(): void
     {
-        alert("WAT"); console.log(this.branch_name)
+        if(this.st_cms_branch === this.branch_name)
+        {
+            router.push("/posts");
+        }
+        else
+        {
+            router.push("/");
+        }
+    }
+
+
+    private submit_branch_name(): void
+    {
+        this.ac_load_cms_branch(this.branch_name)
+        .then(this.process_submit);
     }
 }
 </script>
