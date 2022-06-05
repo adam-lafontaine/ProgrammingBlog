@@ -253,7 +253,6 @@ const actions: Tree<State, any> = {
     async [Action.LOAD_CMS_BRANCH]({ commit, state }, branch: string): Promise<any>
     {
         const url = cms_entry_route(branch) + "/pages/home.json";
-        console.log(url)
         let status = "";
         const empty = Make.homepage_content();
 
@@ -283,8 +282,7 @@ const actions: Tree<State, any> = {
         }
         catch(error: unknown)
         {
-            console.error(error);
-            commit(Mutation.SET_HOMEPAGE_CONTENT, empty);
+            console.log(`No branch ${branch} found`);
             commit(Mutation.SET_CMS_BRANCH, state.default_cms_branch);
         }
     },
