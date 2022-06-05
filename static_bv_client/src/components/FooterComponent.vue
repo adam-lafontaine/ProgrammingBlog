@@ -11,21 +11,30 @@
 </style>
 
 <template>
+<div>
 <footer class="page-footer">
     <b-container>
         <b-row class="footer-content">
             <b-col cols="12" class="text-right">Website by Adam Lafontaine</b-col>
             <b-col cols="12" class="text-right">Artwork by Emily Lafontaine</b-col>
         </b-row>
-    </b-container>
+    </b-container>    
 </footer>
+
+
+
+</div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 
-Component({ components: {} })
+Component({ 
+    name: "FooterComponent",
+    components: {} })
 export default class FooterComponent extends Vue
 {
+    
 }
 </script>

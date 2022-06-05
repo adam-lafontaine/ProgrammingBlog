@@ -7,7 +7,7 @@
 <template>
 <b-container class="below-navbar">
     <h1 class="code-font mt-3">{{page_title}}</h1>
-    <p>{{page_text}}</p>
+    <p v-b-modal.branch-modal>{{page_text}}</p>
     
     <b-row>
         <b-col cols="12" :v-if="has_post" class="mt-3">
@@ -20,6 +20,31 @@
             Online resources: <b-link to="/resources">Resources</b-link>
         </b-col>
     </b-row>
+    <div>
+    <b-modal 
+        id="branch-modal"
+        hide-header
+        hide-footer
+        >
+        <b-row
+            no-gutters
+            >
+            <b-col cols="10">
+                <b-form-input
+                    type="text"
+                    v-model="branch_name"
+                    >
+                </b-form-input>
+            </b-col>
+            <b-col cols="2">
+                <b-button
+                    @click="submit_branch_name"                    
+                    >OK</b-button>
+            </b-col>
+        </b-row> 
+        
+    </b-modal>
+</div>
 </b-container>
 </template>
 
@@ -31,6 +56,7 @@ import {
     IPostInfo, IHomepageContent
 } from '../store/modules/post/post.types'
 import VueRouter from 'vue-router'
+import router from '../router/router'
 
 const PostModule = namespace("post_module");
 
@@ -40,7 +66,11 @@ export default class HomeComponent extends Vue
     @PostModule.Action(PostAction.FETCH_HOMEPAGE_CONTENT) ac_fetch_homepage_content: any;
     @PostModule.Getter(PostGet.GET_HOMEPAGE_CONTENT) st_homepage_content: IHomepageContent;
     @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
-    @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;    
+    @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
+    @PostModule.Action(PostAction.LOAD_CMS_BRANCH) ac_load_cms_branch: any;
+    @PostModule.Getter(PostGet.GET_CMS_BRANCH) st_cms_branch: string;
+
+    private branch_name: string = "";
 
     private page_title: string = "";
     private page_text: string = "";
@@ -83,6 +113,22 @@ export default class HomeComponent extends Vue
             this.latest_post_title = post.title;
             this.latest_post_route = "/posts/" + post.route;
         }        
+    }    
+
+
+    private process_submit(): void
+    {
+        if(this.st_cms_branch === this.branch_name)
+        {
+            router.push("/posts");
+        }
+    }
+
+
+    private submit_branch_name(): void
+    {
+        this.ac_load_cms_branch(this.branch_name)
+        .then(this.process_submit);
     }
 
 

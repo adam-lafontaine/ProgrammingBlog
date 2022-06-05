@@ -14,6 +14,10 @@ export function getDefaultState(): State
         video_resources: [],
         website_resources: [],
 
+        default_cms_branch: "current",
+
+        cms_branch: "current",
+
         error: "",
     }
 

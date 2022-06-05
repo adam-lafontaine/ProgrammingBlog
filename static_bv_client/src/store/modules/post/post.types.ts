@@ -7,6 +7,8 @@ export const enum PostAction {
 
     FETCH_VIDEO_RESOURCES = "fetchVideoResources",
     FETCH_WEBSITE_RESOURCES = "fetchWebsiteResources",
+
+    LOAD_CMS_BRANCH = "loadCmsBranch",
 }
 
 
@@ -18,6 +20,8 @@ export const enum PostGet {
 
     GET_VIDEO_RESOURCES = "getVideoResources",
     GET_WEBSITE_RESOURCES = "getWebsiteResources",
+
+    GET_CMS_BRANCH = "setCmsBranch",
 
     GET_ERROR = "getError"
 }
@@ -31,6 +35,8 @@ export const enum PostMutation {
 
     SET_VIDEO_RESOURCES = "setVideoResources",
     SET_WEBSITE_RESOURCES = "setWebsiteResources",
+
+    SET_CMS_BRANCH = "setCmsBranch",
 
     SET_ERROR = "setError"
 }
@@ -91,6 +97,9 @@ export interface IPostState {
 
     video_resources: Array<IVideoResource>;
     website_resources: Array<IWebsiteResource>;
+
+    default_cms_branch: string;
+    cms_branch: string;
 
     error: string;
 }

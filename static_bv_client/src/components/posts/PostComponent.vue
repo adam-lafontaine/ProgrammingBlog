@@ -64,7 +64,7 @@
 
         <div :id="CONTENT_ID" class="main-content" />
     </b-container>
-    <footer-component :id="FOOTER_ID" style="visibility: hidden;"/>
+    <FooterComponent :id="FOOTER_ID" style="opacity: 0;"/>
 
 </div>
 </template>
@@ -119,8 +119,7 @@ export default class PostComponent extends Vue
         const loaded_from_url = this.st_post_list.length === 0;
 
         this.ac_fetch_post_list()
-            .then(this.load_post);
-        
+            .then(this.load_post);        
     }
 
 
@@ -145,7 +144,7 @@ export default class PostComponent extends Vue
 
         hljs.highlightAll();
 
-        document.getElementById(this.FOOTER_ID).style.visibility = "visible";
+        document.getElementById(this.FOOTER_ID).style.opacity = "1";
     }
 
 
