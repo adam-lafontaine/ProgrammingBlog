@@ -7,7 +7,7 @@
 <template>
 <b-container class="below-navbar">
     <h1 class="code-font mt-3">{{page_title}}</h1>
-    <p>{{page_text}}</p>
+    <p v-b-modal.branch-modal>{{page_text}}</p>
     
     <b-row>
         <b-col cols="12" :v-if="has_post" class="mt-3">
@@ -18,9 +18,6 @@
         </b-col>
         <b-col cols="12" class="mt-3">
             Online resources: <b-link to="/resources">Resources</b-link>
-        </b-col>
-        <b-col>
-            <span v-b-modal.branch-modal>Words</span>
         </b-col>
     </b-row>
     <div>
