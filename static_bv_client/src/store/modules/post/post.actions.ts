@@ -317,12 +317,15 @@ function build_post(info: IPostInfo, content_md: string): IPost
     end = content_md.indexOf("\n", begin);
     const subtitle = content_md.substring(begin, end);
 
+    begin = end + 1;
+    end = content_md.lastIndexOf(".") + 1;
+
     return {
         id: info.id,
         title: title,
         subtitle: subtitle,
         tags: info.tags,
-        content_html: marked(content_md.substr(end + 1))
+        content_html: marked(content_md.substring(begin, end))
     };
 }
 
