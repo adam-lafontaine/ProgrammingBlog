@@ -137,9 +137,17 @@ const actions: Tree<State, any> = {
 
             set_status("fetching blog post");
             const response = await axios_get(url);
+
+            let content_md = response.data;
+
+            if(state.cms_branch === state.default_cms_branch)
+            {
+                const regex = /\/CMS\/raw\/[A-Za-z0-9_-]*\//g;
+                content_md = content_md.replaceAll(regex, `/CMS/raw/${state.default_cms_branch}/`)
+            }
             
             set_status("building post");
-            const post = build_post(info, response.data, state.cms_branch);
+            const post = build_post(info, content_md);
 
             commit(Mutation.SET_SELECTED_POST, post);
         }
@@ -304,7 +312,7 @@ function axios_get(url: string): Promise<AxiosResponse<any>>
 }
 
 
-function build_post(info: IPostInfo, content_md: string, branch_name: string): IPost
+function build_post(info: IPostInfo, content_md: string): IPost
 {
     const title_flag = "#";
     const subtitle_flag = "##";
@@ -320,12 +328,7 @@ function build_post(info: IPostInfo, content_md: string, branch_name: string): I
     begin = end + 1;
     end = content_md.lastIndexOf(".") + 1;
 
-    /*
-    replace link_branch_name with branch_name
-    
-    */
-
-    let content_html = marked(content_md.substring(begin, end)/*.replaceAll(`/${link_branch_name}/`, `/${branch_name}/`)*/);
+    let content_html = marked(content_md.substring(begin, end));
 
     return {
         id: info.id,
