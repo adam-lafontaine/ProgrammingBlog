@@ -139,7 +139,7 @@ const actions: Tree<State, any> = {
             const response = await axios_get(url);
             
             set_status("building post");
-            const post = build_post(info, response.data);
+            const post = build_post(info, response.data, state.cms_branch);
 
             commit(Mutation.SET_SELECTED_POST, post);
         }
@@ -304,7 +304,7 @@ function axios_get(url: string): Promise<AxiosResponse<any>>
 }
 
 
-function build_post(info: IPostInfo, content_md: string): IPost
+function build_post(info: IPostInfo, content_md: string, branch_name: string): IPost
 {
     const title_flag = "#";
     const subtitle_flag = "##";
@@ -317,12 +317,22 @@ function build_post(info: IPostInfo, content_md: string): IPost
     end = content_md.indexOf("\n", begin);
     const subtitle = content_md.substring(begin, end);
 
+    begin = end + 1;
+    end = content_md.lastIndexOf(".") + 1;
+
+    /*
+    replace link_branch_name with branch_name
+    
+    */
+
+    let content_html = marked(content_md.substring(begin, end)/*.replaceAll(`/${link_branch_name}/`, `/${branch_name}/`)*/);
+
     return {
         id: info.id,
         title: title,
         subtitle: subtitle,
         tags: info.tags,
-        content_html: marked(content_md.substr(end + 1))
+        content_html: content_html
     };
 }
 

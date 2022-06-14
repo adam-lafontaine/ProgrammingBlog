@@ -47,7 +47,7 @@
         </b-row>
         
     </b-container>
-    <footer-component :id="FOOTER_ID" style="visibility: hidden;"/>
+    <FooterComponent :id="FOOTER_ID" style="opacity: 0;"/>
 </div>
 </template>
 
@@ -108,7 +108,7 @@ export default class ResourcesComponent extends Vue
     private process_video_resources(): void
     {
         this.video_links = this.st_video_resources.map(x => this.to_youtube_reference(x));
-        //document.getElementById(this.FOOTER_ID).style.visibility = "visible";
+        document.getElementById(this.FOOTER_ID).style.opacity = "1";
     }
 
 

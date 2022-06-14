@@ -9,39 +9,49 @@
     color: #9EABB3;
 }
 
+.below-navbar {
+    margin-top: 60px;
+}
+
 </style>
 
 <template>
 <div>
-<b-container>
-    <h2 class="code-font mt-3">Posts</h2>
-    <b-list-group>
-        <b-list-group-item v-for="item in list_items" :key="item.id"
-            class="post-header"
-            append
-            :to="item.route"
-            >
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{item.title}}</h5>
-            </div>
+<b-container class="below-navbar">
 
-            <b-row no-gutters>
-                <b-col cols="auto" class="mr-auto">
-                    <small class="post-date">{{item.date}}</small>
-                </b-col>
-                <b-col cols="auto">
-                    <b-badge v-for="tag in item.tags" :key="tag"
-                        variant="dark"
-                        style="margin-left:4px;"
-                        class="code-font"
-                        >
-                        {{tag}}
-                    </b-badge>
-                </b-col>
-            </b-row>
+    <b-row no-gutters>
+        <b-col cols="12" md="8" offset-md="2" lg="8" offset-lg="2">
+            <h2 class="code-font mt-3">Posts</h2>
+            <b-list-group>
+                <b-list-group-item v-for="item in list_items" :key="item.id"
+                    class="post-header"
+                    append
+                    :to="item.route"
+                    >
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{item.title}}</h5>
+                    </div>
 
-        </b-list-group-item>
-    </b-list-group>
+                    <b-row no-gutters>
+                        <b-col cols="auto" class="mr-auto">
+                            <small class="post-date">{{item.date}}</small>
+                        </b-col>
+                        <b-col cols="auto">
+                            <b-badge v-for="tag in item.tags" :key="tag"
+                                variant="dark"
+                                style="margin-left:4px;"
+                                class="code-font"
+                                >
+                                {{tag}}
+                            </b-badge>
+                        </b-col>
+                    </b-row>
+
+                </b-list-group-item>
+            </b-list-group>
+        </b-col>
+    </b-row>
+    
 </b-container>
 <FooterComponent :id="FOOTER_ID" style="opacity: 0;"/>
 
