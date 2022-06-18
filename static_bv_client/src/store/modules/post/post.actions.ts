@@ -326,7 +326,7 @@ function build_post(info: IPostInfo, content_md: string): IPost
     const subtitle = content_md.substring(begin, end);
 
     begin = end + 1;
-    end = content_md.lastIndexOf(".") + 1;
+    end = content_md.length;
 
     let content_html = marked(content_md.substring(begin, end));
 
