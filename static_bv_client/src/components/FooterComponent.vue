@@ -21,8 +21,6 @@
     </b-container>    
 </footer>
 
-
-
 </div>
 </template>
 
