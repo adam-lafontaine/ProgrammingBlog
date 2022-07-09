@@ -70,13 +70,13 @@ export default class HomeComponent extends Vue
     @PostModule.Action(PostAction.LOAD_CMS_BRANCH) ac_load_cms_branch: any;
     @PostModule.Getter(PostGet.GET_CMS_BRANCH) st_cms_branch: string;
 
-    private branch_name: string = "";
+    public branch_name: string = "";
 
-    private page_title: string = "";
-    private page_text: string = "";
+    public page_title: string = "";
+    public page_text: string = "";
 
-    private latest_post_title = "";
-    private latest_post_route = "";
+    public latest_post_title = "";
+    public latest_post_route = "";
 
     private mounted(): void
     {
@@ -125,14 +125,14 @@ export default class HomeComponent extends Vue
     }
 
 
-    private submit_branch_name(): void
+    public submit_branch_name(): void
     {
         this.ac_load_cms_branch(this.branch_name)
         .then(this.process_submit);
     }
 
 
-    private get has_post(): boolean
+    public get has_post(): boolean
     {
         return this.latest_post_route.length > 0;
     }

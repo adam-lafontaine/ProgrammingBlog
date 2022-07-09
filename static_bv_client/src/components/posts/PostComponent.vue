@@ -103,13 +103,14 @@ export default class PostComponent extends Vue
     @PostModule.Getter(PostGet.GET_SELECTED_POST) st_selected_post: IPost;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
-    private readonly CONTENT_ID = "POST_MAIN_CONTENT";
-    private readonly FOOTER_ID = "POST_FOOTER";
+    public readonly CONTENT_ID = "POST_MAIN_CONTENT";
+    public readonly FOOTER_ID = "POST_FOOTER";
 
-    private post_title: string = "";
-    private post_subtitle: string = "";
-    private post_tags: Array<string> = [];
-    private post_date: string = "";
+    public post_title: string = "";
+    public post_subtitle: string = "";
+    public post_tags: Array<string> = [];
+    public post_date: string = "";
+    
     private content_html: string = "";
 
     private mounted(): void
