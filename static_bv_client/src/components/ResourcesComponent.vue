@@ -87,10 +87,10 @@ export default class ResourcesComponent extends Vue
     @PostModule.Action(PostAction.FETCH_WEBSITE_RESOURCES) ac_fetch_website_resources: any;
     @PostModule.Getter(PostGet.GET_WEBSITE_RESOURCES) st_website_resources: Array<IWebsiteResource>;
 
-    private readonly FOOTER_ID = "POST_FOOTER";
+    public readonly FOOTER_ID = "POST_FOOTER";
 
-    private video_links: Array<IVideo> = [];
-    private website_links: Array<IWebsite> = [];
+    public video_links: Array<IVideo> = [];
+    public website_links: Array<IWebsite> = [];
 
     private mounted(): void
     {

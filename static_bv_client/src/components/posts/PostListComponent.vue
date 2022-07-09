@@ -88,9 +88,9 @@ export default class PostListComponent extends Vue
     @PostModule.Action(PostAction.FETCH_POST_LIST) ac_fetch_post_list: any;
     @PostModule.Getter(PostGet.GET_POST_LIST) st_post_list: Array<IPostInfo>;
 
-    private readonly FOOTER_ID = "POST_FOOTER";
+    public readonly FOOTER_ID = "POST_FOOTER";
 
-    private list_items: Array<IPostListItem> = [];
+    public list_items: Array<IPostListItem> = [];
 
 
     private mounted(): void
