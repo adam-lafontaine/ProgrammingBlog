@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Navbar from '@components/Navbar.vue';
 import Footer from '@components/Footer.vue';
-import FooterXS from '@components/FooterXS.vue'
 
 </script>
 
@@ -23,8 +22,7 @@ import FooterXS from '@components/FooterXS.vue'
 -->
 </div>
 
-<Footer class="d-none d-lg-block"/>
-<FooterXS class="d-lg-none" />
+<Footer />
 </template>
 
 

@@ -16,5 +16,10 @@ export default defineConfig({
             '@stores': path.resolve(__dirname, './src/stores'),
             '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
         }
+    },
+
+    server: {
+        host: 'localhost',
+        port: 8080
     }
 })
