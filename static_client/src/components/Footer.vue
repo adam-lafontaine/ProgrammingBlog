@@ -1,28 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
-
-const data = ref("Footer");
 
 </script>
 
 
 <template>
-<footer class="bg-primary text-white footer-padded">
-    <div>
-        {{ data }}
-    </div>
+<footer class="bg-primary page-footer">
+    <div class="container">
+        <div class="row footer-content">
+            <div class="col-12 text-end">Website by Adam Lafontaine</div>
+        </div>
+    </div>   
 </footer>
 </template>
 
 
 <style scoped lang="css">
 
-.footer-padded {
-    padding-top: 2rem;
-    padding-bottom: 4rem;
-    padding-left: 2rem;
-    padding-right: 2rem;    
+.page-footer {
+    padding-top: 120px;
+    min-height:200px;
+    color: rgba(255,255,255,.5);
 }
 
 </style>

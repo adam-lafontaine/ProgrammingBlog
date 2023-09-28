@@ -51,7 +51,8 @@ const menu_icons = ref([
                 >
                     <g>
                         <path 
-                            :d="item.svg_path">
+                            :d="item.svg_path"
+                        >
                         </path>
                     </g>
                 </svg>
