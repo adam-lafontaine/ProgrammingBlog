@@ -94,4 +94,8 @@ export const usePostStore = defineStore("PostStore", {
         cms_branch: "current",
         error: ""
     }),
+
+    getters: {
+        
+    },
 });
