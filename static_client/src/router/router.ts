@@ -1,11 +1,13 @@
-import { createRouter, createWebHistory, /*RouteLocationNormalizedLoaded*/ } from 'vue-router'
+import { createRouter, createWebHistory, RouteLocationNormalizedLoaded } from 'vue-router'
 
-/*type Route = RouteLocationNormalizedLoaded;*/
+type Route = RouteLocationNormalizedLoaded;
 
 import Home from '@views/Home.vue'
 
 
 const NotFound = () => (import("@views/NotFound.vue"));
+const PostList = () => (import("@views/PostList.vue"));
+const Post = () => (import("@views/Post.vue"));
 
 
 
@@ -16,16 +18,25 @@ const routes = [
         name: "home", 
         component: Home 
     },
+
     { 
         path: "/posts", 
         name: "posts", 
-        component: NotFound
+        component: PostList
+    },
+
+    {
+        path: '/posts/:title_kebab',
+        name: 'Post',
+        component: Post,
+        props: (r: Route) => ({ post_title: r.params.title_kebab }),
     },
 
     {
         path: "/home",
         redirect: "/"
     },
+
     {
         path: "/:pathMatch(.*)*",
         name: "notfound",

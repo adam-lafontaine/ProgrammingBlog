@@ -4,7 +4,7 @@ import { ref } from "vue";
 
 const menu_items = ref([
     { id: 1, label: "Home", route: { name: "home" } },
-    { id: 2, label: "Posts", route: { name: "home" } }
+    { id: 2, label: "Posts", route: { name: "posts" } }
 ]);
 
 const menu_icons = ref([
