@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Footer from '@components/Footer.vue';
 
 const props = defineProps({
     title_kebab: { type: String, required: true }
@@ -8,7 +9,12 @@ const props = defineProps({
 
 
 <template>
+<div class="container">
     <h1>Post</h1>
+
+</div>
+    
+<Footer />
 </template>
 
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Navbar from '@components/Navbar.vue';
-import Footer from '@components/Footer.vue';
+
 
 </script>
 
@@ -9,20 +9,8 @@ import Footer from '@components/Footer.vue';
     
 <Navbar class="mb-3"/>
 
-<div class="container">
-    <RouterView/>
-<!--
-    <RouterView v-slot="{Component}">
-        <div>
-            <Transition name="fade" mode="out-in">                
-                    <component :is="Component" :key="$route.path"></component>
-            </Transition>
-        </div>
-    </RouterView>
--->
-</div>
+<RouterView/>
 
-<Footer />
 </template>
 
 

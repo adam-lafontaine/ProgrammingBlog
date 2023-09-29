@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import Footer from '@components/Footer.vue';
 
 </script>
 
 
 <template>
+<div class="container">
     <h1>Post List</h1>
+
+</div>
+    
+<Footer />
 </template>
 
 

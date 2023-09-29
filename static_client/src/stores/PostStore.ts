@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import marked from "marked"
+import { marked } from "marked"
 
 
 export interface IHomepageContent {
@@ -153,7 +153,7 @@ export const usePostStore = defineStore("PostStore", {
         has_content: state => state.homepage_content.title.length > 0,
         has_post: state => state.post_list.length > 0,
         is_default_cms_branch: state => state.cms_branch === state.default_cms_branch,
-        home_title: state => state.homepage_content.text,
+        home_title: state => state.homepage_content.title,
         home_text: state => state.homepage_content.text,
         posts_sorted: state => state.post_list.sort((a: IPostInfo, b: IPostInfo) => { return a.id < b.id ? 1 : -1; }),
 

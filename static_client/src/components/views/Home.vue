@@ -10,7 +10,8 @@ const post_store = usePostStore();
 const page_title = ref("");
 const page_text = ref("");
 const latest_post_title = ref("");
-const latest_post_route = ref({ name: "posts", params: { title_kebab: "" }});
+const latest_post_route = ref({ name: "post", params: { title_kebab: "x" }});
+const posts_route = ref({ name: "posts" });
 const branch_name = ref("");
 
 
@@ -78,8 +79,13 @@ const has_post = () => { return post_store.has_post; }
     <h1 class="code-font mt-3">{{ page_title }}</h1>
     <p>{{ page_text }}</p>
 
-    <div class="row">
-
+    <div class="row" v-if="has_post()">
+        <div class="col-12 mt-3">
+            Latest post: <RouterLink :to="latest_post_route">{{ latest_post_title }}</RouterLink>
+        </div>
+        <div class="col-12 mt-3">
+            All posts: <RouterLink :to="posts_route">Posts</RouterLink>
+        </div>
     </div>
 
 </div>
