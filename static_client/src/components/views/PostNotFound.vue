@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { routes } from "@/router/router";
+import { onMounted } from "vue";
+
+
+onMounted(() => 
+{
+    document.title = "Post not found";
+});
 </script>
 
 
@@ -6,30 +14,25 @@
 
 <div class="container">
     <div class="text-center mt-5">
-        <h3>Post Not found</h3>
+        <h3 class="code-font">Post Not found</h3>
         <p>
-            We could not find the post at '{{ $route.path }}'
+            We could not find the post '{{ $route.path }}'
         </p>
-        <p class="text-center mt-5">
-            <RouterLink :to="{name: 'home'}">
-                <span class="material-icons-outlined home-icon">home</span>
-                <br>
-                Back to Home
-            </RouterLink>        
+        <p>
+            <RouterLink :to="routes.home">
+                Home
+            </RouterLink>
         </p>
-
+        <p>
+            <RouterLink :to="routes.post_list">
+                Posts
+            </RouterLink>
+        </p>
     </div>
-    
-    
-        
 </div>
 </template>
 
 
 <style scoped lang="css">
-
-.home-icon {
-    font-size: 48px;
-}
 
 </style>

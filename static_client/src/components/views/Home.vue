@@ -18,6 +18,8 @@ const latest_post_route = ref({ name: routes.post.name, params: { title_kebab: "
 
 onMounted(async () =>
 {
+    document.title = "almost always auto";
+    
     if (!post_store.has_content)
     {
         await post_store.fetch_homepage_content();        

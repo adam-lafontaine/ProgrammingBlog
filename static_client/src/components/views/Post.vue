@@ -75,12 +75,15 @@ function process_selected_post(): void
     post_title.value = post.title;
     post_subtitle.value = post.subtitle;
     post_tags.value = post.tags;
-    post_date.value = DateUtil.to_date_string(post.id);    
+    post_date.value = DateUtil.to_date_string(post.id);
+
+    document.title = post.title;    
 
     const elem = document.getElementById(CONTENT_ID);
     if (elem)
     {
         content_html = post.content_html.length > 0 ? post.content_html : "<p>Post content not found</p>";
+        
         elem.innerHTML = content_html;
 
         hljs.highlightAll();

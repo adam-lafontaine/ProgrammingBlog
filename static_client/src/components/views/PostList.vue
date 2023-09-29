@@ -22,6 +22,8 @@ const list_items: Ref<Array<IPostListItem>> = ref([]);
 
 onMounted(async () => 
 {
+    document.title = "Posts";
+    
     list_items.value = [];
 
     await post_store.fetch_post_list();
