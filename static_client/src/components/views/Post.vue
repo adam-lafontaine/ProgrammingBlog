@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 const props = defineProps({
-    post_title: { type: String, required: true }
+    title_kebab: { type: String, required: true }
 });
 
 </script>

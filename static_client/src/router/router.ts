@@ -29,7 +29,7 @@ const routes = [
         path: '/posts/:title_kebab',
         name: 'Post',
         component: Post,
-        props: (r: Route) => ({ post_title: r.params.title_kebab }),
+        props: (r: Route) => ({ title_kebab: r.params.title_kebab }),
     },
 
     {

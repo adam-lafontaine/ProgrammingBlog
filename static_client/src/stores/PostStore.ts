@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import marked from "marked"
 
 
 export interface IHomepageContent {
@@ -106,7 +107,7 @@ function build_post(info: IPostInfo, content_md: string): IPost
     begin = end + 1;
     end = content_md.length;
 
-    let content_html = marked(content_md.substring(begin, end));
+    let content_html = marked.parse(content_md.substring(begin, end));
 
     return {
         id: info.id,
@@ -149,7 +150,13 @@ export const usePostStore = defineStore("PostStore", {
     }),
 
     getters: {
-        is_default_cms_branch: (state) => (state.cms_branch === state.default_cms_branch)
+        has_content: state => state.homepage_content.title.length > 0,
+        has_post: state => state.post_list.length > 0,
+        is_default_cms_branch: state => state.cms_branch === state.default_cms_branch,
+        home_title: state => state.homepage_content.text,
+        home_text: state => state.homepage_content.text,
+        posts_sorted: state => state.post_list.sort((a: IPostInfo, b: IPostInfo) => { return a.id < b.id ? 1 : -1; }),
+
 
     },
 
