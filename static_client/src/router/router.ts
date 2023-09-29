@@ -16,7 +16,6 @@ export const routes = {
     post_list: { name: "posts"},
     post: { name: "post" },
     no_page: { name: "no_page" },
-    no_post: { name: "no_post" }
 };
 
 
@@ -45,12 +44,6 @@ const route_definitions = [
     {
         path: "/home",
         redirect: "/"
-    },
-
-    {
-        path: "/post-not-found",
-        name: routes.no_post.name,
-        component: PostNotFound
     },
 
     {

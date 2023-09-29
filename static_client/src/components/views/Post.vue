@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref } from "vue";
-import { useRouter } from 'vue-router';
 import { usePostStore } from '@stores/PostStore';
 import { DateUtil } from '@util/date_util';
 import { routes } from "@/router/router";
@@ -22,8 +21,10 @@ const props = defineProps({
 
 const CONTENT_ID = "POST_MAIN_CONTENT";
 
-const router = useRouter();
 const post_store = usePostStore();
+
+const post_loaded = ref(false);
+const post_not_found = ref(false);
 
 const post_title = ref("");
 const post_subtitle = ref("");
@@ -44,12 +45,19 @@ onMounted(async () =>
 
     if (!post_store.has_posts)
     {
-        router.replace(routes.no_post);
+        set_post_not_found();
         return;
     }
     
     load_post();
 });
+
+
+function set_post_not_found(): void
+{
+    document.title = "Post not found";
+    post_not_found.value = true;
+}
 
 
 async function load_post(): Promise<void>
@@ -58,11 +66,11 @@ async function load_post(): Promise<void>
 
     if (selected_item === undefined)
     {
-        router.replace(routes.no_post);
+        set_post_not_found();
         return;
     }
 
-    await post_store.fetch_selected_post(selected_item.id);
+    await post_store.fetch_selected_post(selected_item.id);    
 
     process_selected_post();
 }
@@ -70,6 +78,8 @@ async function load_post(): Promise<void>
 
 function process_selected_post(): void
 {
+    post_loaded.value = true;
+
     const post = post_store.selected_post;
 
     post_title.value = post.title;
@@ -91,36 +101,63 @@ function process_selected_post(): void
 }
 
 
-const has_post = () => { return content_html.length > 100; }
+const has_content = () => { return content_html.length > 100; }
 
 </script>
 
 
 <template>
-<div class="post-header">
-    <div class="container">
-        <h1>{{post_title}}</h1>
-        <p>{{post_subtitle}}</p>
-        <div class="d-flex justify-content-between">
-            <div class="post-date">
-                {{ post_date }}
-            </div>
-            <div>
-                <span v-for="tag in post_tags" :key="tag"
-                    class="badge bg-primary code-font ms-2"
-                >
-                    {{ tag }}
-                </span>
-            </div>
 
+<div v-if="post_loaded">
+    <div class="post-header">
+        <div class="container">
+            <h1>{{post_title}}</h1>
+            <p>{{post_subtitle}}</p>
+            <div class="d-flex justify-content-between">
+                <div class="post-date">
+                    {{ post_date }}
+                </div>
+                <div>
+                    <span v-for="tag in post_tags" :key="tag"
+                        class="badge bg-primary code-font ms-2"
+                    >
+                        {{ tag }}
+                    </span>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
+
+<div v-else-if="post_not_found">
+    <div class="container text-center mt-5">
+        <h3 class="code-font">Post Not found</h3>
+        <p>
+            '{{ $route.path }}' could not be found
+        </p>
+        <p>
+            <RouterLink :to="routes.home">
+                Home
+            </RouterLink>
+        </p>
+        <p>
+            <RouterLink :to="routes.post_list">
+                Posts
+            </RouterLink>
+        </p>
+    </div>
+</div>
+
+<div v-else>
+    <!-- loading -->
+</div>
+
 <div class="container">
     <div :id="CONTENT_ID" class="main-content" />
 </div>
     
-<Footer v-if="has_post()" />
+<Footer v-if="has_content()" />
 </template>
 
 
