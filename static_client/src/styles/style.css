@@ -5,6 +5,16 @@
 }
 
 
+.code-font {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+}
+  
+.nav-link {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+
 .text-white {
     color: white;
 }

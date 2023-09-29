@@ -28,7 +28,8 @@
       "@views/*": ["src/components/views/*"],
       "@cards/*": ["src/components/cards/*"],
       "@stores/*": ["src/stores/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@util/*": ["src/util/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],

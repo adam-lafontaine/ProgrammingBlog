@@ -15,8 +15,6 @@ const posts_route = ref({ name: "posts" });
 const branch_name = ref("");
 
 
-
-
 onMounted(async () =>
 {
     if (!post_store.has_content)

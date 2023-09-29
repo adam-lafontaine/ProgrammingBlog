@@ -14,6 +14,7 @@ export default defineConfig({
             '@views': path.resolve(__dirname, './src/components/views'),
             '@cards': path.resolve(__dirname, './src/components/cards'),
             '@stores': path.resolve(__dirname, './src/stores'),
+            '@util': path.resolve(__dirname, './src/util'),
             '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap'),
         }
     },
