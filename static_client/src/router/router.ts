@@ -6,7 +6,6 @@ import Home from '@views/Home.vue'
 
 
 const PageNotFound = () => (import("@views/PageNotFound.vue"));
-const PostNotFound = () => (import("@views/PostNotFound.vue"));
 const PostList = () => (import("@views/PostList.vue"));
 const Post = () => (import("@views/Post.vue"));
 
