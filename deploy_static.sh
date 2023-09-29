@@ -8,4 +8,4 @@
 rm -rfv docs/*
 
 # copy client files to server
-cp -a static_bv_client/dist/. docs/
+cp -a static_client/dist/. docs/

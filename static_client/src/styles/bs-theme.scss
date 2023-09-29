@@ -1,0 +1,17 @@
+$primary: rgb(52,58,64);
+
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+$custom-colors: (
+    "my-red": rgb(218, 22, 22),
+    "my-green": rgb(52, 87, 35),
+    "my-blue": rgb(14, 63, 209)
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+
+// Import all of Bootstrap's CSS
+@import "~bootstrap/scss/bootstrap";
