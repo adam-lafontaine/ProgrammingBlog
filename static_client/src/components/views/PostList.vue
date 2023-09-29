@@ -2,6 +2,7 @@
 import { onMounted, ref, Ref } from "vue";
 import { usePostStore, IPostInfo } from '@stores/PostStore';
 import { DateUtil } from '@util/date_util';
+import { routes } from "@/router/router";
 import Footer from '@components/Footer.vue';
 
 
@@ -30,15 +31,18 @@ onMounted(async () =>
 
 
 function to_list_item(post_info: IPostInfo): IPostListItem
-    {
-        return {
-            id: post_info.id,
-            title: post_info.title,
-            tags: post_info.tags,
-            route: { name: "post", params: { title_kebab: post_info.route }},
-            date: DateUtil.to_date_string(post_info.id)
-        };
-    }
+{
+    return {
+        id: post_info.id,
+        title: post_info.title,
+        tags: post_info.tags,
+        route: { name: routes.post.name, params: { title_kebab: post_info.route }},
+        date: DateUtil.to_date_string(post_info.id)
+    };
+}
+
+
+const has_posts = () => { return list_items.value.length > 0; }
 
 </script>
 
@@ -75,7 +79,7 @@ function to_list_item(post_info: IPostInfo): IPostListItem
     </div>
 </div>
     
-<Footer />
+<Footer v-if="has_posts()" />
 </template>
 
 

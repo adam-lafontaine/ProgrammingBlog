@@ -6,9 +6,9 @@
 
 <div class="container">
     <div class="text-center mt-5">
-        <h3>Not found</h3>
+        <h3>Post Not found</h3>
         <p>
-            We could not find the page at '{{ $route.path }}'
+            We could not find the post at '{{ $route.path }}'
         </p>
         <p class="text-center mt-5">
             <RouterLink :to="{name: 'home'}">

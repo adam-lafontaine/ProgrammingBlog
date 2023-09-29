@@ -151,7 +151,7 @@ export const usePostStore = defineStore("PostStore", {
 
     getters: {
         has_content: state => state.homepage_content.title.length > 0,
-        has_post: state => state.post_list.length > 0,
+        has_posts: state => state.post_list.length > 0,
         is_default_cms_branch: state => state.cms_branch === state.default_cms_branch,
         home_title: state => state.homepage_content.title,
         home_text: state => state.homepage_content.text,
@@ -207,6 +207,7 @@ export const usePostStore = defineStore("PostStore", {
             const url = cms_entry_route(this.cms_branch) + "/posts/post_manifest.json";
             let status = "";
             const empty_list = [] as Array<IPostInfo>;
+            const empty_post = Make.post_info();
 
             const set_status = (s: string) => { status = `FETCH_POST_LIST ${s}`; };
             const report_error = () => 
@@ -232,7 +233,7 @@ export const usePostStore = defineStore("PostStore", {
                 const valid_data = 
                     Array.isArray(list) &&
                     list.length > 0 &&
-                    array_has_object_properties(list, empty_list);
+                    array_has_object_properties(list, empty_post);
 
                 if(!valid_data)
                 {

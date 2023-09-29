@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { useRouter } from 'vue-router';
+//import { useRouter } from 'vue-router';
 import { usePostStore, } from '@stores/PostStore';
+import { routes } from "@/router/router";
 
-const router = useRouter();
+//const router = useRouter();
 const post_store = usePostStore();
 
+const post_list_route = routes.post_list;
 
 const page_title = ref("");
 const page_text = ref("");
 const latest_post_title = ref("");
-const latest_post_route = ref({ name: "post", params: { title_kebab: "x" }});
-const posts_route = ref({ name: "posts" });
-const branch_name = ref("");
+const latest_post_route = ref({ name: routes.post.name, params: { title_kebab: "x" }});
+//const branch_name = ref("");
 
 
 onMounted(async () =>
@@ -48,7 +49,7 @@ function process_post_list(): void
     }
 }
 
-
+/*
 async function submit_branch_name(): Promise<void>
 {
     if (branch_name.value.length === 0)
@@ -62,12 +63,12 @@ async function submit_branch_name(): Promise<void>
 
     if (success)
     {
-        router.push({ name: "posts" });
+        router.push(post_list_route);
     }
 }
+*/
 
-
-const has_post = () => { return post_store.has_post; }
+const has_post = () => { return post_store.has_posts; }
 
 </script>
 
@@ -82,7 +83,7 @@ const has_post = () => { return post_store.has_post; }
             Latest post: <RouterLink :to="latest_post_route">{{ latest_post_title }}</RouterLink>
         </div>
         <div class="col-12 mt-3">
-            All posts: <RouterLink :to="posts_route">Posts</RouterLink>
+            All posts: <RouterLink :to="post_list_route">Posts</RouterLink>
         </div>
     </div>
 

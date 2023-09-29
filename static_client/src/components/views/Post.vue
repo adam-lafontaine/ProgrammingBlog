@@ -1,20 +1,123 @@
 <script setup lang="ts">
+import { onMounted, ref, Ref } from "vue";
+import { useRouter } from 'vue-router';
+import { usePostStore } from '@stores/PostStore';
+import { DateUtil } from '@util/date_util';
+import { routes } from "@/router/router";
+
 import Footer from '@components/Footer.vue';
+
+import hljs from 'highlight.js/lib/core';
+import cpp from 'highlight.js/lib/languages/cpp';
+import makefile from 'highlight.js/lib/languages/makefile';
+import plaintext from 'highlight.js/lib/languages/plaintext';
+hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('makefile', makefile);
+hljs.registerLanguage('plaintext', plaintext);
+
 
 const props = defineProps({
     title_kebab: { type: String, required: true }
 });
 
+const CONTENT_ID = "POST_MAIN_CONTENT";
+
+const router = useRouter();
+const post_store = usePostStore();
+
+const post_title = ref("");
+const post_subtitle = ref("");
+const post_tags: Ref<Array<string>> = ref([]);
+const post_date = ref("");
+
+let content_html = "";
+
+
+onMounted(async () => 
+{
+    content_html = "";
+
+    if (!post_store.has_posts)
+    {
+        await post_store.fetch_post_list();
+    }
+
+    if (!post_store.has_posts)
+    {
+        router.replace(routes.no_post);
+        return;
+    }
+    
+    load_post();
+});
+
+
+async function load_post(): Promise<void>
+{
+    const selected_item = post_store.post_list.find(x => x.route === props.title_kebab);
+
+    if (selected_item === undefined)
+    {
+        router.replace(routes.no_post);
+        return;
+    }
+
+    await post_store.fetch_selected_post(selected_item.id);
+
+    process_selected_post();
+}
+
+
+function process_selected_post(): void
+{
+    const post = post_store.selected_post;
+
+    post_title.value = post.title;
+    post_subtitle.value = post.subtitle;
+    post_tags.value = post.tags;
+    post_date.value = DateUtil.to_date_string(post.id);    
+
+    const elem = document.getElementById(CONTENT_ID);
+    if (elem)
+    {
+        content_html = post.content_html.length > 0 ? post.content_html : "<p>Post content not found</p>";
+        elem.innerHTML = content_html;
+
+        hljs.highlightAll();
+    }
+}
+
+
+const has_post = () => { return content_html.length > 100; }
+
 </script>
 
 
 <template>
-<div class="container">
-    <h1>Post</h1>
+<div class="post-header">
+    <div class="container">
+        <h1>{{post_title}}</h1>
+        <p>{{post_subtitle}}</p>
+        <div class="d-flex justify-content-between">
+            <div class="post-date">
+                {{ post_date }}
+            </div>
+            <div>
+                <span v-for="tag in post_tags" :key="tag"
+                    class="badge bg-primary code-font ms-2"
+                >
+                    {{ tag }}
+                </span>
+            </div>
 
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div :id="CONTENT_ID" class="main-content" />
 </div>
     
-<Footer />
+<Footer v-if="has_post()" />
 </template>
 
 
@@ -32,7 +135,7 @@ const props = defineProps({
 
 .post-header {
     padding-top: 4rem;
-    padding-bottom: 4rem;
+    padding-bottom: 1rem;
     margin-bottom: 2rem;
     background-color: #e9ecef;
 }
